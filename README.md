@@ -44,7 +44,6 @@
         
         .signature { margin-top: 25px; font-size: 10pt; color: #ffcc00; letter-spacing: 1px; }
 
-        /* AdSense Estilizado */
         .ads-container {
             margin-top: 40px; width: 400px; border: 1px dashed #444; padding: 10px; background: #050505;
             text-align: center; color: #888; font-size: 9pt;
@@ -57,9 +56,8 @@
 <div id="winamp-shell">
     <div class="winamp-top-bar"></div>
 
-    <div class="display-unit" id="winamp-display">
-        <!-- Sincronização Exata: ID 'now-playing' atualizado via JS -->
-        <div class="track-text" id="now-playing">SISTEMA READY - PLAY PARA INICIAR</div>
+    <div class="display-unit">
+        <div class="track-text" id="now-playing">ESTAÇÃO CARREGADA - APERTE PLAY</div>
         <div class="visual-bars">
             <div class="v-bar" style="animation-delay: 0.1s"></div>
             <div class="v-bar" style="animation-delay: 0.3s"></div>
@@ -69,8 +67,8 @@
         </div>
         <div class="kbps-row">
             <span>320 KBPS</span>
-            <span>SHUFFLE ON</span>
-            <span id="sync-status">SYNC OK</span>
+            <span>NO-ADS MODE</span>
+            <span id="sync-status">STABLE</span>
         </div>
     </div>
 
@@ -84,7 +82,6 @@
 
 <div class="signature">Nels1Rocks @2026 - Brasil</div>
 
-<!-- Setor de AdSense Temático -->
 <div class="ads-container">
     PROMOÇÃO: <a href="#" class="ads-link">BOX ESPECIAL SURREALISMO - NÃO LEIA</a><br>
     REVISTA HEAVY METAL #2026 - <a href="#" class="ads-link">ASSINE JÁ</a>
@@ -93,23 +90,15 @@
 <div id="yt-engine"><div id="player"></div></div>
 
 <script>
-    // Playlist Sincronizada com Links Verificados
     const playlist = [
-        { b: "SEPULTURA", t: "ARISE / TERRITORY / ROOTS", id: "L397TWLwrUU" },
+        { b: "SEPULTURA", t: "ARISE (OFFICIAL RE-UPLOAD)", id: "L397TWLwrUU" },
         { b: "KORZUS", t: "INTERNALLY / CORRERIA", id: "5A86665_9uE" },
         { b: "KRISIUN", t: "ANGELOUS VENENOUS", id: "8jWv06U9tGo" },
         { b: "CRYPTA", t: "FROM THE ASHES", id: "S_W7SrePshA" },
         { b: "KREATOR", t: "PLEASURE TO KILL", id: "v_7_T77v_r0" },
-        { b: "SODOM", t: "AGENT ORANGE", id: "X8m_vM_8mX8" },
-        { b: "DESTRUCTION", t: "THRASH TILL DEATH", id: "mJ_vM_8mX8" },
         { b: "IN FLAMES", t: "CLOUD CONNECTED", id: "jJPXshHofXU" },
-        { b: "AT THE GATES", t: "BLINDED BY FEAR", id: "SF0U77bm9mc" },
         { b: "NIGHTWISH", t: "GHOST LOVE SCORE", id: "uN3yqMr3hnY" },
-        { b: "STRATOVARIUS", t: "BLACK DIAMOND", id: "Tn58-Nl9NYw" },
-        { b: "EXODUS", t: "THE TOXIC WALTZ", id: "YST6vD_8mX8" },
-        { b: "TESTAMENT", t: "OVER THE WALL", id: "X8m_vM_8mX8" },
-        { b: "RAMONES", t: "ROCKET TO RUSSIA FULL", id: "LhGq83WStS0" },
-        { b: "RATOS DE PORÃO", t: "AO VIVO 92", id: "nB-F_ZfT8K8" }
+        { b: "RATOS DE PORÃO", t: "AO VIVO NO SESC", id: "nB-F_ZfT8K8" }
     ];
 
     let player, idx = Math.floor(Math.random() * playlist.length);
@@ -117,19 +106,28 @@
     const skins = [
         {c: "#00ff41", b: "#1a1a1a", a: "#333"}, 
         {c: "#00ffff", b: "#0a1f2d", a: "#1e90ff"}, 
-        {c: "#ff00ff", b: "#220022", a: "#800080"}, 
-        {c: "#ffff00", b: "#1a1a00", a: "#b8860b"}, 
         {c: "#ff4444", b: "#1a0000", a: "#8b0000"}
     ];
 
     function onYouTubeIframeAPIReady() {
+        // Uso do domínio youtube-nocookie para reduzir anúncios
         player = new YT.Player('player', {
-            height: '0', width: '0', videoId: playlist[idx].id,
+            height: '0', width: '0', 
+            videoId: playlist[idx].id,
+            host: 'https://www.youtube-nocookie.com',
+            playerVars: { 
+                'autoplay': 0, 
+                'controls': 0, 
+                'origin': window.location.origin 
+            },
             events: { 
-                'onReady': () => { console.log("Sync Ready"); },
+                'onReady': (e) => { 
+                    e.target.cueVideoById(playlist[idx].id);
+                    console.log("Player Ready & Cued"); 
+                },
                 'onStateChange': (e) => { 
-                    if(e.data === 0) next(); // Auto-play
-                    if(e.data === 1) updateSyncDisplay(); // Sincroniza ao iniciar
+                    if(e.data === 0) next();
+                    if(e.data === 1) updateSyncDisplay();
                 } 
             }
         });
@@ -137,7 +135,6 @@
 
     function play() { 
         player.playVideo(); 
-        updateSyncDisplay(); 
         document.getElementById('play-trigger').innerText = "LIVE"; 
     }
     
@@ -158,10 +155,8 @@
         player.loadVideoById(playlist[idx].id); 
     }
 
-    // Função de Sincronização Exata
     function updateSyncDisplay() {
-        const current = playlist[idx];
-        document.getElementById('now-playing').innerText = `${current.b} - ${current.t}`;
+        document.getElementById('now-playing').innerText = `${playlist[idx].b} - ${playlist[idx].t}`;
     }
 
     function changeSkin() {
@@ -171,7 +166,8 @@
         document.documentElement.style.setProperty('--accent', s.a);
     }
 
-    var tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
+    var tag = document.createElement('script'); 
+    tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 </script>
