@@ -29,13 +29,11 @@
             width: 420px;
             background: var(--glass-bg);
             backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
             border: 2px solid var(--border-color);
             border-radius: 15px;
             padding: 20px;
             box-shadow: 0 0 30px var(--glass-bg), inset 0 0 15px var(--border-color);
             position: relative;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .winamp-top-bar { 
@@ -50,7 +48,7 @@
             background: rgba(0, 0, 0, 0.6);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            height: 100px;
+            height: 110px;
             padding: 12px;
             display: flex;
             flex-direction: column;
@@ -68,9 +66,32 @@
             letter-spacing: 1px;
         }
 
-        .visual-bars { display: flex; align-items: flex-end; gap: 3px; height: 25px; }
-        .v-bar { width: 5px; background: var(--neon-color); border-radius: 2px; animation: pulse 0.6s infinite ease-in-out; box-shadow: 0 0 5px var(--neon-color); }
-        @keyframes pulse { 0%, 100% { height: 5px; opacity: 0.5; } 50% { height: 22px; opacity: 1; } }
+        .visual-bars { display: flex; align-items: flex-end; gap: 3px; height: 20px; }
+        .v-bar { width: 5px; background: var(--neon-color); border-radius: 2px; animation: pulse 0.6s infinite ease-in-out; }
+        @keyframes pulse { 0%, 100% { height: 5px; opacity: 0.5; } 50% { height: 18px; opacity: 1; } }
+
+        /* Letreiro LED Correndo para a Direita */
+        .led-container {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+
+        .led-text {
+            display: inline-block;
+            font-size: 14pt;
+            color: var(--neon-color);
+            text-shadow: 0 0 8px var(--neon-color);
+            animation: scrollRight 6s linear infinite;
+        }
+
+        @keyframes scrollRight {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(100%); }
+        }
 
         .btn-group { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
         .w-btn {
@@ -87,9 +108,7 @@
         }
         .w-btn:hover { background: var(--glass-bg); box-shadow: 0 0 15px var(--neon-color); transform: scale(1.05); }
 
-        #yt-engine { position: absolute; left: -9999px; visibility: hidden; }
-        
-        .signature { margin-top: 30px; font-size: 11pt; color: var(--neon-color); opacity: 0.8; text-shadow: 0 0 5px var(--neon-color); }
+        .signature { margin-top: 30px; font-size: 11pt; color: var(--neon-color); opacity: 0.8; }
 
         .ads-container {
             margin-top: 40px; width: 420px; border-radius: 10px;
@@ -105,7 +124,18 @@
     <div class="winamp-top-bar"></div>
 
     <div class="display-unit">
-        <div class="track-text" id="now-playing">SISTEMA MAQUINADO - PRESS PLAY</div>
+        <div class="track-text" id="now-playing">SISTEMA MAQUINADO - PLAY</div>
+        
+        <div style="display: flex; justify-content: space-between; font-size: 8pt; color: var(--neon-color); opacity: 0.7;">
+            <span>HI-RES AUDIO</span>
+            <span>XP TRANSLUCENT</span>
+        </div>
+
+        <!-- Letreiro LED Nels1Rocks -->
+        <div class="led-container">
+            <div class="led-text">Nels1Rocks &nbsp;&nbsp;&nbsp; Nels1Rocks &nbsp;&nbsp;&nbsp; Nels1Rocks</div>
+        </div>
+
         <div class="visual-bars">
             <div class="v-bar" style="animation-delay: 0.1s"></div>
             <div class="v-bar" style="animation-delay: 0.3s"></div>
@@ -113,10 +143,6 @@
             <div class="v-bar" style="animation-delay: 0.5s"></div>
             <div class="v-bar" style="animation-delay: 0.4s"></div>
             <div class="v-bar" style="animation-delay: 0.6s"></div>
-        </div>
-        <div style="display: flex; justify-content: space-between; font-size: 9pt; color: var(--neon-color); opacity: 0.7;">
-            <span>HI-RES AUDIO</span>
-            <span id="sync-status">XP TRANSLUCENT</span>
         </div>
     </div>
 
@@ -150,7 +176,6 @@
     ];
 
     let player, idx = Math.floor(Math.random() * playlist.length);
-    
     const skins = [
         {c: "#00f2ff", g: "rgba(0, 242, 255, 0.15)", b: "rgba(0, 242, 255, 0.4)"}, 
         {c: "#ff00ff", g: "rgba(255, 0, 255, 0.15)", b: "rgba(255, 0, 255, 0.4)"}, 
@@ -163,7 +188,6 @@
             height: '0', width: '0', 
             videoId: playlist[idx].id,
             host: 'https://www.youtube-nocookie.com',
-            playerVars: { 'autoplay': 0, 'controls': 0 },
             events: { 
                 'onReady': (e) => { e.target.cueVideoById(playlist[idx].id); },
                 'onStateChange': (e) => { 
@@ -176,18 +200,8 @@
 
     function play() { player.playVideo(); document.getElementById('play-trigger').innerText = "LIVE"; }
     function pause() { player.pauseVideo(); document.getElementById('play-trigger').innerText = "PLAY"; }
-    
-    function next() { 
-        idx = (idx + 1) % playlist.length; 
-        changeSkin(); 
-        player.loadVideoById(playlist[idx].id); 
-    }
-
-    function prev() { 
-        idx = (idx - 1 + playlist.length) % playlist.length; 
-        changeSkin(); 
-        player.loadVideoById(playlist[idx].id); 
-    }
+    function next() { idx = (idx + 1) % playlist.length; changeSkin(); player.loadVideoById(playlist[idx].id); }
+    function prev() { idx = (idx - 1 + playlist.length) % playlist.length; changeSkin(); player.loadVideoById(playlist[idx].id); }
 
     function updateSyncDisplay() {
         document.getElementById('now-playing').innerText = `${playlist[idx].b} - ${playlist[idx].t}`;
