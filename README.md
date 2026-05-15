@@ -64,6 +64,7 @@
             overflow: hidden;
             text-shadow: 0 0 8px var(--neon-color);
             letter-spacing: 1px;
+            min-height: 1.2em;
         }
 
         .visual-bars { display: flex; align-items: flex-end; gap: 3px; height: 20px; }
@@ -123,7 +124,7 @@
     <div class="winamp-top-bar"></div>
 
     <div class="display-unit">
-        <div class="track-text" id="now-playing">SISTEMA MAQUINADO - PLAY</div>
+        <div class="track-text" id="now-playing"></div>
         
         <div style="display: flex; justify-content: space-between; font-size: 8pt; color: var(--neon-color); opacity: 0.7;">
             <span>HI-RES AUDIO</span>
@@ -190,13 +191,8 @@
             events: { 
                 'onReady': (e) => { e.target.cueVideoById(playlist[idx].id); },
                 'onStateChange': (e) => { 
-                    // Se o estado for 0 (ENDED / TERMINOU), chama a função NEXT automaticamente
-                    if(e.data === 0) {
-                        next();
-                    }
-                    if(e.data === 1) {
-                        updateSyncDisplay();
-                    }
+                    if(e.data === 0) next();
+                    if(e.data === 1) updateSyncDisplay();
                 } 
             }
         });
@@ -204,19 +200,8 @@
 
     function play() { player.playVideo(); document.getElementById('play-trigger').innerText = "LIVE"; }
     function pause() { player.pauseVideo(); document.getElementById('play-trigger').innerText = "PLAY"; }
-    
-    // O próximo som entra tocando automaticamente
-    function next() { 
-        idx = (idx + 1) % playlist.length; 
-        changeSkin(); 
-        player.loadVideoById(playlist[idx].id); 
-    }
-    
-    function prev() { 
-        idx = (idx - 1 + playlist.length) % playlist.length; 
-        changeSkin(); 
-        player.loadVideoById(playlist[idx].id); 
-    }
+    function next() { idx = (idx + 1) % playlist.length; changeSkin(); player.loadVideoById(playlist[idx].id); }
+    function prev() { idx = (idx - 1 + playlist.length) % playlist.length; changeSkin(); player.loadVideoById(playlist[idx].id); }
 
     function updateSyncDisplay() {
         document.getElementById('now-playing').innerText = `${playlist[idx].b} - ${playlist[idx].t}`;
