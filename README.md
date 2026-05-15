@@ -3,52 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nels1Rocks | Radio 2026</title>
+    <title>Nels1Rocks | Aqua Neon 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
-        :root { --skin-color: #00ff41; --bg-panel: #1a1a1a; --accent: #333; }
-        body { background-color: #000; color: #ffcc00; font-family: 'VT323', monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding-bottom: 20px; }
+        :root { 
+            --neon-color: #00f2ff; 
+            --glass-bg: rgba(0, 242, 255, 0.15);
+            --border-color: rgba(0, 242, 255, 0.4);
+        }
         
-        #winamp-shell {
-            width: 400px; background: var(--bg-panel); border: 3px solid var(--accent); padding: 12px;
-            box-shadow: 8px 8px 0px #111; position: relative; transition: all 0.4s ease;
+        body { 
+            background: radial-gradient(circle, #1a1a2e 0%, #000000 100%); 
+            color: #fff; 
+            font-family: 'VT323', monospace; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            margin: 0;
+            overflow: hidden;
         }
 
-        .winamp-top-bar { height: 10px; background: var(--accent); margin-bottom: 10px; }
+        /* Skin 3D Translúcida Neon */
+        #winamp-shell {
+            width: 420px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 30px var(--glass-bg), inset 0 0 15px var(--border-color);
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .winamp-top-bar { 
+            height: 6px; 
+            background: var(--border-color); 
+            border-radius: 10px;
+            margin-bottom: 15px; 
+            box-shadow: 0 0 10px var(--neon-color);
+        }
 
         .display-unit {
-            background: #000; border: 2px inset #444; height: 90px; padding: 10px;
-            display: flex; flex-direction: column; justify-content: space-between;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            height: 100px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: inset 0 0 10px #000;
         }
 
         .track-text {
-            font-size: 9pt; color: var(--skin-color); text-transform: uppercase;
-            white-space: nowrap; overflow: hidden; text-shadow: 0 0 5px var(--skin-color);
-        }
-
-        .kbps-row { font-size: 8pt; color: var(--skin-color); display: flex; justify-content: space-between; opacity: 0.7; }
-
-        .visual-bars { display: flex; align-items: flex-end; gap: 2px; height: 18px; }
-        .v-bar { width: 4px; background: var(--skin-color); animation: pulse 0.6s infinite ease-in-out; }
-        @keyframes pulse { 0%, 100% { height: 4px; } 50% { height: 16px; } }
-
-        .btn-group { display: flex; gap: 6px; margin-top: 15px; justify-content: center; }
-        .w-btn {
-            background: #2a2a2a; border: 2px outset #555; color: #eee;
-            padding: 8px 14px; cursor: pointer; font-size: 13px; font-family: 'VT323';
+            font-size: 11pt;
+            color: var(--neon-color);
             text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-shadow: 0 0 8px var(--neon-color);
+            letter-spacing: 1px;
         }
-        .w-btn:active { border-style: inset; background: #000; color: var(--skin-color); }
+
+        .visual-bars { display: flex; align-items: flex-end; gap: 3px; height: 25px; }
+        .v-bar { width: 5px; background: var(--neon-color); border-radius: 2px; animation: pulse 0.6s infinite ease-in-out; box-shadow: 0 0 5px var(--neon-color); }
+        @keyframes pulse { 0%, 100% { height: 5px; opacity: 0.5; } 50% { height: 22px; opacity: 1; } }
+
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
+        .w-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: 'VT323';
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+        .w-btn:hover { background: var(--glass-bg); box-shadow: 0 0 15px var(--neon-color); transform: scale(1.05); }
 
         #yt-engine { position: absolute; left: -9999px; visibility: hidden; }
         
-        .signature { margin-top: 25px; font-size: 10pt; color: #ffcc00; letter-spacing: 1px; }
+        .signature { margin-top: 30px; font-size: 11pt; color: var(--neon-color); opacity: 0.8; text-shadow: 0 0 5px var(--neon-color); }
 
         .ads-container {
-            margin-top: 40px; width: 400px; border: 1px dashed #444; padding: 10px; background: #050505;
-            text-align: center; color: #888; font-size: 9pt;
+            margin-top: 40px; width: 420px; border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px; text-align: center; color: #aaa; font-size: 10pt;
         }
-        .ads-link { color: #ffcc00; text-decoration: none; border-bottom: 1px solid #ffcc00; }
+        .ads-link { color: var(--neon-color); text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -57,18 +106,18 @@
     <div class="winamp-top-bar"></div>
 
     <div class="display-unit">
-        <div class="track-text" id="now-playing">ESTAÇÃO CARREGADA - APERTE PLAY</div>
+        <div class="track-text" id="now-playing">NEON SYSTEM LOADED - PRESS PLAY</div>
         <div class="visual-bars">
             <div class="v-bar" style="animation-delay: 0.1s"></div>
             <div class="v-bar" style="animation-delay: 0.3s"></div>
             <div class="v-bar" style="animation-delay: 0.2s"></div>
             <div class="v-bar" style="animation-delay: 0.5s"></div>
             <div class="v-bar" style="animation-delay: 0.4s"></div>
+            <div class="v-bar" style="animation-delay: 0.6s"></div>
         </div>
-        <div class="kbps-row">
-            <span>320 KBPS</span>
-            <span>NO-ADS MODE</span>
-            <span id="sync-status">STABLE</span>
+        <div style="display: flex; justify-content: space-between; font-size: 9pt; color: var(--neon-color); opacity: 0.7;">
+            <span>HI-RES AUDIO</span>
+            <span id="sync-status">3D TRANSLUCENT</span>
         </div>
     </div>
 
@@ -80,51 +129,46 @@
     </div>
 </div>
 
-<div class="signature">Nels1Rocks @2026 - Brasil</div>
+<div class="signature">Nels1Rocks @2026 - Digital Interior</div>
 
 <div class="ads-container">
-    PROMOÇÃO: <a href="#" class="ads-link">BOX ESPECIAL SURREALISMO - NÃO LEIA</a><br>
-    REVISTA HEAVY METAL #2026 - <a href="#" class="ads-link">ASSINE JÁ</a>
+    BIBLIOTECA SURREALISTA: <a href="#" class="ads-link">NÃO LEIA</a><br>
+    CULTURA METAL: <a href="#" class="ads-link">ASSINE HEAVY METAL 2026</a>
 </div>
 
 <div id="yt-engine"><div id="player"></div></div>
 
 <script>
+    // Playlist atualizada com links otimizados (verificados 2026)
     const playlist = [
-        { b: "SEPULTURA", t: "ARISE (OFFICIAL RE-UPLOAD)", id: "L397TWLwrUU" },
+        { b: "SEPULTURA", t: "ARISE (REMASTERED)", id: "6BOHpjIZyx0" },
         { b: "KORZUS", t: "INTERNALLY / CORRERIA", id: "5A86665_9uE" },
         { b: "KRISIUN", t: "ANGELOUS VENENOUS", id: "8jWv06U9tGo" },
         { b: "CRYPTA", t: "FROM THE ASHES", id: "S_W7SrePshA" },
         { b: "KREATOR", t: "PLEASURE TO KILL", id: "v_7_T77v_r0" },
         { b: "IN FLAMES", t: "CLOUD CONNECTED", id: "jJPXshHofXU" },
         { b: "NIGHTWISH", t: "GHOST LOVE SCORE", id: "uN3yqMr3hnY" },
-        { b: "RATOS DE PORÃO", t: "AO VIVO NO SESC", id: "nB-F_ZfT8K8" }
+        { b: "STRATOVARIUS", t: "BLACK DIAMOND", id: "Tn58-Nl9NYw" }
     ];
 
     let player, idx = Math.floor(Math.random() * playlist.length);
     
+    // Novas Skins Neon 3D Estilo XP
     const skins = [
-        {c: "#00ff41", b: "#1a1a1a", a: "#333"}, 
-        {c: "#00ffff", b: "#0a1f2d", a: "#1e90ff"}, 
-        {c: "#ff4444", b: "#1a0000", a: "#8b0000"}
+        {c: "#00f2ff", g: "rgba(0, 242, 255, 0.15)", b: "rgba(0, 242, 255, 0.4)"}, // Aqua Neon
+        {c: "#ff00ff", g: "rgba(255, 0, 255, 0.15)", b: "rgba(255, 0, 255, 0.4)"}, // Electric Pink
+        {c: "#39ff14", g: "rgba(57, 255, 20, 0.15)", b: "rgba(57, 255, 20, 0.4)"}, // Alien Green
+        {c: "#ff9100", g: "rgba(255, 145, 0, 0.15)", b: "rgba(255, 145, 0, 0.4)"}  // Sunset Orange
     ];
 
     function onYouTubeIframeAPIReady() {
-        // Uso do domínio youtube-nocookie para reduzir anúncios
         player = new YT.Player('player', {
             height: '0', width: '0', 
             videoId: playlist[idx].id,
             host: 'https://www.youtube-nocookie.com',
-            playerVars: { 
-                'autoplay': 0, 
-                'controls': 0, 
-                'origin': window.location.origin 
-            },
+            playerVars: { 'autoplay': 0, 'controls': 0 },
             events: { 
-                'onReady': (e) => { 
-                    e.target.cueVideoById(playlist[idx].id);
-                    console.log("Player Ready & Cued"); 
-                },
+                'onReady': (e) => { e.target.cueVideoById(playlist[idx].id); },
                 'onStateChange': (e) => { 
                     if(e.data === 0) next();
                     if(e.data === 1) updateSyncDisplay();
@@ -133,15 +177,8 @@
         });
     }
 
-    function play() { 
-        player.playVideo(); 
-        document.getElementById('play-trigger').innerText = "LIVE"; 
-    }
-    
-    function pause() { 
-        player.pauseVideo(); 
-        document.getElementById('play-trigger').innerText = "PLAY"; 
-    }
+    function play() { player.playVideo(); document.getElementById('play-trigger').innerText = "LIVE"; }
+    function pause() { player.pauseVideo(); document.getElementById('play-trigger').innerText = "PLAY"; }
     
     function next() { 
         idx = (idx + 1) % playlist.length; 
@@ -161,9 +198,9 @@
 
     function changeSkin() {
         const s = skins[Math.floor(Math.random() * skins.length)];
-        document.documentElement.style.setProperty('--skin-color', s.c);
-        document.documentElement.style.setProperty('--bg-panel', s.b);
-        document.documentElement.style.setProperty('--accent', s.a);
+        document.documentElement.style.setProperty('--neon-color', s.c);
+        document.documentElement.style.setProperty('--glass-bg', s.g);
+        document.documentElement.style.setProperty('--border-color', s.b);
     }
 
     var tag = document.createElement('script'); 
