@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nels1Rocks | Aqua Neon 2026</title>
+    <title>Nels1Rocks | Maquinado Digital</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -25,7 +25,6 @@
             overflow: hidden;
         }
 
-        /* Skin 3D Translúcida Neon */
         #winamp-shell {
             width: 420px;
             background: var(--glass-bg);
@@ -106,7 +105,7 @@
     <div class="winamp-top-bar"></div>
 
     <div class="display-unit">
-        <div class="track-text" id="now-playing">NEON SYSTEM LOADED - PRESS PLAY</div>
+        <div class="track-text" id="now-playing">SISTEMA MAQUINADO - PRESS PLAY</div>
         <div class="visual-bars">
             <div class="v-bar" style="animation-delay: 0.1s"></div>
             <div class="v-bar" style="animation-delay: 0.3s"></div>
@@ -117,7 +116,7 @@
         </div>
         <div style="display: flex; justify-content: space-between; font-size: 9pt; color: var(--neon-color); opacity: 0.7;">
             <span>HI-RES AUDIO</span>
-            <span id="sync-status">3D TRANSLUCENT</span>
+            <span id="sync-status">XP TRANSLUCENT</span>
         </div>
     </div>
 
@@ -129,17 +128,16 @@
     </div>
 </div>
 
-<div class="signature">Nels1Rocks @2026 - Digital Interior</div>
+<div class="signature">Nels1Rocks @Brasil-2026 - Maquinado Digital</div>
 
 <div class="ads-container">
-    BIBLIOTECA SURREALISTA: <a href="#" class="ads-link">NÃO LEIA</a><br>
+    PROJETO SURREALISTA: <a href="#" class="ads-link">CONHEÇA A OBRA</a><br>
     CULTURA METAL: <a href="#" class="ads-link">ASSINE HEAVY METAL 2026</a>
 </div>
 
 <div id="yt-engine"><div id="player"></div></div>
 
 <script>
-    // Playlist atualizada com links otimizados (verificados 2026)
     const playlist = [
         { b: "SEPULTURA", t: "ARISE (REMASTERED)", id: "6BOHpjIZyx0" },
         { b: "KORZUS", t: "INTERNALLY / CORRERIA", id: "5A86665_9uE" },
@@ -153,12 +151,11 @@
 
     let player, idx = Math.floor(Math.random() * playlist.length);
     
-    // Novas Skins Neon 3D Estilo XP
     const skins = [
-        {c: "#00f2ff", g: "rgba(0, 242, 255, 0.15)", b: "rgba(0, 242, 255, 0.4)"}, // Aqua Neon
-        {c: "#ff00ff", g: "rgba(255, 0, 255, 0.15)", b: "rgba(255, 0, 255, 0.4)"}, // Electric Pink
-        {c: "#39ff14", g: "rgba(57, 255, 20, 0.15)", b: "rgba(57, 255, 20, 0.4)"}, // Alien Green
-        {c: "#ff9100", g: "rgba(255, 145, 0, 0.15)", b: "rgba(255, 145, 0, 0.4)"}  // Sunset Orange
+        {c: "#00f2ff", g: "rgba(0, 242, 255, 0.15)", b: "rgba(0, 242, 255, 0.4)"}, 
+        {c: "#ff00ff", g: "rgba(255, 0, 255, 0.15)", b: "rgba(255, 0, 255, 0.4)"}, 
+        {c: "#39ff14", g: "rgba(57, 255, 20, 0.15)", b: "rgba(57, 255, 20, 0.4)"}, 
+        {c: "#ff9100", g: "rgba(255, 145, 0, 0.15)", b: "rgba(255, 145, 0, 0.4)"}
     ];
 
     function onYouTubeIframeAPIReady() {
