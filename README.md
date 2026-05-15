@@ -70,7 +70,6 @@
         .v-bar { width: 5px; background: var(--neon-color); border-radius: 2px; animation: pulse 0.6s infinite ease-in-out; }
         @keyframes pulse { 0%, 100% { height: 5px; opacity: 0.5; } 50% { height: 18px; opacity: 1; } }
 
-        /* Letreiro LED Correndo para a Direita */
         .led-container {
             width: 100%;
             overflow: hidden;
@@ -128,10 +127,9 @@
         
         <div style="display: flex; justify-content: space-between; font-size: 8pt; color: var(--neon-color); opacity: 0.7;">
             <span>HI-RES AUDIO</span>
-            <span>XP TRANSLUCENT</span>
+            <span>LOOP CONTINUO</span>
         </div>
 
-        <!-- Letreiro LED Nels1Rocks -->
         <div class="led-container">
             <div class="led-text">Nels1Rocks &nbsp;&nbsp;&nbsp; Nels1Rocks &nbsp;&nbsp;&nbsp; Nels1Rocks</div>
         </div>
@@ -188,11 +186,17 @@
             height: '0', width: '0', 
             videoId: playlist[idx].id,
             host: 'https://www.youtube-nocookie.com',
+            playerVars: { 'autoplay': 0, 'controls': 0 },
             events: { 
                 'onReady': (e) => { e.target.cueVideoById(playlist[idx].id); },
                 'onStateChange': (e) => { 
-                    if(e.data === 0) next();
-                    if(e.data === 1) updateSyncDisplay();
+                    // Se o estado for 0 (ENDED / TERMINOU), chama a função NEXT automaticamente
+                    if(e.data === 0) {
+                        next();
+                    }
+                    if(e.data === 1) {
+                        updateSyncDisplay();
+                    }
                 } 
             }
         });
@@ -200,8 +204,19 @@
 
     function play() { player.playVideo(); document.getElementById('play-trigger').innerText = "LIVE"; }
     function pause() { player.pauseVideo(); document.getElementById('play-trigger').innerText = "PLAY"; }
-    function next() { idx = (idx + 1) % playlist.length; changeSkin(); player.loadVideoById(playlist[idx].id); }
-    function prev() { idx = (idx - 1 + playlist.length) % playlist.length; changeSkin(); player.loadVideoById(playlist[idx].id); }
+    
+    // O próximo som entra tocando automaticamente
+    function next() { 
+        idx = (idx + 1) % playlist.length; 
+        changeSkin(); 
+        player.loadVideoById(playlist[idx].id); 
+    }
+    
+    function prev() { 
+        idx = (idx - 1 + playlist.length) % playlist.length; 
+        changeSkin(); 
+        player.loadVideoById(playlist[idx].id); 
+    }
 
     function updateSyncDisplay() {
         document.getElementById('now-playing').innerText = `${playlist[idx].b} - ${playlist[idx].t}`;
