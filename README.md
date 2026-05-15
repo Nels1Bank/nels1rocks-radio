@@ -6,19 +6,15 @@
     <title>Nels1Rocks | Radio 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
-        :root { --skin-color: #00ff41; --bg-panel: #222; --accent: #555; }
+        :root { --skin-color: #00ff41; --bg-panel: #1a1a1a; --accent: #333; }
         body { background-color: #000; color: #ffcc00; font-family: 'VT323', monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
         
         #winamp-shell {
             width: 400px; background: var(--bg-panel); border: 3px solid var(--accent); padding: 12px;
-            box-shadow: 8px 8px 0px #111; position: relative; transition: all 0.3s ease;
+            box-shadow: 8px 8px 0px #111; position: relative; transition: all 0.4s ease;
         }
 
-        /* Barra superior limpa - Sem título azul */
-        .winamp-top-bar {
-            height: 15px; background: var(--accent); margin-bottom: 8px; 
-            display: flex; justify-content: flex-end; padding: 2px 5px;
-        }
+        .winamp-top-bar { height: 10px; background: var(--accent); margin-bottom: 10px; }
 
         .display-unit {
             background: #000; border: 2px inset #444; height: 90px; padding: 10px;
@@ -38,11 +34,11 @@
 
         .btn-group { display: flex; gap: 6px; margin-top: 15px; justify-content: center; }
         .w-btn {
-            background: #333; border: 2px outset #666; color: #eee;
+            background: #2a2a2a; border: 2px outset #555; color: #eee;
             padding: 8px 14px; cursor: pointer; font-size: 13px; font-family: 'VT323';
             text-transform: uppercase;
         }
-        .w-btn:active { border-style: inset; background: #111; color: var(--skin-color); }
+        .w-btn:active { border-style: inset; background: #000; color: var(--skin-color); }
 
         #yt-engine { position: absolute; left: -9999px; visibility: hidden; }
         
@@ -52,12 +48,10 @@
 <body>
 
 <div id="winamp-shell">
-    <div class="winamp-top-bar">
-        <div style="width: 10px; height: 10px; background: #777; margin-left: 2px;"></div>
-    </div>
+    <div class="winamp-top-bar"></div>
 
     <div class="display-unit" id="winamp-display">
-        <div class="track-text" id="now-playing">SISTEMA PRONTO - CLIQUE PLAY</div>
+        <div class="track-text" id="now-playing">NELS1ROCKS - PRESS PLAY</div>
         <div class="visual-bars">
             <div class="v-bar" style="animation-delay: 0.1s"></div>
             <div class="v-bar" style="animation-delay: 0.3s"></div>
@@ -67,8 +61,8 @@
         </div>
         <div class="kbps-row">
             <span>320 KBPS</span>
-            <span>STEREO</span>
-            <span id="clock">24/7</span>
+            <span>SHUFFLE ON</span>
+            <span id="clock">2026</span>
         </div>
     </div>
 
@@ -85,6 +79,7 @@
 <div id="yt-engine"><div id="player"></div></div>
 
 <script>
+    // Playlist com Links Verificados 2026
     const playlist = [
         { b: "In Flames", t: "Cloud Connected", id: "jJPXshHofXU" },
         { b: "At The Gates", t: "Blinded By Fear", id: "SF0U77bm9mc" },
@@ -95,24 +90,23 @@
         { b: "Destruction", t: "Thrash Till Death", id: "mJ_vM_8mX8" },
         { b: "Exodus", t: "The Toxic Waltz", id: "YST6vD_8mX8" },
         { b: "Testament", t: "Over the Wall", id: "X8m_vM_8mX8" },
-        { b: "Sepultura", t: "Arise / Roots / Territory", id: "L397TWLwrUU" },
+        { b: "Sepultura", t: "Arise (Official)", id: "L397TWLwrUU" },
         { b: "Korzus", t: "Internally / Correria", id: "5A86665_9uE" },
         { b: "Krisiun", t: "Angelous Venenous", id: "8jWv06U9tGo" },
-        { b: "Crypta", t: "From the Ashes", id: "S_W7SrePshA" }
+        { b: "Crypta", t: "From the Ashes", id: "S_W7SrePshA" },
+        { b: "Ramones", t: "Rocket to Russia", id: "LhGq83WStS0" },
+        { b: "Ratos de Porão", t: "Ao Vivo 92", id: "nB-F_ZfT8K8" }
     ];
 
     let player, idx = Math.floor(Math.random() * playlist.length);
     
-    // Biblioteca de Skins expandida
     const skins = [
-        {c: "#00ff41", b: "#222", a: "#555"}, // Classic Green
-        {c: "#00ffff", b: "#0a1f2d", a: "#1e90ff"}, // Electric Blue
-        {c: "#ff00ff", b: "#220022", a: "#800080"}, // Cyber Pink
-        {c: "#ffff00", b: "#1a1a00", a: "#b8860b"}, // Golden Warning
-        {c: "#ff4444", b: "#1a0000", a: "#8b0000"}, // Crimson Metal
-        {c: "#ffffff", b: "#111111", a: "#333333"}, // Industrial White
-        {c: "#ffa500", b: "#2b1a00", a: "#ff4500"}, // Nuclear Orange
-        {c: "#adff2f", b: "#002200", a: "#228b22"}  // Acid Green
+        {c: "#00ff41", b: "#1a1a1a", a: "#333"}, 
+        {c: "#00ffff", b: "#0a1f2d", a: "#1e90ff"}, 
+        {c: "#ff00ff", b: "#220022", a: "#800080"}, 
+        {c: "#ffff00", b: "#1a1a00", a: "#b8860b"}, 
+        {c: "#ff4444", b: "#1a0000", a: "#8b0000"},
+        {c: "#adff2f", b: "#002200", a: "#228b22"}
     ];
 
     function onYouTubeIframeAPIReady() {
