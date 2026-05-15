@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nels1Rocks | Global Metal Radio</title>
+    <title>Nels1Rocks | Radio 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
-        :root { --skin-color: #00ff41; --bg-panel: #222; }
+        :root { --skin-color: #00ff41; --bg-panel: #222; --accent: #555; }
         body { background-color: #000; color: #ffcc00; font-family: 'VT323', monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
         
         #winamp-shell {
-            width: 400px; background: var(--bg-panel); border: 3px solid #555; padding: 12px;
-            box-shadow: 8px 8px 0px #111; position: relative;
+            width: 400px; background: var(--bg-panel); border: 3px solid var(--accent); padding: 12px;
+            box-shadow: 8px 8px 0px #111; position: relative; transition: all 0.3s ease;
         }
 
-        .winamp-bar {
-            background: linear-gradient(90deg, #000080, #1e90ff); color: white;
-            font-size: 11px; padding: 4px 10px; margin-bottom: 8px; text-transform: uppercase;
-            display: flex; justify-content: space-between; border: 1px solid #777;
+        /* Barra superior limpa - Sem título azul */
+        .winamp-top-bar {
+            height: 15px; background: var(--accent); margin-bottom: 8px; 
+            display: flex; justify-content: flex-end; padding: 2px 5px;
         }
 
         .display-unit {
@@ -40,39 +40,35 @@
         .w-btn {
             background: #333; border: 2px outset #666; color: #eee;
             padding: 8px 14px; cursor: pointer; font-size: 13px; font-family: 'VT323';
-            text-transform: uppercase; transition: 0.2s;
+            text-transform: uppercase;
         }
         .w-btn:active { border-style: inset; background: #111; color: var(--skin-color); }
 
         #yt-engine { position: absolute; left: -9999px; visibility: hidden; }
         
-        .status-footer { font-size: 8pt; color: #555; margin-top: 12px; text-align: center; border-top: 1px solid #333; padding-top: 6px; }
-        .signature { margin-top: 15px; font-size: 10pt; color: #ffcc00; letter-spacing: 1px; }
+        .signature { margin-top: 25px; font-size: 10pt; color: #ffcc00; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
 <div id="winamp-shell">
-    <div class="winamp-bar">
-        <span>Nels1Rocks v4.0 - Global Radio</span>
-        <span>[ 24/7 ]</span>
+    <div class="winamp-top-bar">
+        <div style="width: 10px; height: 10px; background: #777; margin-left: 2px;"></div>
     </div>
 
     <div class="display-unit" id="winamp-display">
-        <div class="track-text" id="now-playing">RADIO STANDBY - PRESS PLAY</div>
+        <div class="track-text" id="now-playing">SISTEMA PRONTO - CLIQUE PLAY</div>
         <div class="visual-bars">
             <div class="v-bar" style="animation-delay: 0.1s"></div>
             <div class="v-bar" style="animation-delay: 0.3s"></div>
             <div class="v-bar" style="animation-delay: 0.2s"></div>
             <div class="v-bar" style="animation-delay: 0.5s"></div>
             <div class="v-bar" style="animation-delay: 0.4s"></div>
-            <div class="v-bar" style="animation-delay: 0.1s"></div>
-            <div class="v-bar" style="animation-delay: 0.3s"></div>
         </div>
         <div class="kbps-row">
             <span>320 KBPS</span>
-            <span>AUTO-SHUFFLE</span>
-            <span id="clock">00:00</span>
+            <span>STEREO</span>
+            <span id="clock">24/7</span>
         </div>
     </div>
 
@@ -82,47 +78,41 @@
         <button class="w-btn" onclick="pause()">STOP</button>
         <button class="w-btn" onclick="next()">NEXT</button>
     </div>
-
-    <div class="status-footer">
-        LIQUIDITY MONITOR: SYNE3 (0.83 CASH/DEBT)
-    </div>
 </div>
 
-<div class="signature">Nels1Rock @2026 - Brasil</div>
+<div class="signature">Nels1Rocks @2026 - Brasil</div>
 
 <div id="yt-engine"><div id="player"></div></div>
 
 <script>
-    // Playlist Globalizada (Links Atuais 2026)
     const playlist = [
-        // Suécia (Gothenburg Sound)
         { b: "In Flames", t: "Cloud Connected", id: "jJPXshHofXU" },
         { b: "At The Gates", t: "Blinded By Fear", id: "SF0U77bm9mc" },
-        // Finlândia (Heavy Melódico)
         { b: "Nightwish", t: "Ghost Love Score", id: "uN3yqMr3hnY" },
         { b: "Stratovarius", t: "Black Diamond", id: "Tn58-Nl9NYw" },
-        // Big 4 Alemão (Thrash Metal)
         { b: "Kreator", t: "Pleasure to Kill", id: "v_7_T77v_r0" },
         { b: "Sodom", t: "Agent Orange", id: "X8m_vM_8mX8" },
         { b: "Destruction", t: "Thrash Till Death", id: "mJ_vM_8mX8" },
-        // EUA (Bay Area Thrash)
         { b: "Exodus", t: "The Toxic Waltz", id: "YST6vD_8mX8" },
         { b: "Testament", t: "Over the Wall", id: "X8m_vM_8mX8" },
-        // Brasil (Heavy/Thrash/Death)
         { b: "Sepultura", t: "Arise / Roots / Territory", id: "L397TWLwrUU" },
         { b: "Korzus", t: "Internally / Correria", id: "5A86665_9uE" },
         { b: "Krisiun", t: "Angelous Venenous", id: "8jWv06U9tGo" },
-        { b: "Crypta", t: "From the Ashes", id: "S_W7SrePshA" },
-        { b: "Sarcofago", t: "Nightmare", id: "X8m_vM_8mX8" }
+        { b: "Crypta", t: "From the Ashes", id: "S_W7SrePshA" }
     ];
 
     let player, idx = Math.floor(Math.random() * playlist.length);
+    
+    // Biblioteca de Skins expandida
     const skins = [
-        {c: "#00ff41", b: "#222"}, // Classic
-        {c: "#00ffff", b: "#111"}, // Electric
-        {c: "#ff00ff", b: "#202"}, // Neon
-        {c: "#ffff00", b: "#220"}, // Warning
-        {c: "#ffffff", b: "#333"}  // Industrial
+        {c: "#00ff41", b: "#222", a: "#555"}, // Classic Green
+        {c: "#00ffff", b: "#0a1f2d", a: "#1e90ff"}, // Electric Blue
+        {c: "#ff00ff", b: "#220022", a: "#800080"}, // Cyber Pink
+        {c: "#ffff00", b: "#1a1a00", a: "#b8860b"}, // Golden Warning
+        {c: "#ff4444", b: "#1a0000", a: "#8b0000"}, // Crimson Metal
+        {c: "#ffffff", b: "#111111", a: "#333333"}, // Industrial White
+        {c: "#ffa500", b: "#2b1a00", a: "#ff4500"}, // Nuclear Orange
+        {c: "#adff2f", b: "#002200", a: "#228b22"}  // Acid Green
     ];
 
     function onYouTubeIframeAPIReady() {
@@ -153,6 +143,7 @@
         const s = skins[Math.floor(Math.random() * skins.length)];
         document.documentElement.style.setProperty('--skin-color', s.c);
         document.documentElement.style.setProperty('--bg-panel', s.b);
+        document.documentElement.style.setProperty('--accent', s.a);
     }
 
     function updateUI() {
