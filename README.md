@@ -17,6 +17,7 @@
             --moss-green: #1e3f20;       /* Verde Musgo Escuro de estrutura */
             --green-neon: #39ff14;       /* Verde ativo reativo */
             --white-pure: #ffffff;       /* Branco para textos legíveis */
+            --accent-yellow: #ffcc00;    /* Amarelo industrial */
             --panel-bg: rgba(20, 10, 30, 0.85);
         }
 
@@ -98,7 +99,7 @@
 
         /* Painel Central do Player de Stream */
         .live-player-panel {
-            background: rgba(30, 63, 32, 0.3); /* Base Verde Musgo Transparente */
+            background: rgba(30, 63, 32, 0.3); 
             border: 2px solid var(--purple-neon);
             padding: 2rem;
             border-radius: 6px;
@@ -163,7 +164,7 @@
             transform: scale(1.05);
         }
 
-        /* Lista da Setlist Integrada (Grade de Estações Alternativas) */
+        /* Lista da Setlist Integrada */
         .station-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -220,6 +221,11 @@
             color: var(--green-neon);
         }
 
+        /* Classe para isolar o caractere do hífen/underscore na manipulação de cor */
+        .blink-char {
+            transition: color 0.1s ease;
+        }
+
         footer {
             text-align: center;
             padding: 2.5rem;
@@ -264,35 +270,35 @@
                 </div>
             </div>
 
-            <!-- Setlist Integrada de Streams da API Icecast/Shoutcast -->
+            <!-- Setlist Integrada de Streams -->
             <h3 style="margin-top: 2.5rem; color: var(--green-neon);">SETLIST DE FREQUÊNCIAS</h3>
             <div class="station-grid">
                 
-                <!-- Rota 1: Heavy Metal Bruto -->
+                <!-- Frequência 01 -->
                 <div class="station-card active-station" onclick="selectStation(0, 'STREAM PRINCIPAL: HEAVY METAL')">
                     <div class="station-info">
                         <div class="station-title">Frequência 01 - Pure Metal Live</div>
                         <div class="station-genre">Estilo: Heavy, Thrash & Death</div>
                     </div>
-                    <div class="select-indicator" id="ind-0">SINTONIZADO_</div>
+                    <div class="select-indicator" id="ind-0">SINTONIZADO<span class="blink-char" id="char-0">_</span></div>
                 </div>
 
-                <!-- Rota 2: Hard Rock & Grunge clássico -->
+                <!-- Frequência 02 -->
                 <div class="station-card" onclick="selectStation(1, 'STREAM SECUNDÁRIA: HARD ROCK')">
                     <div class="station-info">
                         <div class="station-title">Frequência 02 - Rock Classics Digital</div>
                         <div class="station-genre">Estilo: Classic Rock & Grunge</div>
                     </div>
-                    <div class="select-indicator" id="ind-1">CONECTAR_</div>
+                    <div class="select-indicator" id="ind-1">CONECTAR<span class="blink-char" id="char-1">_</span></div>
                 </div>
 
-                <!-- Rota 3: Metal Progressivo e Industrial -->
+                <!-- Frequência 03 -->
                 <div class="station-card" onclick="selectStation(2, 'STREAM TERCIÁRIA: INDUSTRIAL')">
                     <div class="station-info">
                         <div class="station-title">Frequência 03 - Industrial & Prog Core</div>
                         <div class="station-genre">Estilo: Industrial, Prog & Djent</div>
                     </div>
-                    <div class="select-indicator" id="ind-2">CONECTAR_</div>
+                    <div class="select-indicator" id="ind-2">CONECTAR<span class="blink-char" id="char-2">_</span></div>
                 </div>
 
             </div>
@@ -304,16 +310,7 @@
     </footer>
 
     <script>
-        // ==========================================================
-        // 1. BANCO DE APIS DE STREAM DE RÁDIO PÚBLICAS (ICECAST/SHOUTCAST)
-        // ==========================================================
-        const apiStreams = [
-            "https://suasessao.com.br:8000/stream", // Mock de fallback seguro
-            "https://stream.rockantenne.de/heavy-metal/stream/mp3", // Rock Antenne Heavy Metal Stream
-            "https://wdr-1live-diid.cast.addradio.de/wdr/1live/diid/mp3/128/stream.mp3" // Alternativo/Rock Live Stream
-        ];
-
-        // Links alternativos estáveis e globais para garantir barramento limpo
+        // Links alternativos de alta estabilidade
         const realApis = [
             "https://stream.screamer-radio.com/metal_high",
             "https://listen.radiorock.fi/rock_128.mp3",
@@ -322,38 +319,70 @@
 
         let currentStationIndex = 0;
         const audioPlayer = new Audio();
-        audioPlayer.crossOrigin = "anonymous"; // Bypass de cabeçalho padrão de segurança
+        audioPlayer.crossOrigin = "anonymous"; 
         
         let audioContext;
         let analyser;
         let source;
         const dataArray = new Uint8Array(32);
         let isPlaying = false;
+        
+        // Variáveis de controle do estrobo do hífen
+        let blinkIntervalId = null;
+        const strobeColors = ['#8a2be2', '#ffcc00', '#39ff14', '#ffffff']; // Roxo, Amarelo, Verde, Branco
+        let colorCounter = 0;
+
+        // Gerenciador do Loop do Hífen
+        function startHifenStrobe() {
+            if (blinkIntervalId) clearInterval(blinkIntervalId);
+            
+            blinkIntervalId = setInterval(() => {
+                // Seleciona apenas o caractere da estação que está sintonizada no momento
+                const activeChar = document.getElementById(`char-${currentStationIndex}`);
+                if (activeChar) {
+                    activeChar.style.color = strobeColors[colorCounter % strobeColors.length];
+                    colorCounter++;
+                }
+            }, 300); // Rotaciona a cor a cada 300ms
+        }
+
+        function stopHifenStrobe() {
+            if (blinkIntervalId) {
+                clearInterval(blinkIntervalId);
+                blinkIntervalId = null;
+            }
+            // Reseta a cor de todos os underscores para o padrão
+            document.querySelectorAll('.blink-char').forEach((char, idx) => {
+                char.style.color = (idx === currentStationIndex) ? 'var(--green-neon)' : 'var(--purple-neon)';
+            });
+        }
 
         function selectStation(index, displayName) {
+            // Para o estrobo antigo antes de mudar o índice
+            stopHifenStrobe();
+            
             currentStationIndex = index;
             
-            // Reseta classes visuais da setlist
             document.querySelectorAll('.station-card').forEach((card, idx) => {
                 card.classList.remove('active-station');
-                document.getElementById(`ind-${idx}`).innerText = "CONECTAR_";
+                const textNode = idx === index ? "SINTONIZADO" : "CONECTAR";
+                document.getElementById(`ind-${idx}`).innerHTML = `${textNode}<span class="blink-char" id="char-${idx}">_</span>`;
             });
 
-            // Ativa o card selecionado
             const cards = document.querySelectorAll('.station-card');
             cards[index].classList.add('active-station');
-            document.getElementById(`ind-${index}`).innerText = "SINTONIZADO_";
 
             if (isPlaying) {
-                // Se a rádio já estiver tocando, transmuta o sinal imediatamente para a nova rota
                 audioPlayer.src = realApis[currentStationIndex];
                 audioPlayer.play()
                     .then(() => {
                         document.getElementById('track-display').innerText = displayName + " [ONLINE]";
+                        startHifenStrobe(); // Reativa no novo alvo
                     })
-                    .catch(err => console.log("Erro de transmutação de barramento: ", err));
+                    .catch(err => console.log("Erro de transmutação: ", err));
             } else {
                 document.getElementById('track-display').innerText = "SINTONIA MODIFICADA - PRONTA PARA RODAR";
+                stopHifenStrobe();
             }
         }
 
@@ -363,7 +392,6 @@
             const display = document.getElementById('track-display');
 
             if (!isPlaying) {
-                // Inicialização do analisador de áudio nativo para alimentar a malha 3D
                 if (!audioContext) {
                     try {
                         audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -373,7 +401,7 @@
                         source.connect(analyser);
                         analyser.connect(audioContext.destination);
                     } catch (e) {
-                        console.log("AudioContext bloqueado ou não suportado em carregamento estático local, usando conexão direta.");
+                        console.log("AudioContext em modo direto.");
                     }
                 }
 
@@ -381,7 +409,6 @@
                     audioContext.resume();
                 }
 
-                // Injeta a API selecionada direto no núcleo do player
                 audioPlayer.src = realApis[currentStationIndex];
                 
                 audioPlayer.play()
@@ -391,32 +418,35 @@
                         playBtn.style.backgroundColor = "var(--purple-neon)";
                         led.classList.add('active');
                         display.innerText = "SINAL EM TEMPO REAL [ONLINE]";
+                        
+                        startHifenStrobe(); // Liga o estrobo do hífen na sintonia
                     })
                     .catch(err => {
-                        console.log("Erro na API principal, tentando rota espelho...");
-                        // Rota de contingência rápida
                         audioPlayer.src = "https://stream.rockantenne.de/heavy-metal/stream/mp3";
                         audioPlayer.play();
                         isPlaying = true;
                         playBtn.innerText = "DESLIGAR_";
                         led.classList.add('active');
                         display.innerText = "ROTA DE CONTINGÊNCIA ATIVA";
+                        
+                        startHifenStrobe();
                     });
 
             } else {
-                // Desliga o disjuntor da stream
                 audioPlayer.pause();
-                audioPlayer.src = ""; // Corta o consumo de banda de dados em background
+                audioPlayer.src = ""; 
                 isPlaying = false;
                 playBtn.innerText = "LIGAR_SINAL";
                 playBtn.style.backgroundColor = "var(--moss-green)";
                 led.classList.remove('active');
                 display.innerText = "SINAL EM SUCÇÃO (STANDBY)";
+                
+                stopHifenStrobe(); // Desliga o estrobo
             }
         }
 
         // ==========================================================
-        // 2. SKIN 3D TEMÁTICA: TOROIDE RETORCIDO EM ROXO E VERDE MUSGO (THREE.JS)
+        // 2. SKIN 3D TEMÁTICA: TOROIDE RETORCIDO (THREE.JS)
         // ==========================================================
         const container = document.getElementById('canvas-3d-container');
         const scene = new THREE.Scene();
@@ -426,10 +456,7 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         container.appendChild(renderer.domElement);
 
-        // Geometria temática: Um nó toroidal que parece uma estrutura industrial orgânica
         const geometry = new THREE.TorusKnotGeometry(1.6, 0.4, 100, 16);
-        
-        // Material baseado na paleta solicitada (Linhas brancas em estrutura de malha metálica)
         const material = new THREE.MeshStandardMaterial({ 
             color: 0xffffff, 
             wireframe: true,
@@ -439,43 +466,33 @@
         const meshIndustrial = new THREE.Mesh(geometry, material);
         scene.add(meshIndustrial);
 
-        // Luz Roxo Neon vinda da parte superior direita
         const purpleLight = new THREE.PointLight(0x8a2be2, 5, 60);
         purpleLight.position.set(6, 6, 4);
         scene.add(purpleLight);
 
-        // Luz Verde Musgo Esturo/Neon cruzando por baixo à esquerda
         const mossLight = new THREE.PointLight(0x39ff14, 3, 60);
         mossLight.position.set(-6, -6, 4);
         scene.add(mossLight);
 
         camera.position.z = 5.5;
 
-        // Loop de Animação Reativa à Frequência de Som Nativa
         function animate() {
             requestAnimationFrame(animate);
             
             if (analyser && isPlaying) {
                 analyser.getByteFrequencyData(dataArray);
-                
-                // Extrai pressão dos graves da rádio (bumbo, baixo pesado)
                 let bassValue = dataArray[3] / 255;
-                // Extrai pressão dos agudos (guitarras, pratos)
                 let trebleValue = dataArray[14] / 255;
                 
-                // O Toroide deforma, expande e distorce fisicamente com os graves da rede
                 let scaleFactor = 1 + (bassValue * 0.35);
                 meshIndustrial.scale.set(scaleFactor, scaleFactor, scaleFactor);
                 
-                // A velocidade da rotação reage violentamente à intensidade das guitarras
                 meshIndustrial.rotation.x += 0.005 + (trebleValue * 0.05);
                 meshIndustrial.rotation.y += 0.007 + (bassValue * 0.03);
                 
-                // Estrobo de luzes acompanha a modulação harmônica
                 purpleLight.intensity = 3 + (trebleValue * 7);
                 mossLight.intensity = 2 + (bassValue * 6);
             } else {
-                // Rotação natural em Standby (Física de repouso)
                 meshIndustrial.rotation.x += 0.002;
                 meshIndustrial.rotation.y += 0.003;
                 meshIndustrial.scale.set(1, 1, 1);
@@ -487,7 +504,6 @@
         }
         animate();
 
-        // Tratamento adaptativo de tamanho de tela para não quebrar o layout geométrico
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
