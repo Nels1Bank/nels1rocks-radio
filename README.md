@@ -126,12 +126,12 @@
             text-shadow: 2px 2px 0px #000;
         }
 
-        /* Novo Display Digital de 8 Segmentos (Branco) */
+        /* Display Digital de 8 Segmentos (Branco) */
         .segment-display-8 {
             font-family: 'Fira Code', monospace;
             font-size: 1.6rem;
             font-weight: bold;
-            color: #221435; /* Cor de fundo apagada dos segmentos */
+            color: #221435; 
             background: #000000;
             padding: 0.2rem 0.7rem;
             border: 2px solid #000000;
@@ -152,6 +152,7 @@
             margin-top: 1rem;
         }
 
+        /* Botão Principal com canais arredondados (estilo cápsula) */
         .main-play-btn {
             background: var(--purple-neon);
             border: var(--cartoon-border);
@@ -164,6 +165,7 @@
             box-shadow: 4px 4px 0px #000;
             transition: transform 0.1s ease, box-shadow 0.1s ease;
             text-transform: uppercase;
+            border-radius: 50px; /* Arredondamento completo dos cantos */
         }
 
         .main-play-btn:hover {
@@ -408,7 +410,6 @@
             <!-- Painel de Controle Principal -->
             <div class="live-player-panel">
                 <div class="stream-status">
-                    <!-- Novo Display de 8 Segmentos substituindo o LED tradicional -->
                     <div class="segment-display-8" id="bit-display">0</div>
                     <span id="track-display">SINAL EM SUCÇÃO (STANDBY)</span>
                 </div>
@@ -505,14 +506,13 @@
         let isPlaying = false;
         
         let blinkIntervalId = null;
-        let bitIntervalId = null; // Intervalo para o display binário
+        let bitIntervalId = null; 
         const strobeColors = ['#ffcc00', '#8a2be2', '#ffffff', '#00bfff', '#ff4500']; 
         let colorCounter = 0;
         let currentBit = 0;
 
         const sintonizadoHTML = `<span class="s-sin">SIN</span><span class="s-to">TO</span><span class="s-ni">NI</span><span class="s-za">ZA</span><span class="s-do">DO</span>`;
 
-        // Função que controla a pulsação binária (0 e 1) em branco puro
         function startBitDisplay() {
             const bitDisplay = document.getElementById('bit-display');
             bitDisplay.classList.add('active-bit');
@@ -521,7 +521,7 @@
             bitIntervalId = setInterval(() => {
                 currentBit = currentBit === 0 ? 1 : 0;
                 bitDisplay.innerText = currentBit;
-            }, 500); // Alterna a cada 500ms
+            }, 500); 
         }
 
         function stopBitDisplay() {
@@ -531,7 +531,7 @@
             }
             const bitDisplay = document.getElementById('bit-display');
             bitDisplay.classList.remove('active-bit');
-            bitDisplay.innerText = "0"; // Reseta para zero em standby (apagado)
+            bitDisplay.innerText = "0"; 
         }
 
         function startHifenStrobe() {
