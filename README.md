@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nels1Rocks | Home of Tripalium</title>
-    <!-- Google Fonts para a Tipografia Agressiva -->
+    
+    <!-- Google Fonts para a Tipografia Agressiva e Industrial -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Fira+Code:wght@400;700&family=Metal+Mania&display=swap" rel="stylesheet">
@@ -27,14 +28,14 @@
             overflow-x: hidden;
         }
 
-        /* Container para o Canvas 3D que vai rodar o Three.js/Spline */
+        /* Container para o Canvas 3D que roda o Three.js (Skin reativa de fundo) */
         #canvas-3d-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: -1; /* Fica ao fundo servindo de pele/skin dinamicamente */
+            z-index: -1;
             background: radial-gradient(circle, #1a1a1a 0%, #050505 100%);
         }
 
@@ -85,7 +86,12 @@
             padding-bottom: 0.5rem;
         }
 
-        /* Estilização do Setlist Industrial */
+        p {
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        /* Estilização do Painel de Setlist Industrial */
         .setlist-container {
             margin-top: 1.5rem;
         }
@@ -144,6 +150,7 @@
             font-family: 'Fira Code', monospace;
             font-weight: bold;
             transition: all 0.2s ease;
+            min-width: 80px;
         }
 
         .play-btn:hover {
@@ -161,12 +168,12 @@
         }
     </style>
 
-    <!-- CDNs para carregar a física 3D das skins (Three.js para texturas e luzes) -->
+    <!-- Biblioteca 3D nativa (Three.js) via CDN de alta performance -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
-    <!-- Onde o motor 3D vai injetar o chão de fábrica siderúrgico e os crânios de metal -->
+    <!-- Target onde o motor gráfico vai renderizar a malha molecular reativa -->
     <div id="canvas-3d-container"></div>
 
     <header>
@@ -175,7 +182,7 @@
     </header>
 
     <main>
-        <section id="about">
+        <section id="backstage">
             <h2>[BACKSTAGE]</h2>
             <p>Independência mental, cauda longa e distorção analógica. Blindado contra o transe coletivo do asfalto e operando na frequência invisível do refúgio.</p>
         </section>
@@ -242,13 +249,97 @@
     </footer>
 
     <script>
-        // Lógica do Player no Backstage
+        // ==========================================================
+        // 1. BANCO DE DADOS DE ÁUDIO & CONTROLE DA ENGINE (AUDIO API)
+        // ==========================================================
+        const trackDatabase = {
+            'The Front Line': {
+                url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', // Endereço dos arquivos .mp3
+                desc: 'Abertura com distorção microfonada e bumbo duplo isolado.'
+            },
+            'Evening Tide': {
+                url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+                desc: 'Linhas de baixo pesadas quebrando o misticismo do carimbo.'
+            },
+            'Falls Like Rain': {
+                url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+                desc: 'Aceleração mecânica rasgando a maquete de segurança.'
+            },
+            'Life Amongst Strangers': {
+                url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+                desc: 'O hino soberano de quem assiste à legião de anestesiados da varanda.'
+            },
+            'The Downfall of the Birdwatcher': {
+                url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3',
+                desc: 'O estouro da Singularidade do Bug em riffs jorgonescos implacáveis.'
+            }
+        };
+
+        let audioContext;
+        let analyser;
+        let source;
+        const audioPlayer = new Audio();
+        audioPlayer.crossOrigin = "anonymous"; 
+        let currentTrackName = "";
+
         function playTrack(trackName) {
-            console.log("Executando na frequência máxima: " + trackName);
-            alert("Tocando agora: " + trackName + " [Aço Puro nas Caixas]");
+            const track = trackDatabase[trackName];
+            if (!track) return;
+
+            // Ativa o pipeline de áudio nativo no primeiro input do usuário (Física do DOM)
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 64; // Tamanho do buffer de frequência para tempo de resposta bruto
+                source = audioContext.createMediaElementSource(audioPlayer);
+                source.connect(analyser);
+                analyser.connect(audioContext.destination);
+            }
+
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+
+            const clickedBtn = event.target;
+            
+            // Se clicar na mesma música que já está rodando: alterna Play/Pause
+            if (currentTrackName === trackName) {
+                if (audioPlayer.paused) {
+                    audioPlayer.play();
+                    clickedBtn.innerText = "STOP_";
+                    clickedBtn.style.backgroundColor = "var(--accent-yellow)";
+                    clickedBtn.style.color = "#000";
+                } else {
+                    audioPlayer.pause();
+                    clickedBtn.innerText = "RUN_";
+                    clickedBtn.style.backgroundColor = "transparent";
+                    clickedBtn.style.color = "var(--accent-color)";
+                }
+            } else {
+                // Reseta os estados visuais dos botões de controle das outras faixas
+                document.querySelectorAll('.play-btn').forEach(btn => {
+                    btn.innerText = "RUN_";
+                    btn.style.backgroundColor = "transparent";
+                    btn.style.color = "var(--accent-color)";
+                });
+
+                // Carrega e dispara a nova pedrada
+                audioPlayer.src = track.url;
+                audioPlayer.play()
+                    .then(() => {
+                        currentTrackName = trackName;
+                        clickedBtn.innerText = "STOP_";
+                        clickedBtn.style.backgroundColor = "var(--accent-color)";
+                        clickedBtn.style.color = "#fff";
+                        console.log("Tripalium Engine injetada: " + trackName);
+                    })
+                    .catch(err => console.log("Erro no barramento de áudio: ", err));
+            }
         }
 
-        // Script base do Three.js para renderizar as skins 3D (Substitua pela sua malha do Spline se preferir)
+        // ==========================================================
+        // 2. RENDERIZADOR GRÁFICO GRUNGE 3D & VISUALIZER (THREE.JS)
+        // ==========================================================
         const container = document.getElementById('canvas-3d-container');
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -257,37 +348,62 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         container.appendChild(renderer.domElement);
 
-        // Geometria Industrial flutuante (Exemplo de cubo metálico com rotação para testar o ambiente)
-        const geometry = new THREE.BoxGeometry(2, 2, 2);
+        // Geometria da carcaça industrial (Malha de metal estruturada em wireframe)
+        const geometry = new THREE.IcosahedronGeometry(2, 1);
         const material = new THREE.MeshStandardMaterial({ 
-            color: 0x2a2a2a, 
-            roughness: 0.2,
-            metalness: 0.8
+            color: 0x222222, 
+            wireframe: true, 
+            roughness: 0.1,
+            metalness: 0.9
         });
-        const cube = new THREE.Mesh(geometry, material);
-        scene.add(cube);
+        const meshIndustrial = new THREE.Mesh(geometry, material);
+        scene.add(meshIndustrial);
 
-        // Luzes para dar o clima do palco (Vermelho e Amarelo Neon)
-        const pointLight1 = new THREE.PointLight(0xff0000, 2, 50);
-        pointLight1.position.set(5, 5, 5);
-        scene.add(pointLight1);
+        // Iluminação estroboscópica de alta voltagem (Vermelho e Amarelo Neon)
+        const redLight = new THREE.PointLight(0xff0000, 2, 50);
+        redLight.position.set(5, 5, 5);
+        scene.add(redLight);
 
-        const pointLight2 = new THREE.PointLight(0xffcc00, 1, 50);
-        pointLight2.position.set(-5, -5, 5);
-        scene.add(pointLight2);
+        const yellowLight = new THREE.PointLight(0xffcc00, 1, 50);
+        yellowLight.position.set(-5, -5, 5);
+        scene.add(yellowLight);
 
         camera.position.z = 5;
 
-        // Loop de Animação - Física em Movimento
+        // Array de buffer para capturar os decibéis em tempo real
+        const dataArray = new Uint8Array(32);
+
+        // Loop contínuo de animação - A física dos dados moldando a skin
         function animate() {
             requestAnimationFrame(animate);
-            cube.rotation.x += 0.005;
-            cube.rotation.y += 0.005;
+            
+            // Se a música estiver ativa, extrai a frequência e deforma a estrutura 3D
+            if (analyser && !audioPlayer.paused) {
+                analyser.getByteFrequencyData(dataArray);
+                
+                // Monitora as frequências de sub-grave (bumbos e linhas de baixo pesadas)
+                let bassFrequency = dataArray[2] / 255; 
+                
+                // Modula a escala do objeto diretamente pela pressão dos graves
+                meshIndustrial.scale.set(1 + bassFrequency, 1 + bassFrequency, 1 + bassFrequency);
+                meshIndustrial.rotation.x += 0.01 + (bassFrequency * 0.04);
+                meshIndustrial.rotation.y += 0.01 + (bassFrequency * 0.04);
+                
+                // Intensidade do estrobo acompanha a saturação dos agudos (guitarras)
+                redLight.intensity = 2 + (dataArray[12] / 40);
+            } else {
+                // Rotação cadenciada de repouso (Estado de espera no refúgio)
+                meshIndustrial.rotation.x += 0.003;
+                meshIndustrial.rotation.y += 0.003;
+                meshIndustrial.scale.set(1, 1, 1);
+                redLight.intensity = 2;
+            }
+
             renderer.render(scene, camera);
         }
         animate();
 
-        // Ajuste de Tela Automático para não bugar os múltiplos
+        // Listener responsivo para reajustar a tela e não bugar a proporção do canvas
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
