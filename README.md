@@ -221,7 +221,13 @@
             color: var(--green-neon);
         }
 
-        /* Classe para isolar o caractere do hífen/underscore na manipulação de cor */
+        /* Classes de Sílabas Coloridas */
+        .s-sin { color: #ffcc00; } /* Amarelo */
+        .s-to { color: #8a2be2; }  /* Roxo */
+        .s-ni { color: #ffffff; }  /* Branco */
+        .s-za { color: #00bfff; }  /* Azul */
+        .s-do { color: #ff4500; }  /* Laranja */
+
         .blink-char {
             transition: color 0.1s ease;
         }
@@ -274,13 +280,15 @@
             <h3 style="margin-top: 2.5rem; color: var(--green-neon);">SETLIST DE FREQUÊNCIAS</h3>
             <div class="station-grid">
                 
-                <!-- Frequência 01 -->
+                <!-- Frequência 01 (Inicia pré-sintonizada mas sem dar play automático) -->
                 <div class="station-card active-station" onclick="selectStation(0, 'STREAM PRINCIPAL: HEAVY METAL')">
                     <div class="station-info">
                         <div class="station-title">Frequência 01 - Pure Metal Live</div>
                         <div class="station-genre">Estilo: Heavy, Thrash & Death</div>
                     </div>
-                    <div class="select-indicator" id="ind-0">SINTONIZADO<span class="blink-char" id="char-0">_</span></div>
+                    <div class="select-indicator" id="ind-0">
+                        <span class="s-sin">SIN</span><span class="s-to">TO</span><span class="s-ni">NI</span><span class="s-za">ZA</span><span class="s-do">DO</span><span class="blink-char" id="char-0">_</span>
+                    </div>
                 </div>
 
                 <!-- Frequência 02 -->
@@ -310,7 +318,7 @@
     </footer>
 
     <script>
-        // Links alternativos de alta estabilidade
+        // Roteamentos de API Globais
         const realApis = [
             "https://stream.screamer-radio.com/metal_high",
             "https://listen.radiorock.fi/rock_128.mp3",
@@ -327,23 +335,24 @@
         const dataArray = new Uint8Array(32);
         let isPlaying = false;
         
-        // Variáveis de controle do estrobo do hífen
+        // Sequenciador de cores do _
         let blinkIntervalId = null;
-        const strobeColors = ['#8a2be2', '#ffcc00', '#39ff14', '#ffffff']; // Roxo, Amarelo, Verde, Branco
+        const strobeColors = ['#8a2be2', '#ffcc00', '#39ff14', '#ffffff']; 
         let colorCounter = 0;
 
-        // Gerenciador do Loop do Hífen
+        // String HTML injetada para montar a palavra com as divisões exatas solicitadas
+        const sintonizadoHTML = `<span class="s-sin">SIN</span><span class="s-to">TO</span><span class="s-ni">NI</span><span class="s-za">ZA</span><span class="s-do">DO</span>`;
+
         function startHifenStrobe() {
             if (blinkIntervalId) clearInterval(blinkIntervalId);
             
             blinkIntervalId = setInterval(() => {
-                // Seleciona apenas o caractere da estação que está sintonizada no momento
                 const activeChar = document.getElementById(`char-${currentStationIndex}`);
                 if (activeChar) {
                     activeChar.style.color = strobeColors[colorCounter % strobeColors.length];
                     colorCounter++;
                 }
-            }, 300); // Rotaciona a cor a cada 300ms
+            }, 300); 
         }
 
         function stopHifenStrobe() {
@@ -351,22 +360,25 @@
                 clearInterval(blinkIntervalId);
                 blinkIntervalId = null;
             }
-            // Reseta a cor de todos os underscores para o padrão
+            // Retorna o underscore para a cor neutra quando pausado
             document.querySelectorAll('.blink-char').forEach((char, idx) => {
                 char.style.color = (idx === currentStationIndex) ? 'var(--green-neon)' : 'var(--purple-neon)';
             });
         }
 
         function selectStation(index, displayName) {
-            // Para o estrobo antigo antes de mudar o índice
             stopHifenStrobe();
-            
             currentStationIndex = index;
             
             document.querySelectorAll('.station-card').forEach((card, idx) => {
                 card.classList.remove('active-station');
-                const textNode = idx === index ? "SINTONIZADO" : "CONECTAR";
-                document.getElementById(`ind-${idx}`).innerHTML = `${textNode}<span class="blink-char" id="char-${idx}">_</span>`;
+                
+                // Se for o índice selecionado, monta o SINTONIZADO colorido, senão volta para CONECTAR comum
+                if (idx === index) {
+                    document.getElementById(`ind-${idx}`).innerHTML = `${sintonizadoHTML}<span class="blink-char" id="char-${idx}">_</span>`;
+                } else {
+                    document.getElementById(`ind-${idx}`).innerHTML = `CONECTAR<span class="blink-char" id="char-${idx}">_</span>`;
+                }
             });
 
             const cards = document.querySelectorAll('.station-card');
@@ -377,9 +389,9 @@
                 audioPlayer.play()
                     .then(() => {
                         document.getElementById('track-display').innerText = displayName + " [ONLINE]";
-                        startHifenStrobe(); // Reativa no novo alvo
+                        startHifenStrobe();
                     })
-                    .catch(err => console.log("Erro de transmutação: ", err));
+                    .catch(err => console.log("Erro de transmutação de barramento: ", err));
             } else {
                 document.getElementById('track-display').innerText = "SINTONIA MODIFICADA - PRONTA PARA RODAR";
                 stopHifenStrobe();
@@ -401,7 +413,7 @@
                         source.connect(analyser);
                         analyser.connect(audioContext.destination);
                     } catch (e) {
-                        console.log("AudioContext em modo direto.");
+                        console.log("AudioContext rodando em barramento bypass.");
                     }
                 }
 
@@ -419,7 +431,9 @@
                         led.classList.add('active');
                         display.innerText = "SINAL EM TEMPO REAL [ONLINE]";
                         
-                        startHifenStrobe(); // Liga o estrobo do hífen na sintonia
+                        // Garante que o indicador atual mostre o layout silábico colorido antes do strobe
+                        document.getElementById(`ind-${currentStationIndex}`).innerHTML = `${sintonizadoHTML}<span class="blink-char" id="char-${currentStationIndex}">_</span>`;
+                        startHifenStrobe(); 
                     })
                     .catch(err => {
                         audioPlayer.src = "https://stream.rockantenne.de/heavy-metal/stream/mp3";
@@ -428,7 +442,6 @@
                         playBtn.innerText = "DESLIGAR_";
                         led.classList.add('active');
                         display.innerText = "ROTA DE CONTINGÊNCIA ATIVA";
-                        
                         startHifenStrobe();
                     });
 
@@ -441,7 +454,7 @@
                 led.classList.remove('active');
                 display.innerText = "SINAL EM SUCÇÃO (STANDBY)";
                 
-                stopHifenStrobe(); // Desliga o estrobo
+                stopHifenStrobe(); 
             }
         }
 
