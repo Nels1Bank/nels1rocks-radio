@@ -1,223 +1,298 @@
 
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nels1Rocks | Maquinado Digital</title>
-    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <title>Nels1Rocks | Home of Tripalium</title>
+    <!-- Google Fonts para a Tipografia Agressiva -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Fira+Code:wght@400;700&family=Metal+Mania&display=swap" rel="stylesheet">
+    
     <style>
-        :root { 
-            --neon-color: #00f2ff; 
-            --glass-bg: rgba(0, 242, 255, 0.15);
-            --border-color: rgba(0, 242, 255, 0.4);
+        :root {
+            --bg-color: #0d0d0d;
+            --text-color: #e0e0e0;
+            --accent-color: #ff0000;
+            --accent-yellow: #ffcc00;
+            --industrial-grey: #2a2a2a;
         }
-        
-        body { 
-            background: radial-gradient(circle, #1a1a2e 0%, #000000 100%); 
-            color: #fff; 
-            font-family: 'VT323', monospace; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            min-height: 100vh; 
+
+        body {
             margin: 0;
-            overflow: hidden;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Fira Code', monospace;
+            overflow-x: hidden;
         }
 
-        #winamp-shell {
-            width: 420px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            border: 2px solid var(--border-color);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 0 30px var(--glass-bg), inset 0 0 15px var(--border-color);
-            position: relative;
+        /* Container para o Canvas 3D que vai rodar o Three.js/Spline */
+        #canvas-3d-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1; /* Fica ao fundo servindo de pele/skin dinamicamente */
+            background: radial-gradient(circle, #1a1a1a 0%, #050505 100%);
         }
 
-        .winamp-top-bar { 
-            height: 6px; 
-            background: var(--border-color); 
-            border-radius: 10px;
-            margin-bottom: 15px; 
-            box-shadow: 0 0 10px var(--neon-color);
+        header {
+            background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 3px solid var(--accent-color);
         }
 
-        .display-unit {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            height: 110px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            box-shadow: inset 0 0 10px #000;
+        h1 {
+            font-family: 'Metal Mania', cursive;
+            font-size: 4rem;
+            color: var(--accent-color);
+            margin: 0;
+            text-shadow: 3px 3px 0px var(--accent-yellow);
+            letter-spacing: 2px;
         }
 
-        .track-text {
-            font-size: 11pt;
-            color: var(--neon-color);
+        .subtitle {
+            font-size: 1rem;
+            color: var(--accent-yellow);
             text-transform: uppercase;
-            white-space: nowrap;
-            overflow: hidden;
-            text-shadow: 0 0 8px var(--neon-color);
-            letter-spacing: 1px;
-            min-height: 1.2em;
+            letter-spacing: 4px;
+            margin-top: 0.5rem;
         }
 
-        .visual-bars { display: flex; align-items: flex-end; gap: 3px; height: 20px; }
-        .v-bar { width: 5px; background: var(--neon-color); border-radius: 2px; animation: pulse 0.6s infinite ease-in-out; }
-        @keyframes pulse { 0%, 100% { height: 5px; opacity: 0.5; } 50% { height: 18px; opacity: 1; } }
-
-        .led-container {
-            width: 100%;
-            overflow: hidden;
-            white-space: nowrap;
-            background: rgba(0, 0, 0, 0.3);
+        main {
+            max-width: 900px;
+            margin: 3rem auto;
+            padding: 2rem;
+            background: rgba(13, 13, 13, 0.85);
+            border: 2px solid var(--industrial-grey);
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
             border-radius: 4px;
-            margin-top: 5px;
         }
 
-        .led-text {
-            display: inline-block;
-            font-size: 14pt;
-            color: var(--neon-color);
-            text-shadow: 0 0 8px var(--neon-color);
-            animation: scrollRight 6s linear infinite;
+        section {
+            margin-bottom: 3rem;
         }
 
-        @keyframes scrollRight {
-            from { transform: translateX(-100%); }
-            to { transform: translateX(100%); }
+        h2 {
+            font-family: 'Metal Mania', cursive;
+            font-size: 2.5rem;
+            color: var(--text-color);
+            border-bottom: 2px dashed var(--accent-color);
+            padding-bottom: 0.5rem;
         }
 
-        .btn-group { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
-        .w-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--border-color);
-            color: #fff;
-            padding: 10px 16px;
-            border-radius: 50px;
+        /* Estilização do Setlist Industrial */
+        .setlist-container {
+            margin-top: 1.5rem;
+        }
+
+        .set-group {
+            margin-bottom: 2rem;
+        }
+
+        .set-title {
+            font-family: 'Creepster', system-ui;
+            font-size: 1.8rem;
+            color: var(--accent-yellow);
+            margin-bottom: 1rem;
+        }
+
+        .track-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .track-item {
+            background: rgba(42, 42, 42, 0.5);
+            margin-bottom: 0.8rem;
+            padding: 1rem;
+            border-left: 5px solid var(--accent-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .track-item:hover {
+            background: rgba(255, 0, 0, 0.1);
+            border-left-color: var(--accent-yellow);
+            transform: translateX(5px);
+        }
+
+        .track-info .title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .track-info .desc {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 0.2rem;
+        }
+
+        .play-btn {
+            background: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 0.5rem 1rem;
             cursor: pointer;
-            font-size: 14px;
-            font-family: 'VT323';
-            text-transform: uppercase;
-            transition: 0.3s;
+            font-family: 'Fira Code', monospace;
+            font-weight: bold;
+            transition: all 0.2s ease;
         }
-        .w-btn:hover { background: var(--glass-bg); box-shadow: 0 0 15px var(--neon-color); transform: scale(1.05); }
 
-        .signature { margin-top: 30px; font-size: 11pt; color: var(--neon-color); opacity: 0.8; }
-
-        .ads-container {
-            margin-top: 40px; width: 420px; border-radius: 10px;
-            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 15px; text-align: center; color: #aaa; font-size: 10pt;
+        .play-btn:hover {
+            background: var(--accent-color);
+            color: #fff;
+            box-shadow: 0 0 10px var(--accent-color);
         }
-        .ads-link { color: var(--neon-color); text-decoration: none; font-weight: bold; }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.8rem;
+            color: #444;
+            border-top: 1px solid var(--industrial-grey);
+        }
     </style>
+
+    <!-- CDNs para carregar a física 3D das skins (Three.js para texturas e luzes) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
-<div id="winamp-shell">
-    <div class="winamp-top-bar"></div>
+    <!-- Onde o motor 3D vai injetar o chão de fábrica siderúrgico e os crânios de metal -->
+    <div id="canvas-3d-container"></div>
 
-    <div class="display-unit">
-        <div class="track-text" id="now-playing"></div>
+    <header>
+        <h1>NELS1ROCKS</h1>
+        <div class="subtitle">Singularidade do Bug // Múltiplos Maravilhosos</div>
+    </header>
+
+    <main>
+        <section id="about">
+            <h2>[BACKSTAGE]</h2>
+            <p>Independência mental, cauda longa e distorção analógica. Blindado contra o transe coletivo do asfalto e operando na frequência invisível do refúgio.</p>
+        </section>
+
+        <section id="setlist">
+            <h2>TRIPALIUM — LIVE 2026</h2>
+            <div class="setlist-container">
+                
+                <!-- SET I -->
+                <div class="set-group">
+                    <div class="set-title">SET I: A Rampa de Entrada (Peso & Cadência)</div>
+                    <ul class="track-list">
+                        <li class="track-item">
+                            <div class="track-info">
+                                <div class="title">1. The Front Line</div>
+                                <div class="desc">Abertura com distorção microfonada e bumbo duplo isolado.</div>
+                            </div>
+                            <button class="play-btn" onclick="playTrack('The Front Line')">RUN_</button>
+                        </li>
+                        <li class="track-item">
+                            <div class="track-info">
+                                <div class="title">2. Evening Tide</div>
+                                <div class="desc">Linhas de baixo pesadas quebrando o misticismo do carimbo.</div>
+                            </div>
+                            <button class="play-btn" onclick="playTrack('Evening Tide')">RUN_</button>
+                        </li>
+                        <li class="track-item">
+                            <div class="track-info">
+                                <div class="title">3. Falls Like Rain</div>
+                                <div class="desc">Aceleração mecânica rasgando a maquete de segurança.</div>
+                            </div>
+                            <button class="play-btn" onclick="playTrack('Falls Like Rain')">RUN_</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- SET II -->
+                <div class="set-group">
+                    <div class="set-title">SET II: O Clímax (A Física dos Dados Sonoros)</div>
+                    <ul class="track-list">
+                        <li class="track-item">
+                            <div class="track-info">
+                                <div class="title">4. Life Amongst Strangers</div>
+                                <div class="desc">O hino soberano de quem assiste à legião de anestesiados da varanda.</div>
+                            </div>
+                            <button class="play-btn" onclick="playTrack('Life Amongst Strangers')">RUN_</button>
+                        </li>
+                        <li class="track-item">
+                            <div class="track-info">
+                                <div class="title">5. The Downfall of the Birdwatcher</div>
+                                <div class="desc">O estouro da Singularidade do Bug em riffs jorgonescos implacáveis.</div>
+                            </div>
+                            <button class="play-btn" onclick="playTrack('The Downfall of the Birdwatcher')">RUN_</button>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Nels1Bank & Guidance Live Asset © 2026 // Desenvolvido na física pura sem carimbo burocrático.</p>
+    </footer>
+
+    <script>
+        // Lógica do Player no Backstage
+        function playTrack(trackName) {
+            console.log("Executando na frequência máxima: " + trackName);
+            alert("Tocando agora: " + trackName + " [Aço Puro nas Caixas]");
+        }
+
+        // Script base do Three.js para renderizar as skins 3D (Substitua pela sua malha do Spline se preferir)
+        const container = document.getElementById('canvas-3d-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         
-        <div style="display: flex; justify-content: space-between; font-size: 8pt; color: var(--neon-color); opacity: 0.7;">
-            <span>HI-RES AUDIO</span>
-            <span>LOOP CONTINUO</span>
-        </div>
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
 
-        <div class="led-container">
-            <div class="led-text">Nels1Rocks &nbsp;&nbsp;&nbsp; Nels1Rocks &nbsp;&nbsp;&nbsp; Nels1Rocks</div>
-        </div>
-
-        <div class="visual-bars">
-            <div class="v-bar" style="animation-delay: 0.1s"></div>
-            <div class="v-bar" style="animation-delay: 0.3s"></div>
-            <div class="v-bar" style="animation-delay: 0.2s"></div>
-            <div class="v-bar" style="animation-delay: 0.5s"></div>
-            <div class="v-bar" style="animation-delay: 0.4s"></div>
-            <div class="v-bar" style="animation-delay: 0.6s"></div>
-        </div>
-    </div>
-
-    <div class="btn-group">
-        <button class="w-btn" onclick="prev()">PREV</button>
-        <button class="w-btn" id="play-trigger" onclick="play()">PLAY</button>
-        <button class="w-btn" onclick="pause()">STOP</button>
-        <button class="w-btn" onclick="next()">NEXT</button>
-    </div>
-</div>
-
-<div class="signature">Nels1Rocks @Brasil-2026 - Maquinado Digital</div>
-
-<div class="ads-container">
-    PROJETO SURREALISTA: <a href="#" class="ads-link">CONHEÇA A OBRA</a><br>
-    CULTURA METAL: <a href="#" class="ads-link">ASSINE HEAVY METAL 2026</a>
-</div>
-
-<div id="yt-engine"><div id="player"></div></div>
-
-<script>
-    const playlist = [
-        { b: "SEPULTURA", t: "ARISE (REMASTERED)", id: "6BOHpjIZyx0" },
-        { b: "KORZUS", t: "INTERNALLY / CORRERIA", id: "5A86665_9uE" },
-        { b: "KRISIUN", t: "ANGELOUS VENENOUS", id: "8jWv06U9tGo" },
-        { b: "CRYPTA", t: "FROM THE ASHES", id: "S_W7SrePshA" },
-        { b: "KREATOR", t: "PLEASURE TO KILL", id: "v_7_T77v_r0" },
-        { b: "IN FLAMES", t: "CLOUD CONNECTED", id: "jJPXshHofXU" },
-        { b: "NIGHTWISH", t: "GHOST LOVE SCORE", id: "uN3yqMr3hnY" },
-        { b: "STRATOVARIUS", t: "BLACK DIAMOND", id: "Tn58-Nl9NYw" }
-    ];
-
-    let player, idx = Math.floor(Math.random() * playlist.length);
-    const skins = [
-        {c: "#00f2ff", g: "rgba(0, 242, 255, 0.15)", b: "rgba(0, 242, 255, 0.4)"}, 
-        {c: "#ff00ff", g: "rgba(255, 0, 255, 0.15)", b: "rgba(255, 0, 255, 0.4)"}, 
-        {c: "#39ff14", g: "rgba(57, 255, 20, 0.15)", b: "rgba(57, 255, 20, 0.4)"}, 
-        {c: "#ff9100", g: "rgba(255, 145, 0, 0.15)", b: "rgba(255, 145, 0, 0.4)"}
-    ];
-
-    function onYouTubeIframeAPIReady() {
-        player = new YT.Player('player', {
-            height: '0', width: '0', 
-            videoId: playlist[idx].id,
-            host: 'https://www.youtube-nocookie.com',
-            playerVars: { 'autoplay': 0, 'controls': 0 },
-            events: { 
-                'onReady': (e) => { e.target.cueVideoById(playlist[idx].id); },
-                'onStateChange': (e) => { 
-                    if(e.data === 0) next();
-                    if(e.data === 1) updateSyncDisplay();
-                } 
-            }
+        // Geometria Industrial flutuante (Exemplo de cubo metálico com rotação para testar o ambiente)
+        const geometry = new THREE.BoxGeometry(2, 2, 2);
+        const material = new THREE.MeshStandardMaterial({ 
+            color: 0x2a2a2a, 
+            roughness: 0.2,
+            metalness: 0.8
         });
-    }
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
 
-    function play() { player.playVideo(); document.getElementById('play-trigger').innerText = "LIVE"; }
-    function pause() { player.pauseVideo(); document.getElementById('play-trigger').innerText = "PLAY"; }
-    function next() { idx = (idx + 1) % playlist.length; changeSkin(); player.loadVideoById(playlist[idx].id); }
-    function prev() { idx = (idx - 1 + playlist.length) % playlist.length; changeSkin(); player.loadVideoById(playlist[idx].id); }
+        // Luzes para dar o clima do palco (Vermelho e Amarelo Neon)
+        const pointLight1 = new THREE.PointLight(0xff0000, 2, 50);
+        pointLight1.position.set(5, 5, 5);
+        scene.add(pointLight1);
 
-    function updateSyncDisplay() {
-        document.getElementById('now-playing').innerText = `${playlist[idx].b} - ${playlist[idx].t}`;
-    }
+        const pointLight2 = new THREE.PointLight(0xffcc00, 1, 50);
+        pointLight2.position.set(-5, -5, 5);
+        scene.add(pointLight2);
 
-    function changeSkin() {
-        const s = skins[Math.floor(Math.random() * skins.length)];
-        document.documentElement.style.setProperty('--neon-color', s.c);
-        document.documentElement.style.setProperty('--glass-bg', s.g);
-        document.documentElement.style.setProperty('--border-color', s.b);
-    }
+        camera.position.z = 5;
 
-    var tag = document.createElement('script'); 
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-</script>
+        // Loop de Animação - Física em Movimento
+        function animate() {
+            requestAnimationFrame(animate);
+            cube.rotation.x += 0.005;
+            cube.rotation.y += 0.005;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Ajuste de Tela Automático para não bugar os múltiplos
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
 </body>
 </html>
