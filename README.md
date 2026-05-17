@@ -12,14 +12,14 @@
     
     <style>
         :root {
-            --bg-dark: #0c0714;          
+            --bg-dark: #07030a;          
             --purple-neon: #8a2be2;      
-            --moss-green: #1e3f20;       
+            --moss-green: #1a0f2e;       
             --green-neon: #39ff14;       
             --white-pure: #ffffff;       
             --accent-yellow: #ffcc00;    
-            --moss-blue: #008080;        /* Azul Musgo / Petróleo Industrial */
-            --panel-bg: rgba(15, 5, 25, 0.9);
+            --moss-blue: #008080;        
+            --panel-bg: rgba(10, 5, 20, 0.93);
             --cartoon-border: 4px solid #000000; 
         }
 
@@ -32,7 +32,7 @@
             overflow-x: hidden;
         }
 
-        /* Container da Skin 3D Cartoon */
+        /* Container da Skin 3D Heavy Metal */
         #canvas-3d-container {
             position: fixed;
             top: 0;
@@ -40,15 +40,15 @@
             width: 100vw;
             height: 100vh;
             z-index: -1;
-            background: radial-gradient(circle, #25104a 0%, #05020a 100%);
+            background: radial-gradient(circle, #1a0826 0%, #030105 100%);
         }
 
         header {
-            background: #140727;
+            background: #0f051c;
             padding: 2.5rem 2rem;
             text-align: center;
             border-bottom: 6px solid #000000; 
-            box-shadow: 0 6px 0 var(--moss-green);
+            box-shadow: 0 6px 0 #1f0b3a;
         }
 
         h1 {
@@ -62,7 +62,7 @@
 
         .subtitle {
             font-size: 0.95rem;
-            color: var(--green-neon);
+            color: var(--purple-neon);
             text-transform: uppercase;
             letter-spacing: 5px;
             margin-top: 0.7rem;
@@ -98,14 +98,14 @@
             line-height: 1.7;
             font-size: 1.1rem;
             color: #dcd6e8;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.5);
             padding: 1rem;
             border-left: 4px solid var(--purple-neon);
         }
 
-        /* Painel Central do Player de Stream */
+        /* Painel Central do Transmissor */
         .live-player-panel {
-            background: #1e3f20; 
+            background: #140824; 
             border: var(--cartoon-border);
             padding: 2rem;
             text-align: center;
@@ -126,7 +126,7 @@
             text-shadow: 2px 2px 0px #000;
         }
 
-        /* Display Digital de 8 Segmentos (Branco) */
+        /* Display Digital de 8 Segmentos */
         .segment-display-8 {
             font-family: 'Fira Code', monospace;
             font-size: 1.6rem;
@@ -152,7 +152,6 @@
             margin-top: 1rem;
         }
 
-        /* Botão Principal com canais arredondados (estilo cápsula) */
         .main-play-btn {
             background: var(--purple-neon);
             border: var(--cartoon-border);
@@ -165,11 +164,11 @@
             box-shadow: 4px 4px 0px #000;
             transition: transform 0.1s ease, box-shadow 0.1s ease;
             text-transform: uppercase;
-            border-radius: 50px; /* Arredondamento completo dos cantos */
+            border-radius: 50px; 
         }
 
         .main-play-btn:hover {
-            background: var(--green-neon);
+            background: var(--white-pure);
             color: #000;
             transform: translate(-2px, -2px);
             box-shadow: 6px 6px 0px #000;
@@ -180,7 +179,7 @@
             box-shadow: 2px 2px 0px #000;
         }
 
-        /* Lista da Setlist Integrada */
+        /* Grid de Frequências */
         .station-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -207,7 +206,7 @@
 
         .station-card.active-station {
             background: #25123e;
-            border-color: var(--green-neon);
+            border-color: var(--purple-neon);
             box-shadow: 5px 5px 0px var(--purple-neon);
         }
 
@@ -220,7 +219,7 @@
 
         .station-info .station-genre {
             font-size: 0.85rem;
-            color: var(--green-neon);
+            color: #a59cb5;
             margin-top: 0.3rem;
             text-transform: uppercase;
             font-weight: bold;
@@ -239,7 +238,6 @@
             text-shadow: 2px 2px 0px #000;
         }
 
-        /* Tags para Meta-dados da música abaixo da sintonia */
         .now-playing-meta {
             font-size: 0.8rem;
             color: var(--white-pure);
@@ -252,7 +250,6 @@
             word-wrap: break-word;
         }
 
-        /* Classes de Sílabas Coloridas */
         .s-sin { color: #ffcc00; } 
         .s-to { color: #bf55ec; }  
         .s-ni { color: #ffffff; }  
@@ -260,7 +257,7 @@
         .s-do { color: #ff4500; }  
 
         .guidance-highlight {
-            color: var(--moss-blue);
+            color: var(--purple-neon);
             font-weight: bold;
         }
 
@@ -344,7 +341,7 @@
         }
 
         .btc-ad-btn:hover {
-            background: var(--green-neon);
+            background: var(--white-pure);
             transform: translate(-1px, -1px);
             box-shadow: 4px 4px 0px #000;
         }
@@ -390,7 +387,7 @@
 </head>
 <body>
 
-    <!-- Skin 3D de Fundo -->
+    <!-- Skin 3D de Fundo (Caveira Heavy Metal) -->
     <div id="canvas-3d-container"></div>
 
     <header>
@@ -642,7 +639,7 @@
                 audioPlayer.src = ""; 
                 isPlaying = false;
                 playBtn.innerText = "LIGAR_SINAL";
-                playBtn.style.backgroundColor = "var(--moss-green)";
+                playBtn.style.backgroundColor = "#2a1545";
                 display.innerText = "SINAL EM SUCÇÃO (STANDBY)";
                 stopHifenStrobe(); 
                 stopBitDisplay();
@@ -650,7 +647,7 @@
         }
 
         // ==========================================================
-        // RENDERIZADOR 3D: NO TOROIDAL CARTOON / GIBI (CEL SHADING)
+        // RENDERIZADOR 3D: CAVEIRA HEAVY METAL PROCEDURAL (CEL SHADING)
         // ==========================================================
         const container = document.getElementById('canvas-3d-container');
         const scene = new THREE.Scene();
@@ -660,73 +657,121 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         container.appendChild(renderer.domElement);
 
+        // Configuração do mapa de gradiente para Cel Shading / Gibi Core
         const format = (renderer.capabilities.isWebGL2) ? THREE.RedFormat : THREE.LuminanceFormat;
-        const colorsColors = new Uint8Array([0, 0, 0, 120, 120, 120, 255, 255, 255]);
+        const colorsColors = new Uint8Array([0, 0, 0, 100, 100, 100, 255, 255, 255]);
         const gradientMap = new THREE.DataTexture(colorsColors, 3, 1, format);
         gradientMap.needsUpdate = true;
 
-        const geometry = new THREE.TorusKnotGeometry(1.5, 0.45, 120, 14);
-        
-        const cartoonMaterial = new THREE.MeshToonMaterial({ 
-            color: 0x8a2be2, 
+        const metalMaterial = new THREE.MeshToonMaterial({ 
+            color: 0x5a4f7c, 
             gradientMap: gradientMap
         });
-        
-        const meshIndustrial = new THREE.Mesh(geometry, cartoonMaterial);
-        scene.add(meshIndustrial);
-
+        const darkMaterial = new THREE.MeshToonMaterial({ color: 0x11081c, gradientMap: gradientMap });
         const outlineMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.BackSide });
-        const outlineMesh = new THREE.Mesh(geometry, outlineMaterial);
-        outlineMesh.scale.multiplyScalar(1.05); 
-        meshIndustrial.add(outlineMesh);
 
-        const dirLight1 = new THREE.DirectionalLight(0xffffff, 2.5);
-        dirLight1.position.set(5, 5, 5);
+        // Grupo principal da Caveira
+        const skullGroup = new THREE.Group();
+
+        function createThickMesh(geometry, material) {
+            const mesh = new THREE.Mesh(geometry, material);
+            const outlineMesh = new THREE.Mesh(geometry, outlineMaterial);
+            outlineMesh.scale.multiplyScalar(1.06);
+            mesh.add(outlineMesh);
+            return mesh;
+        }
+
+        // 1. Caixa Craniana (Crânio Superior)
+        const craniumGeo = new THREE.SphereGeometry(1.4, 32, 32);
+        craniumGeo.scale(1, 1.15, 1);
+        const cranium = createThickMesh(craniumGeo, metalMaterial);
+        cranium.position.y = 0.3;
+        skullGroup.add(cranium);
+
+        // 2. Cavidades Oculares (Olhos)
+        const eyeGeo = new THREE.SphereGeometry(0.35, 16, 16);
+        const leftEye = createThickMesh(eyeGeo, darkMaterial);
+        leftEye.position.set(-0.45, 0.3, 1.1);
+        const rightEye = createThickMesh(eyeGeo, darkMaterial);
+        rightEye.position.set(0.45, 0.3, 1.1);
+        skullGroup.add(leftEye, rightEye);
+
+        // 3. Cavidade Nasal (Nariz)
+        const noseGeo = new THREE.ConeGeometry(0.2, 0.4, 4);
+        noseGeo.rotateX(Math.PI);
+        const nose = createThickMesh(noseGeo, darkMaterial);
+        nose.position.set(0, -0.05, 1.25);
+        nose.scale.set(1, 1, 0.4);
+        skullGroup.add(nose);
+
+        // 4. Maxilar Superior e Dentes
+        const jawUpperGeo = new THREE.BoxGeometry(0.9, 0.4, 0.8);
+        const jawUpper = createThickMesh(jawUpperGeo, metalMaterial);
+        jawUpper.position.set(0, -0.4, 0.8);
+        skullGroup.add(jawUpper);
+
+        for (let i = -3; i <= 3; i++) {
+            const toothGeo = new THREE.BoxGeometry(0.07, 0.12, 0.1);
+            const tooth = createThickMesh(toothGeo, new THREE.MeshBasicMaterial({ color: 0xffffff }));
+            tooth.position.set(i * 0.11, -0.58, 1.15);
+            skullGroup.add(tooth);
+        }
+
+        // 5. Mandíbula Inferior Móvel (Sinal de Heavy Metal)
+        const jawLowerGroup = new THREE.Group();
+        const jawLowerGeo = new THREE.BoxGeometry(0.8, 0.3, 0.7);
+        const jawLowerMesh = createThickMesh(jawLowerGeo, metalMaterial);
+        jawLowerMesh.position.set(0, -0.15, 0.2);
+        jawLowerGroup.add(jawLowerMesh);
+
+        for (let i = -2; i <= 2; i++) {
+            const toothGeo = new THREE.BoxGeometry(0.07, 0.12, 0.1);
+            const tooth = createThickMesh(toothGeo, new THREE.MeshBasicMaterial({ color: 0xffffff }));
+            tooth.position.set(i * 0.12, 0.02, 0.5);
+            jawLowerGroup.add(tooth);
+        }
+        jawLowerGroup.position.set(0, -0.65, 0.6);
+        skullGroup.add(jawLowerGroup);
+
+        scene.add(skullGroup);
+
+        // Iluminação de Palco Industrial
+        const dirLight1 = new THREE.DirectionalLight(0xffffff, 2.2);
+        dirLight1.position.set(6, 6, 6);
         scene.add(dirLight1);
 
-        const dirLight2 = new THREE.DirectionalLight(0x1e3f20, 1.5);
-        dirLight2.position.set(-5, -5, 2);
+        const dirLight2 = new THREE.DirectionalLight(0x8a2be2, 1.8);
+        dirLight2.position.set(-6, -2, 4);
         scene.add(dirLight2);
 
-        camera.position.z = 5.2;
-
-        const cartoonPalettes = [
-            { main: 0x8a2be2, bgLight: 0x39ff14 }, 
-            { main: 0xffcc00, bgLight: 0xff4500 }, 
-            { main: 0x00bfff, bgLight: 0xff00ff }, 
-            { main: 0x39ff14, bgLight: 0x000000 }  
-        ];
-        let currentPaletteIdx = 0;
-
-        setInterval(() => {
-            currentPaletteIdx = (currentPaletteIdx + 1) % cartoonPalettes.length;
-            const currentPal = cartoonPalettes[currentPaletteIdx];
-            
-            cartoonMaterial.color.setHex(currentPal.main);
-            dirLight2.color.setHex(currentPal.bgLight);
-        }, 3000);
+        camera.position.z = 5.0;
 
         function animate() {
             requestAnimationFrame(animate);
             
             if (analyser && isPlaying) {
                 analyser.getByteFrequencyData(dataArray);
-                let bassValue = dataArray[3] / 255;
-                let trebleValue = dataArray[14] / 255;
+                let bass = dataArray[2] / 255;
+                let treble = dataArray[12] / 255;
                 
-                let scaleFactor = 1 + (bassValue * 0.45);
-                meshIndustrial.scale.set(scaleFactor, scaleFactor, scaleFactor);
+                // Pulsação estrutural com os graves do Heavy Metal
+                let scaleFactor = 1 + (bass * 0.25);
+                skullGroup.scale.set(scaleFactor, scaleFactor, scaleFactor);
                 
-                meshIndustrial.rotation.x += 0.008 + (trebleValue * 0.06);
-                meshIndustrial.rotation.y += 0.01 + (bassValue * 0.04);
+                // Rotação agressiva
+                skullGroup.rotation.x = Math.sin(Date.now() * 0.001) * 0.15 + (treble * 0.1);
+                skullGroup.rotation.y += 0.012 + (bass * 0.03);
                 
-                let outlineFactor = 1.03 + (trebleValue * 0.06);
-                outlineMesh.scale.set(outlineFactor, outlineFactor, outlineFactor);
+                // Articulação Real da Mandíbula Inferior conforme o som
+                jawLowerGroup.position.y = -0.65 - (bass * 0.35);
             } else {
-                meshIndustrial.rotation.x += 0.004;
-                meshIndustrial.rotation.y += 0.005;
-                meshIndustrial.scale.set(1, 1, 1);
-                outlineMesh.scale.set(1.04, 1.04, 1.04);
+                // Animação flutuante em standby
+                let time = Date.now() * 0.001;
+                skullGroup.rotation.x = Math.sin(time) * 0.1;
+                skullGroup.rotation.y += 0.006;
+                skullGroup.position.y = Math.sin(time * 1.5) * 0.08;
+                skullGroup.scale.set(1, 1, 1);
+                jawLowerGroup.position.y = -0.65;
             }
 
             renderer.render(scene, camera);
