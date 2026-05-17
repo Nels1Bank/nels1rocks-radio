@@ -222,10 +222,30 @@
             font-weight: bold;
         }
 
+        .select-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+
         .select-indicator {
             font-size: 1rem;
             font-weight: bold;
             text-shadow: 2px 2px 0px #000;
+        }
+
+        /* Novas tags para Meta-dados da música abaixo da sintonia */
+        .now-playing-meta {
+            font-size: 0.8rem;
+            color: var(--white-pure);
+            font-weight: normal;
+            text-shadow: 1px 1px 0px #000;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: right;
+            max-width: 250px;
+            word-wrap: break-word;
         }
 
         /* Classes de Sílabas Coloridas */
@@ -342,6 +362,13 @@
                 padding-bottom: 4px;
                 width: 100%;
             }
+            .select-panel {
+                align-items: center;
+                margin-top: 1rem;
+            }
+            .now-playing-meta {
+                text-align: center;
+            }
         }
 
         footer {
@@ -398,8 +425,11 @@
                         <div class="station-title">Frequência 01 - Pure Metal Live</div>
                         <div class="station-genre">Estilo: Heavy, Thrash & Death</div>
                     </div>
-                    <div class="select-indicator" id="ind-0">
-                        <span class="s-sin">SIN</span><span class="s-to">TO</span><span class="s-ni">NI</span><span class="s-za">ZA</span><span class="s-do">DO</span><span class="blink-char" id="char-0">_</span>
+                    <div class="select-panel">
+                        <div class="select-indicator" id="ind-0">
+                            <span class="s-sin">SIN</span><span class="s-to">TO</span><span class="s-ni">NI</span><span class="s-za">ZA</span><span class="s-do">DO</span><span class="blink-char" id="char-0">_</span>
+                        </div>
+                        <div class="now-playing-meta" id="meta-0">Tripalium - Karma Mecânico</div>
                     </div>
                 </div>
 
@@ -409,7 +439,10 @@
                         <div class="station-title">Frequência 02 - Rock Classics Digital</div>
                         <div class="station-genre">Estilo: Classic Rock & Grunge</div>
                     </div>
-                    <div class="select-indicator" id="ind-1" style="color: #ff4500;">CONECTAR<span class="blink-char" id="char-1">_</span></div>
+                    <div class="select-panel">
+                        <div class="select-indicator" id="ind-1" style="color: #ff4500;">CONECTAR<span class="blink-char" id="char-1">_</span></div>
+                        <div class="now-playing-meta" id="meta-1" style="display: none;">Black Sabbath - Iron Man</div>
+                    </div>
                 </div>
 
                 <!-- Frequência 03 -->
@@ -418,7 +451,10 @@
                         <div class="station-title">Frequência 03 - Industrial & Prog Core</div>
                         <div class="station-genre">Estilo: Industrial, Prog & Djent</div>
                     </div>
-                    <div class="select-indicator" id="ind-2" style="color: #ff4500;">CONECTAR<span class="blink-char" id="char-2">_</span></div>
+                    <div class="select-panel">
+                        <div class="select-indicator" id="ind-2" style="color: #ff4500;">CONECTAR<span class="blink-char" id="char-2">_</span></div>
+                        <div class="now-playing-meta" id="meta-2" style="display: none;">Nine Inch Nails - Closer</div>
+                    </div>
                 </div>
 
             </div>
@@ -432,7 +468,7 @@
             <div class="btc-ticker-art">₿</div>
             <div class="btc-ad-text">
                 <h4 class="btc-ad-title">21 Milhões. Sem Bypass.</h4>
-                <p class="btc-ad-desc">Proteja seu poder de compra na camada zero da matemática digital. Escassez absoluta auditada por nós.</p>
+                <p class="btc-ad-desc">Proteja seu power de compra na camada zero da matemática digital. Escassez absoluta auditada por nós.</p>
             </div>
             <button class="btc-ad-btn" onclick="window.open('https://bitcoin.org', '_blank')">Ver Node</button>
         </div>
@@ -447,6 +483,13 @@
             "https://stream.screamer-radio.com/metal_high",
             "https://listen.radiorock.fi/rock_128.mp3",
             "https://icecast.omroep.nl/3fm-alternatief-mp3"
+        ];
+
+        // Banco de faixas simulado para exibir quando sintonizado
+        const trackMeta = [
+            "Tripalium - Karma Mecânico",
+            "Black Sabbath - Iron Man",
+            "Nine Inch Nails - Closer"
         ];
 
         let currentStationIndex = 0;
@@ -492,10 +535,19 @@
             
             document.querySelectorAll('.station-card').forEach((card, idx) => {
                 card.classList.remove('active-station');
+                const metaElement = document.getElementById(`meta-${idx}`);
+                
                 if (idx === index) {
                     document.getElementById(`ind-${idx}`).innerHTML = `${sintonizadoHTML}<span class="blink-char" id="char-${idx}">_</span>`;
+                    if (metaElement) {
+                        metaElement.style.display = "block";
+                        metaElement.innerText = trackMeta[idx];
+                    }
                 } else {
                     document.getElementById(`ind-${idx}`).innerHTML = `CONECTAR<span class="blink-char" id="char-${idx}">_</span>`;
+                    if (metaElement) {
+                        metaElement.style.display = "none";
+                    }
                 }
             });
 
