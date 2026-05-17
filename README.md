@@ -141,6 +141,12 @@
             margin-top: 0.2rem;
         }
 
+        .controls-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
         .play-btn {
             background: transparent;
             border: 1px solid var(--accent-color);
@@ -159,11 +165,31 @@
             box-shadow: 0 0 10px var(--accent-color);
         }
 
+        /* Botão estilizado para upload de arquivo */
+        .upload-label {
+            border: 1px dashed #666;
+            color: #888;
+            padding: 0.5rem 0.8rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: bold;
+        }
+
+        .upload-label:hover {
+            border-color: var(--accent-yellow);
+            color: var(--accent-yellow);
+        }
+
+        .file-input {
+            display: none;
+        }
+
         footer {
             text-align: center;
             padding: 2rem;
             font-size: 0.8rem;
-            color: #666;
+            color: #444;
             border-top: 1px solid var(--industrial-grey);
         }
     </style>
@@ -200,21 +226,33 @@
                                 <div class="title">1. The Front Line</div>
                                 <div class="desc">Abertura com distorção microfonada e bumbo duplo isolado.</div>
                             </div>
-                            <button class="play-btn" onclick="playTrack('The Front Line')">RUN_</button>
+                            <div class="controls-group">
+                                <label class="upload-label" for="file-1">CARREGAR_MP3</label>
+                                <input type="file" id="file-1" class="file-input" accept="audio/mp3" onchange="loadLocalFile(event, 'The Front Line')">
+                                <button class="play-btn" id="btn-The-Front-Line" onclick="playTrack('The Front Line')">RUN_</button>
+                            </div>
                         </li>
                         <li class="track-item">
                             <div class="track-info">
                                 <div class="title">2. Evening Tide</div>
-                                <div class="desc">Linhas de baixo pesadas quebrando o misticismo analítico.</div>
+                                <div class="desc">Linhas de baixo pesadas quebrando o misticismo do carimbo.</div>
                             </div>
-                            <button class="play-btn" onclick="playTrack('Evening Tide')">RUN_</button>
+                            <div class="controls-group">
+                                <label class="upload-label" for="file-2">CARREGAR_MP3</label>
+                                <input type="file" id="file-2" class="file-input" accept="audio/mp3" onchange="loadLocalFile(event, 'Evening Tide')">
+                                <button class="play-btn" id="btn-Evening-Tide" onclick="playTrack('Evening Tide')">RUN_</button>
+                            </div>
                         </li>
                         <li class="track-item">
                             <div class="track-info">
                                 <div class="title">3. Falls Like Rain</div>
                                 <div class="desc">Aceleração mecânica rasgando a maquete de segurança.</div>
                             </div>
-                            <button class="play-btn" onclick="playTrack('Falls Like Rain')">RUN_</button>
+                            <div class="controls-group">
+                                <label class="upload-label" for="file-3">CARREGAR_MP3</label>
+                                <input type="file" id="file-3" class="file-input" accept="audio/mp3" onchange="loadLocalFile(event, 'Falls Like Rain')">
+                                <button class="play-btn" id="btn-Falls-Like-Rain" onclick="playTrack('Falls Like Rain')">RUN_</button>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -228,14 +266,22 @@
                                 <div class="title">4. Life Amongst Strangers</div>
                                 <div class="desc">O hino soberano de quem assiste à legião de anestesiados da varanda.</div>
                             </div>
-                            <button class="play-btn" onclick="playTrack('Life Amongst Strangers')">RUN_</button>
+                            <div class="controls-group">
+                                <label class="upload-label" for="file-4">CARREGAR_MP3</label>
+                                <input type="file" id="file-4" class="file-input" accept="audio/mp3" onchange="loadLocalFile(event, 'Life Amongst Strangers')">
+                                <button class="play-btn" id="btn-Life-Amongst-Strangers" onclick="playTrack('Life Amongst Strangers')">RUN_</button>
+                            </div>
                         </li>
                         <li class="track-item">
                             <div class="track-info">
                                 <div class="title">5. The Downfall of the Birdwatcher</div>
                                 <div class="desc">O estouro da Singularidade do Bug em riffs jorgonescos implacáveis.</div>
                             </div>
-                            <button class="play-btn" onclick="playTrack('The Downfall of the Birdwatcher')">RUN_</button>
+                            <div class="controls-group">
+                                <label class="upload-label" for="file-5">CARREGAR_MP3</label>
+                                <input type="file" id="file-5" class="file-input" accept="audio/mp3" onchange="loadLocalFile(event, 'The Downfall of the Birdwatcher')">
+                                <button class="play-btn" id="btn-The-Downfall-of-the-Birdwatcher" onclick="playTrack('The Downfall of the Birdwatcher')">RUN_</button>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -245,76 +291,104 @@
     </main>
 
     <footer>
-        <p>Guidance Live Asset © 2026 // Desenvolvido na física pura sem interferência burocrática.</p>
+        <p>Nels1Bank & Guidance Live Asset © 2026 // Desenvolvido na física pura sem carimbo burocrático.</p>
     </footer>
-
-    <!-- Elemento invisível de áudio nativo para garantir a execução forçada -->
-    <audio id="global-audio-player" preload="auto"></textarea>
 
     <script>
         // ==========================================================
-        // 1. ENGINE DE ÁUDIO REFEITA - ULTRA STABLE MOTOR COR FIX
+        // 1. MOTOR DE ÁUDIO INDUSTRIAL COM INJEÇÃO LOCAL SOBERANA
         // ==========================================================
         const trackDatabase = {
-            'The Front Line': 'https://archive.org/download/mythology_202102/01.%20The%20Front%20Line.mp3',
-            'Evening Tide': 'https://archive.org/download/mythology_202102/02.%20Evening%20Tide.mp3',
-            'Falls Like Rain': 'https://archive.org/download/mythology_202102/03.%20Falls%20Like%20Rain.mp3',
-            'Life Amongst Strangers': 'https://archive.org/download/mythology_202102/04.%20Life%20Alongst%20Strangers.mp3',
-            'The Downfall of the Birdwatcher': 'https://archive.org/download/mythology_202102/05.%20The%20Downfall%20of%20the%20Birdwatcher.mp3'
+            'The Front Line': { blobUrl: null },
+            'Evening Tide': { blobUrl: null },
+            'Falls Like Rain': { blobUrl: null },
+            'Life Amongst Strangers': { blobUrl: null },
+            'The Downfall of the Birdwatcher': { blobUrl: null }
         };
 
-        const nativePlayer = document.getElementById('global-audio-player');
+        let audioContext;
+        let analyser;
+        let source;
+        const audioPlayer = new Audio();
         let currentTrackName = "";
 
+        // Função que intercepta o arquivo local do computador e gera uma rota de memória interna (Blob)
+        function loadLocalFile(event, trackName) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Transforma o arquivo do seu HD em um endereço temporário interno do navegador
+            const objectURL = URL.createObjectURL(file);
+            trackDatabase[trackName].blobUrl = objectURL;
+
+            // Atualiza o visual do botão de upload correspondente para avisar que o lombo tá pronto
+            const label = event.target.previousElementSibling;
+            label.innerText = "PRONTO_";
+            label.style.borderColor = "var(--accent-color)";
+            label.style.color = "var(--accent-color)";
+            console.log("Arquivo injetado com sucesso para a faixa: " + trackName);
+        }
+
         function playTrack(trackName) {
-            const trackUrl = trackDatabase[trackName];
-            if (!trackUrl) return;
+            const track = trackDatabase[trackName];
+            
+            // Se tentar dar RUN_ sem ter carregado um arquivo local antes, avisa o operador
+            if (!track || !track.blobUrl) {
+                alert("Aviso do Sistema: Clique primeiro em 'CARREGAR_MP3' para injetar a faixa local do seu computador!");
+                return;
+            }
+
+            // Ativa o barramento de áudio no primeiro clique real
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 64; 
+                source = audioContext.createMediaElementSource(audioPlayer);
+                source.connect(analyser);
+                analyser.connect(audioContext.destination);
+            }
+
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
 
             const clickedBtn = event.target;
-
-            // Se clicar na mesma música que já está rodando: alterna Play/Pause
+            
             if (currentTrackName === trackName) {
-                if (nativePlayer.paused) {
-                    nativePlayer.play();
+                if (audioPlayer.paused) {
+                    audioPlayer.play();
                     clickedBtn.innerText = "STOP_";
                     clickedBtn.style.backgroundColor = "var(--accent-yellow)";
                     clickedBtn.style.color = "#000";
                 } else {
-                    nativePlayer.pause();
+                    audioPlayer.pause();
                     clickedBtn.innerText = "RUN_";
                     clickedBtn.style.backgroundColor = "transparent";
                     clickedBtn.style.color = "var(--accent-color)";
                 }
             } else {
-                // Reseta os estados visuais de todos os botões da tela
+                // Limpa os estados dos outros botões na mesa
                 document.querySelectorAll('.play-btn').forEach(btn => {
                     btn.innerText = "RUN_";
                     btn.style.backgroundColor = "transparent";
                     btn.style.color = "var(--accent-color)";
                 });
 
-                // Injeta o link e força a reprodução ignorando restrições do motor do browser
-                currentTrackName = trackName;
-                nativePlayer.src = trackUrl;
-                nativePlayer.load();
-                
-                // Força o play ignorando bloqueios assíncronos
-                const playPromise = nativePlayer.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
+                // Dispara o arquivo local injetado via Blob (Segurança total contra CORS)
+                audioPlayer.src = track.blobUrl;
+                audioPlayer.play()
+                    .then(() => {
+                        currentTrackName = trackName;
                         clickedBtn.innerText = "STOP_";
                         clickedBtn.style.backgroundColor = "var(--accent-color)";
                         clickedBtn.style.color = "#fff";
-                    }).catch(error => {
-                        console.log("Ajustando barramento para execução forçada...");
-                        nativePlayer.play();
-                    });
-                }
+                    })
+                    .catch(err => console.log("Erro na execução direta: ", err));
             }
         }
 
         // ==========================================================
-        // 2. RENDERIZADOR GRÁFICO GRUNGE 3D (THREE.JS)
+        // 2. RENDERIZADOR GRÁFICO GRUNGE 3D & VISUALIZER (THREE.JS)
         // ==========================================================
         const container = document.getElementById('canvas-3d-container');
         const scene = new THREE.Scene();
@@ -346,17 +420,26 @@
 
         camera.position.z = 5;
 
-        // Loop contínuo de animação - Movimento constante no refúgio
+        // Array de buffer para capturar os decibéis em tempo real
+        const dataArray = new Uint8Array(32);
+
+        // Loop contínuo de animação - A física dos dados moldando a skin
         function animate() {
             requestAnimationFrame(animate);
             
-            // Movimento reativo autônomo baseado no status do player nativo
-            if (!nativePlayer.paused) {
-                meshIndustrial.rotation.x += 0.04;
-                meshIndustrial.rotation.y += 0.04;
-                meshIndustrial.scale.set(1.15, 1.15, 1.15);
-                redLight.intensity = 4;
+            // Se a música estiver ativa e o visualizer operacional, deforma a estrutura 3D
+            if (analyser && !audioPlayer.paused) {
+                analyser.getByteFrequencyData(dataArray);
+                
+                let bassFrequency = dataArray[2] / 255; 
+                
+                meshIndustrial.scale.set(1 + bassFrequency, 1 + bassFrequency, 1 + bassFrequency);
+                meshIndustrial.rotation.x += 0.01 + (bassFrequency * 0.04);
+                meshIndustrial.rotation.y += 0.01 + (bassFrequency * 0.04);
+                
+                redLight.intensity = 2 + (dataArray[12] / 40);
             } else {
+                // Rotação cadenciada de repouso se estiver pausado ou esperando input
                 meshIndustrial.rotation.x += 0.003;
                 meshIndustrial.rotation.y += 0.003;
                 meshIndustrial.scale.set(1, 1, 1);
@@ -367,7 +450,7 @@
         }
         animate();
 
-        // Listener responsivo para reajustar a proporção do canvas
+        // Listener responsivo para reajustar a tela e não bugar a proporção do canvas
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
