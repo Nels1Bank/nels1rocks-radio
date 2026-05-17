@@ -244,6 +244,106 @@
             transition: color 0.1s ease;
         }
 
+        /* Container Adsense Customizado (Bitcoin) */
+        .adsense-btc-container {
+            max-width: 850px;
+            margin: 0 auto 3rem auto;
+            padding: 1rem;
+            background: #130a1d;
+            border: var(--cartoon-border);
+            box-shadow: 6px 6px 0px #000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            box-sizing: border-box;
+        }
+
+        .adsense-label {
+            font-size: 0.65rem;
+            color: #6a5a80;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            border-left: 2px solid #331a4a;
+            padding-left: 4px;
+        }
+
+        .adsense-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .btc-ticker-art {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--accent-yellow);
+            text-shadow: 3px 3px 0px #000;
+            background: #000;
+            padding: 0.4rem 1rem;
+            border: 2px dashed var(--accent-yellow);
+        }
+
+        .btc-ad-text {
+            flex-grow: 1;
+        }
+
+        .btc-ad-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--white-pure);
+            margin: 0 0 0.2rem 0;
+            text-transform: uppercase;
+        }
+
+        .btc-ad-desc {
+            font-size: 0.8rem;
+            color: #a59cb5;
+            margin: 0;
+        }
+
+        .btc-ad-btn {
+            background: #ff9900;
+            color: #000;
+            border: 3px solid #000;
+            font-family: 'Fira Code', monospace;
+            font-weight: bold;
+            font-size: 0.9rem;
+            padding: 0.6rem 1.2rem;
+            cursor: pointer;
+            box-shadow: 3px 3px 0px #000;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .btc-ad-btn:hover {
+            background: var(--green-neon);
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px #000;
+        }
+
+        @media (max-width: 600px) {
+            .adsense-btc-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            .adsense-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .adsense-label {
+                writing-mode: horizontal-tb;
+                transform: none;
+                border-left: none;
+                border-bottom: 2px solid #331a4a;
+                padding-bottom: 4px;
+                width: 100%;
+            }
+        }
+
         footer {
             text-align: center;
             padding: 2.5rem;
@@ -264,7 +364,7 @@
 
     <header>
         <h1>NELS1ROCKS</h1>
-        <div class="subtitle">Singularidade da Música 🎶</div> <!-- Atualizado aqui -->
+        <div class="subtitle">Singularidade da Música 🎶</div>
     </header>
 
     <main>
@@ -324,6 +424,19 @@
             </div>
         </section>
     </main>
+
+    <!-- BLOCO ADSENSE: BITCOIN HARD MONEY CORE -->
+    <div class="adsense-btc-container">
+        <div class="adsense-label">Anúncio</div>
+        <div class="adsense-content">
+            <div class="btc-ticker-art">₿</div>
+            <div class="btc-ad-text">
+                <h4 class="btc-ad-title">21 Milhões. Sem Bypass.</h4>
+                <p class="btc-ad-desc">Proteja seu poder de compra na camada zero da matemática digital. Escassez absoluta auditada por nós.</p>
+            </div>
+            <button class="btc-ad-btn" onclick="window.open('https://bitcoin.org', '_blank')">Ver Node</button>
+        </div>
+    </div>
 
     <footer>
         <p><span class="guidance-highlight">Guidance Live Asset</span> © 2026 // Arquitetura sônica estruturada na física pura.</p>
