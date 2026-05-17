@@ -264,7 +264,7 @@
 
     <header>
         <h1>NELS1ROCKS</h1>
-        <div class="subtitle">Singularidade do Bug // Múltiplos Maravilhosos</div>
+        <div class="subtitle">Singularidade da Música 🎶</div> <!-- Atualizado aqui -->
     </header>
 
     <main>
@@ -443,7 +443,7 @@
                         isPlaying = true;
                         playBtn.innerText = "DESLIGAR_";
                         led.classList.add('active');
-                        display.innerText = "SINGULARIDADE SONORA"; /* Atualizado aqui */
+                        display.innerText = "SINGULARIDADE SONORA"; 
                         startHifenStrobe();
                     });
 
