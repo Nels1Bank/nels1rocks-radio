@@ -18,7 +18,7 @@
             --green-neon: #39ff14;       
             --white-pure: #ffffff;       
             --accent-yellow: #ffcc00;    
-            --moss-blue: #008080;        /* Azul Musgo / Petróleo Industrial adicionado */
+            --moss-blue: #008080;        /* Azul Musgo / Petróleo Industrial */
             --panel-bg: rgba(15, 5, 25, 0.9);
             --cartoon-border: 4px solid #000000; 
         }
@@ -235,7 +235,6 @@
         .s-za { color: #00bfff; }  
         .s-do { color: #ff4500; }  
 
-        /* Classe para isolar e colorir o Asset no rodapé */
         .guidance-highlight {
             color: var(--moss-blue);
             font-weight: bold;
@@ -444,7 +443,7 @@
                         isPlaying = true;
                         playBtn.innerText = "DESLIGAR_";
                         led.classList.add('active');
-                        display.innerText = "ROTA DE CONTINGÊNCIA ATIVA";
+                        display.innerText = "SINGULARIDADE SONORA"; /* Atualizado aqui */
                         startHifenStrobe();
                     });
 
