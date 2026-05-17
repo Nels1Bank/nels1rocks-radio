@@ -118,7 +118,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 15px;
             font-weight: bold;
             font-size: 1.2rem;
             margin-bottom: 1.5rem;
@@ -126,24 +126,26 @@
             text-shadow: 2px 2px 0px #000;
         }
 
-        .status-led {
-            width: 14px;
-            height: 14px;
-            background-color: #333;
-            border: 2px solid #000;
-            border-radius: 50%;
+        /* Novo Display Digital de 8 Segmentos (Branco) */
+        .segment-display-8 {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #221435; /* Cor de fundo apagada dos segmentos */
+            background: #000000;
+            padding: 0.2rem 0.7rem;
+            border: 2px solid #000000;
+            box-shadow: inset 0px 0px 8px rgba(0,0,0,0.8);
+            min-width: 20px;
+            display: inline-block;
+            line-height: 1;
+            letter-spacing: 0;
+            transition: all 0.1s ease;
         }
 
-        .status-led.active {
-            background-color: var(--green-neon);
-            box-shadow: 0 0 0px #000;
-            animation: pulseLed 1s infinite;
-        }
-
-        @keyframes pulseLed {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); background-color: #ffcc00; }
-            100% { transform: scale(1); }
+        .segment-display-8.active-bit {
+            color: var(--white-pure);
+            text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.8), 0px 0px 20px rgba(255, 255, 255, 0.5);
         }
 
         .master-controls {
@@ -235,7 +237,7 @@
             text-shadow: 2px 2px 0px #000;
         }
 
-        /* Novas tags para Meta-dados da música abaixo da sintonia */
+        /* Tags para Meta-dados da música abaixo da sintonia */
         .now-playing-meta {
             font-size: 0.8rem;
             color: var(--white-pure);
@@ -406,7 +408,8 @@
             <!-- Painel de Controle Principal -->
             <div class="live-player-panel">
                 <div class="stream-status">
-                    <div class="status-led" id="live-led"></div>
+                    <!-- Novo Display de 8 Segmentos substituindo o LED tradicional -->
+                    <div class="segment-display-8" id="bit-display">0</div>
                     <span id="track-display">SINAL EM SUCÇÃO (STANDBY)</span>
                 </div>
                 
@@ -485,7 +488,6 @@
             "https://icecast.omroep.nl/3fm-alternatief-mp3"
         ];
 
-        // Banco de faixas simulado para exibir quando sintonizado
         const trackMeta = [
             "Tripalium - Karma Mecânico",
             "Black Sabbath - Iron Man",
@@ -503,10 +505,34 @@
         let isPlaying = false;
         
         let blinkIntervalId = null;
+        let bitIntervalId = null; // Intervalo para o display binário
         const strobeColors = ['#ffcc00', '#8a2be2', '#ffffff', '#00bfff', '#ff4500']; 
         let colorCounter = 0;
+        let currentBit = 0;
 
         const sintonizadoHTML = `<span class="s-sin">SIN</span><span class="s-to">TO</span><span class="s-ni">NI</span><span class="s-za">ZA</span><span class="s-do">DO</span>`;
+
+        // Função que controla a pulsação binária (0 e 1) em branco puro
+        function startBitDisplay() {
+            const bitDisplay = document.getElementById('bit-display');
+            bitDisplay.classList.add('active-bit');
+            
+            if (bitIntervalId) clearInterval(bitIntervalId);
+            bitIntervalId = setInterval(() => {
+                currentBit = currentBit === 0 ? 1 : 0;
+                bitDisplay.innerText = currentBit;
+            }, 500); // Alterna a cada 500ms
+        }
+
+        function stopBitDisplay() {
+            if (bitIntervalId) {
+                clearInterval(bitIntervalId);
+                bitIntervalId = null;
+            }
+            const bitDisplay = document.getElementById('bit-display');
+            bitDisplay.classList.remove('active-bit');
+            bitDisplay.innerText = "0"; // Reseta para zero em standby (apagado)
+        }
 
         function startHifenStrobe() {
             if (blinkIntervalId) clearInterval(blinkIntervalId);
@@ -570,7 +596,6 @@
 
         function toggleStream() {
             const playBtn = document.getElementById('master-play-btn');
-            const led = document.getElementById('live-led');
             const display = document.getElementById('track-display');
 
             if (!isPlaying) {
@@ -598,18 +623,18 @@
                         isPlaying = true;
                         playBtn.innerText = "DESLIGAR_";
                         playBtn.style.backgroundColor = "var(--purple-neon)";
-                        led.classList.add('active');
                         display.innerText = "SINAL EM TEMPO REAL [ONLINE]";
                         startHifenStrobe(); 
+                        startBitDisplay();
                     })
                     .catch(err => {
                         audioPlayer.src = "https://stream.rockantenne.de/heavy-metal/stream/mp3";
                         audioPlayer.play();
                         isPlaying = true;
                         playBtn.innerText = "DESLIGAR_";
-                        led.classList.add('active');
                         display.innerText = "SINGULARIDADE SONORA"; 
                         startHifenStrobe();
+                        startBitDisplay();
                     });
 
             } else {
@@ -618,9 +643,9 @@
                 isPlaying = false;
                 playBtn.innerText = "LIGAR_SINAL";
                 playBtn.style.backgroundColor = "var(--moss-green)";
-                led.classList.remove('active');
                 display.innerText = "SINAL EM SUCÇÃO (STANDBY)";
                 stopHifenStrobe(); 
+                stopBitDisplay();
             }
         }
 
