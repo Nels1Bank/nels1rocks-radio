@@ -182,8 +182,8 @@
     </header>
 
     <main>
-        <section id="backstage">
-            <h2>[BACKSTAGE]</h2>
+        <section id="estudio">
+            <h2>[ESTÚDIO AUTORAL]</h2>
             <p>Independência mental, cauda longa e distorção analógica. Blindado contra o transe coletivo do asfalto e operando na frequência invisível do refúgio.</p>
         </section>
 
@@ -250,7 +250,7 @@
 
     <script>
         // ==========================================================
-        // 1. BANCO DE DADOS DE ÁUDIO & BYPASS CORS ATUALIZADO
+        // 1. BANCO DE DADOS DE ÁUDIO & CONEXÃO ESTÁVEL SINAL ABERTO
         // ==========================================================
         const trackDatabase = {
             'The Front Line': {
@@ -266,7 +266,7 @@
                 desc: 'Aceleração mecânica rasgando a maquete de segurança.'
             },
             'Life Amongst Strangers': {
-                url: 'https://archive.org/download/mythology_202102/04.%20Life%20Amongst%20Strangers.mp3',
+                url: 'https://archive.org/download/mythology_202102/04.%20Life%20Alongst%20Strangers.mp3',
                 desc: 'O hino soberano de quem assiste à legião de anestesiados da varanda.'
             },
             'The Downfall of the Birdwatcher': {
@@ -279,30 +279,35 @@
         let analyser;
         let source;
         const audioPlayer = new Audio();
-        audioPlayer.crossOrigin = "anonymous"; // Força o bypass do carimbo CORS nos links abertos
+        audioPlayer.crossOrigin = "anonymous"; 
         let currentTrackName = "";
+        let isVisualizerBroken = false; // Flag para o Safe Mode de contingência do som
 
         function playTrack(trackName) {
             const track = trackDatabase[trackName];
             if (!track) return;
 
-            // Ativa o pipeline de áudio nativo no primeiro input do usuário (Física do DOM)
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                analyser = audioContext.createAnalyser();
-                analyser.fftSize = 64; // Tamanho do buffer de frequência para tempo de resposta bruto
-                source = audioContext.createMediaElementSource(audioPlayer);
-                source.connect(analyser);
-                analyser.connect(audioContext.destination);
+            // Inicialização blindada contra bloqueio de arquivo local
+            if (!audioContext && !isVisualizerBroken) {
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    analyser = audioContext.createAnalyser();
+                    analyser.fftSize = 64;
+                    source = audioContext.createMediaElementSource(audioPlayer);
+                    source.connect(analyser);
+                    analyser.connect(audioContext.destination);
+                } catch (e) {
+                    console.log("Safe Mode Ativado: O navegador bloqueou o visualizer, tocando áudio em linha direta.");
+                    isVisualizerBroken = true;
+                }
             }
 
-            if (audioContext.state === 'suspended') {
+            if (audioContext && audioContext.state === 'suspended') {
                 audioContext.resume();
             }
 
             const clickedBtn = event.target;
             
-            // Se clicar na mesma música que já está rodando: alterna Play/Pause
             if (currentTrackName === trackName) {
                 if (audioPlayer.paused) {
                     audioPlayer.play();
@@ -316,14 +321,14 @@
                     clickedBtn.style.color = "var(--accent-color)";
                 }
             } else {
-                // Reseta os estados visuais dos botões de controle das outras faixas
+                // Reseta os estados visuais dos botões
                 document.querySelectorAll('.play-btn').forEach(btn => {
                     btn.innerText = "RUN_";
                     btn.style.backgroundColor = "transparent";
                     btn.style.color = "var(--accent-color)";
                 });
 
-                // Carrega e dispara a nova pedrada do Archive
+                // Carrega a pedrada direto do fluxo estável
                 audioPlayer.src = track.url;
                 audioPlayer.play()
                     .then(() => {
@@ -331,9 +336,17 @@
                         clickedBtn.innerText = "STOP_";
                         clickedBtn.style.backgroundColor = "var(--accent-color)";
                         clickedBtn.style.color = "#fff";
-                        console.log("Tripalium Engine injetada: " + trackName);
                     })
-                    .catch(err => console.log("Erro no barramento de áudio: ", err));
+                    .catch(err => {
+                        console.log("Tentando rota direta de segurança sem visualizer...");
+                        // Força a reprodução direta se a malha do analisador falhar
+                        audioPlayer.src = track.url;
+                        audioPlayer.play();
+                        currentTrackName = trackName;
+                        clickedBtn.innerText = "STOP_";
+                        clickedBtn.style.backgroundColor = "var(--accent-color)";
+                        clickedBtn.style.color = "#fff";
+                    });
             }
         }
 
@@ -377,22 +390,19 @@
         function animate() {
             requestAnimationFrame(animate);
             
-            // Se a música estiver ativa, extrai a frequência e deforma a estrutura 3D
-            if (analyser && !audioPlayer.paused) {
+            // Se a música estiver ativa e o visualizer operacional, deforma a estrutura 3D
+            if (analyser && !audioPlayer.paused && !isVisualizerBroken) {
                 analyser.getByteFrequencyData(dataArray);
                 
-                // Monitora as frequências de sub-grave (bumbos e linhas de baixo pesadas)
                 let bassFrequency = dataArray[2] / 255; 
                 
-                // Modula a escala do objeto diretamente pela pressão dos graves
                 meshIndustrial.scale.set(1 + bassFrequency, 1 + bassFrequency, 1 + bassFrequency);
                 meshIndustrial.rotation.x += 0.01 + (bassFrequency * 0.04);
                 meshIndustrial.rotation.y += 0.01 + (bassFrequency * 0.04);
                 
-                // Intensidade do estrobo acompanha a saturação dos agudos (guitarras)
                 redLight.intensity = 2 + (dataArray[12] / 40);
             } else {
-                // Rotação cadenciada de repouso (Estado de espera no refúgio)
+                // Rotação cadenciada de repouso se estiver pausado ou em safe-mode
                 meshIndustrial.rotation.x += 0.003;
                 meshIndustrial.rotation.y += 0.003;
                 meshIndustrial.scale.set(1, 1, 1);
