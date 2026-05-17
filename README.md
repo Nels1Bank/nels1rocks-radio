@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nels1Rocks | Rádio Digital</title>
+    <title>Nels1Rocks | Rádio Gibi Digital</title>
     
     <!-- Google Fonts para Tipografia Industrial/Metal -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,13 +12,15 @@
     
     <style>
         :root {
-            --bg-dark: #0a0512;          /* Roxo ultra escuro de fundo */
-            --purple-neon: #8a2be2;      /* Roxo Neon principal */
-            --moss-green: #1e3f20;       /* Verde Musgo Escuro de estrutura */
-            --green-neon: #39ff14;       /* Verde ativo reativo */
-            --white-pure: #ffffff;       /* Branco para textos legíveis */
-            --accent-yellow: #ffcc00;    /* Amarelo industrial */
-            --panel-bg: rgba(20, 10, 30, 0.85);
+            --bg-dark: #0c0714;          
+            --purple-neon: #8a2be2;      
+            --moss-green: #1e3f20;       
+            --green-neon: #39ff14;       
+            --white-pure: #ffffff;       
+            --accent-yellow: #ffcc00;    
+            --moss-blue: #008080;        /* Azul Musgo / Petróleo Industrial adicionado */
+            --panel-bg: rgba(15, 5, 25, 0.9);
+            --cartoon-border: 4px solid #000000; 
         }
 
         body {
@@ -30,7 +32,7 @@
             overflow-x: hidden;
         }
 
-        /* Container da Skin 3D */
+        /* Container da Skin 3D Cartoon */
         #canvas-3d-container {
             position: fixed;
             top: 0;
@@ -38,15 +40,15 @@
             width: 100vw;
             height: 100vh;
             z-index: -1;
-            background: radial-gradient(circle, #1c0a35 0%, #05020a 100%);
+            background: radial-gradient(circle, #25104a 0%, #05020a 100%);
         }
 
         header {
-            background: linear-gradient(180deg, rgba(14, 5, 26, 0.95) 0%, rgba(0,0,0,0) 100%);
+            background: #140727;
             padding: 2.5rem 2rem;
             text-align: center;
-            border-bottom: 4px solid var(--moss-green);
-            box-shadow: 0 4px 20px rgba(138, 43, 226, 0.3);
+            border-bottom: 6px solid #000000; 
+            box-shadow: 0 6px 0 var(--moss-green);
         }
 
         h1 {
@@ -54,7 +56,7 @@
             font-size: 4.5rem;
             color: var(--white-pure);
             margin: 0;
-            text-shadow: 3px 3px 0px var(--purple-neon), -2px -2px 0px var(--moss-green);
+            text-shadow: 4px 4px 0px #000000, 8px 8px 0px var(--purple-neon);
             letter-spacing: 3px;
         }
 
@@ -65,6 +67,7 @@
             letter-spacing: 5px;
             margin-top: 0.7rem;
             font-weight: bold;
+            text-shadow: 2px 2px 0px #000;
         }
 
         main {
@@ -72,10 +75,9 @@
             margin: 3rem auto;
             padding: 2.5rem;
             background: var(--panel-bg);
-            border: 3px solid var(--moss-green);
-            box-shadow: 0 0 30px rgba(138, 43, 226, 0.2);
-            backdrop-filter: blur(6px);
-            border-radius: 8px;
+            border: var(--cartoon-border);
+            box-shadow: 8px 8px 0px #000000; 
+            border-radius: 0px; 
         }
 
         section {
@@ -86,26 +88,30 @@
             font-family: 'Metal Mania', cursive;
             font-size: 2.3rem;
             color: var(--white-pure);
-            border-bottom: 2px solid var(--purple-neon);
+            border-bottom: 4px solid #000000;
             padding-bottom: 0.5rem;
             text-transform: uppercase;
+            text-shadow: 2px 2px 0px var(--purple-neon);
         }
 
         p {
             line-height: 1.7;
             font-size: 1.1rem;
             color: #dcd6e8;
+            background: rgba(0,0,0,0.4);
+            padding: 1rem;
+            border-left: 4px solid var(--purple-neon);
         }
 
         /* Painel Central do Player de Stream */
         .live-player-panel {
-            background: rgba(30, 63, 32, 0.3); 
-            border: 2px solid var(--purple-neon);
+            background: #1e3f20; 
+            border: var(--cartoon-border);
             padding: 2rem;
-            border-radius: 6px;
             text-align: center;
             margin-top: 2rem;
             position: relative;
+            box-shadow: 5px 5px 0px #000000;
         }
 
         .stream-status {
@@ -117,26 +123,27 @@
             font-size: 1.2rem;
             margin-bottom: 1.5rem;
             color: var(--white-pure);
+            text-shadow: 2px 2px 0px #000;
         }
 
         .status-led {
-            width: 12px;
-            height: 12px;
-            background-color: #555;
+            width: 14px;
+            height: 14px;
+            background-color: #333;
+            border: 2px solid #000;
             border-radius: 50%;
-            transition: all 0.3s ease;
         }
 
         .status-led.active {
             background-color: var(--green-neon);
-            box-shadow: 0 0 12px var(--green-neon);
-            animation: pulseLed 1.5s infinite;
+            box-shadow: 0 0 0px #000;
+            animation: pulseLed 1s infinite;
         }
 
         @keyframes pulseLed {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); background-color: #ffcc00; }
+            100% { transform: scale(1); }
         }
 
         .master-controls {
@@ -144,64 +151,67 @@
         }
 
         .main-play-btn {
-            background: var(--moss-green);
-            border: 2px solid var(--white-pure);
+            background: var(--purple-neon);
+            border: var(--cartoon-border);
             color: var(--white-pure);
             font-family: 'Fira Code', monospace;
             font-size: 1.4rem;
             font-weight: bold;
             padding: 1rem 3rem;
             cursor: pointer;
-            box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
-            transition: all 0.3s ease;
+            box-shadow: 4px 4px 0px #000;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
             text-transform: uppercase;
         }
 
         .main-play-btn:hover {
-            background: var(--purple-neon);
-            border-color: var(--green-neon);
-            box-shadow: 0 0 25px var(--purple-neon);
-            transform: scale(1.05);
+            background: var(--green-neon);
+            color: #000;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px #000;
+        }
+
+        .main-play-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #000;
         }
 
         /* Lista da Setlist Integrada */
         .station-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 1rem;
+            gap: 1.2rem;
             margin-top: 1.5rem;
         }
 
         .station-card {
-            background: rgba(14, 5, 26, 0.7);
-            border-left: 6px solid var(--moss-green);
-            border-right: 1px solid rgba(255,255,255,0.1);
-            border-top: 1px solid rgba(255,255,255,0.1);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: #0e051a;
+            border: var(--cartoon-border);
+            box-shadow: 4px 4px 0px #000;
             padding: 1.2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.2s ease;
             cursor: pointer;
         }
 
         .station-card:hover {
-            border-left-color: var(--purple-neon);
-            background: rgba(30, 63, 32, 0.2);
-            transform: translateX(4px);
+            background: #190a2e;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px #000;
         }
 
         .station-card.active-station {
-            border-left-color: var(--green-neon);
-            background: rgba(138, 43, 226, 0.15);
-            box-shadow: inset 0 0 10px rgba(138, 43, 226, 0.3);
+            background: #25123e;
+            border-color: var(--green-neon);
+            box-shadow: 5px 5px 0px var(--purple-neon);
         }
 
         .station-info .station-title {
             font-size: 1.2rem;
             font-weight: bold;
             color: var(--white-pure);
+            text-shadow: 1px 1px 0px #000;
         }
 
         .station-info .station-genre {
@@ -209,24 +219,27 @@
             color: var(--green-neon);
             margin-top: 0.3rem;
             text-transform: uppercase;
-        }
-
-        .select-indicator {
-            font-size: 0.9rem;
-            color: var(--purple-neon);
             font-weight: bold;
         }
 
-        .active-station .select-indicator {
-            color: var(--green-neon);
+        .select-indicator {
+            font-size: 1rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 0px #000;
         }
 
         /* Classes de Sílabas Coloridas */
-        .s-sin { color: #ffcc00; } /* Amarelo */
-        .s-to { color: #8a2be2; }  /* Roxo */
-        .s-ni { color: #ffffff; }  /* Branco */
-        .s-za { color: #00bfff; }  /* Azul */
-        .s-do { color: #ff4500; }  /* Laranja */
+        .s-sin { color: #ffcc00; } 
+        .s-to { color: #bf55ec; }  
+        .s-ni { color: #ffffff; }  
+        .s-za { color: #00bfff; }  
+        .s-do { color: #ff4500; }  
+
+        /* Classe para isolar e colorir o Asset no rodapé */
+        .guidance-highlight {
+            color: var(--moss-blue);
+            font-weight: bold;
+        }
 
         .blink-char {
             transition: color 0.1s ease;
@@ -237,7 +250,7 @@
             padding: 2.5rem;
             font-size: 0.85rem;
             color: #6a5a80;
-            border-top: 2px solid var(--moss-green);
+            border-top: 6px solid #000000;
             background: #06030b;
         }
     </style>
@@ -257,8 +270,8 @@
 
     <main>
         <section id="estudio">
-            <h2>[ESTÚDIO AUTORAL]</h2>
-            <p>Independência mental, cauda longa e distorção analógica. Operando na frequência invisível do refúgio sônico com conexões diretas via satélite de rede.</p>
+            <h2>[ESTÚDIO GIBI CORE]</h2>
+            <p>Independência mental, linhas pretas expressivas e distorção saturada. Operando o console de quadrinhos diretamente do refúgio anti-burocrático.</p>
         </section>
 
         <section id="radio-core">
@@ -277,10 +290,10 @@
             </div>
 
             <!-- Setlist Integrada de Streams -->
-            <h3 style="margin-top: 2.5rem; color: var(--green-neon);">SETLIST DE FREQUÊNCIAS</h3>
+            <h3 style="margin-top: 2.5rem; color: var(--accent-yellow); text-shadow: 2px 2px 0px #000;">SETLIST DE FREQUÊNCIAS</h3>
             <div class="station-grid">
                 
-                <!-- Frequência 01 (Inicia pré-sintonizada mas sem dar play automático) -->
+                <!-- Frequência 01 -->
                 <div class="station-card active-station" onclick="selectStation(0, 'STREAM PRINCIPAL: HEAVY METAL')">
                     <div class="station-info">
                         <div class="station-title">Frequência 01 - Pure Metal Live</div>
@@ -297,7 +310,7 @@
                         <div class="station-title">Frequência 02 - Rock Classics Digital</div>
                         <div class="station-genre">Estilo: Classic Rock & Grunge</div>
                     </div>
-                    <div class="select-indicator" id="ind-1">CONECTAR<span class="blink-char" id="char-1">_</span></div>
+                    <div class="select-indicator" id="ind-1" style="color: #ff4500;">CONECTAR<span class="blink-char" id="char-1">_</span></div>
                 </div>
 
                 <!-- Frequência 03 -->
@@ -306,7 +319,7 @@
                         <div class="station-title">Frequência 03 - Industrial & Prog Core</div>
                         <div class="station-genre">Estilo: Industrial, Prog & Djent</div>
                     </div>
-                    <div class="select-indicator" id="ind-2">CONECTAR<span class="blink-char" id="char-2">_</span></div>
+                    <div class="select-indicator" id="ind-2" style="color: #ff4500;">CONECTAR<span class="blink-char" id="char-2">_</span></div>
                 </div>
 
             </div>
@@ -314,11 +327,10 @@
     </main>
 
     <footer>
-        <p>Nels1Bank & Guidance Live Asset © 2026 // Arquitetura sônica estruturada na física pura.</p>
+        <p><span class="guidance-highlight">Guidance Live Asset</span> © 2026 // Arquitetura sônica estruturada na física pura.</p>
     </footer>
 
     <script>
-        // Roteamentos de API Globais
         const realApis = [
             "https://stream.screamer-radio.com/metal_high",
             "https://listen.radiorock.fi/rock_128.mp3",
@@ -335,17 +347,14 @@
         const dataArray = new Uint8Array(32);
         let isPlaying = false;
         
-        // Sequenciador de cores do _
         let blinkIntervalId = null;
-        const strobeColors = ['#8a2be2', '#ffcc00', '#39ff14', '#ffffff']; 
+        const strobeColors = ['#ffcc00', '#8a2be2', '#ffffff', '#00bfff', '#ff4500']; 
         let colorCounter = 0;
 
-        // String HTML injetada para montar a palavra com as divisões exatas solicitadas
         const sintonizadoHTML = `<span class="s-sin">SIN</span><span class="s-to">TO</span><span class="s-ni">NI</span><span class="s-za">ZA</span><span class="s-do">DO</span>`;
 
         function startHifenStrobe() {
             if (blinkIntervalId) clearInterval(blinkIntervalId);
-            
             blinkIntervalId = setInterval(() => {
                 const activeChar = document.getElementById(`char-${currentStationIndex}`);
                 if (activeChar) {
@@ -360,9 +369,8 @@
                 clearInterval(blinkIntervalId);
                 blinkIntervalId = null;
             }
-            // Retorna o underscore para a cor neutra quando pausado
             document.querySelectorAll('.blink-char').forEach((char, idx) => {
-                char.style.color = (idx === currentStationIndex) ? 'var(--green-neon)' : 'var(--purple-neon)';
+                char.style.color = (idx === currentStationIndex) ? '#39ff14' : '#ff4500';
             });
         }
 
@@ -372,8 +380,6 @@
             
             document.querySelectorAll('.station-card').forEach((card, idx) => {
                 card.classList.remove('active-station');
-                
-                // Se for o índice selecionado, monta o SINTONIZADO colorido, senão volta para CONECTAR comum
                 if (idx === index) {
                     document.getElementById(`ind-${idx}`).innerHTML = `${sintonizadoHTML}<span class="blink-char" id="char-${idx}">_</span>`;
                 } else {
@@ -391,7 +397,7 @@
                         document.getElementById('track-display').innerText = displayName + " [ONLINE]";
                         startHifenStrobe();
                     })
-                    .catch(err => console.log("Erro de transmutação de barramento: ", err));
+                    .catch(err => console.log("Erro no barramento: ", err));
             } else {
                 document.getElementById('track-display').innerText = "SINTONIA MODIFICADA - PRONTA PARA RODAR";
                 stopHifenStrobe();
@@ -413,7 +419,7 @@
                         source.connect(analyser);
                         analyser.connect(audioContext.destination);
                     } catch (e) {
-                        console.log("AudioContext rodando em barramento bypass.");
+                        console.log("AudioContext em bypass.");
                     }
                 }
 
@@ -430,9 +436,6 @@
                         playBtn.style.backgroundColor = "var(--purple-neon)";
                         led.classList.add('active');
                         display.innerText = "SINAL EM TEMPO REAL [ONLINE]";
-                        
-                        // Garante que o indicador atual mostre o layout silábico colorido antes do strobe
-                        document.getElementById(`ind-${currentStationIndex}`).innerHTML = `${sintonizadoHTML}<span class="blink-char" id="char-${currentStationIndex}">_</span>`;
                         startHifenStrobe(); 
                     })
                     .catch(err => {
@@ -453,41 +456,66 @@
                 playBtn.style.backgroundColor = "var(--moss-green)";
                 led.classList.remove('active');
                 display.innerText = "SINAL EM SUCÇÃO (STANDBY)";
-                
                 stopHifenStrobe(); 
             }
         }
 
         // ==========================================================
-        // 2. SKIN 3D TEMÁTICA: TOROIDE RETORCIDO (THREE.JS)
+        // RENDERIZADOR 3D: NO TOROIDAL CARTOON / GIBI (CEL SHADING)
         // ==========================================================
         const container = document.getElementById('canvas-3d-container');
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         container.appendChild(renderer.domElement);
 
-        const geometry = new THREE.TorusKnotGeometry(1.6, 0.4, 100, 16);
-        const material = new THREE.MeshStandardMaterial({ 
-            color: 0xffffff, 
-            wireframe: true,
-            roughness: 0.3,
-            metalness: 0.8
+        const format = (renderer.capabilities.isWebGL2) ? THREE.RedFormat : THREE.LuminanceFormat;
+        const colorsColors = new Uint8Array([0, 0, 0, 120, 120, 120, 255, 255, 255]);
+        const gradientMap = new THREE.DataTexture(colorsColors, 3, 1, format);
+        gradientMap.needsUpdate = true;
+
+        const geometry = new THREE.TorusKnotGeometry(1.5, 0.45, 120, 14);
+        
+        const cartoonMaterial = new THREE.MeshToonMaterial({ 
+            color: 0x8a2be2, 
+            gradientMap: gradientMap
         });
-        const meshIndustrial = new THREE.Mesh(geometry, material);
+        
+        const meshIndustrial = new THREE.Mesh(geometry, cartoonMaterial);
         scene.add(meshIndustrial);
 
-        const purpleLight = new THREE.PointLight(0x8a2be2, 5, 60);
-        purpleLight.position.set(6, 6, 4);
-        scene.add(purpleLight);
+        const outlineMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.BackSide });
+        const outlineMesh = new THREE.Mesh(geometry, outlineMaterial);
+        outlineMesh.scale.multiplyScalar(1.05); 
+        meshIndustrial.add(outlineMesh);
 
-        const mossLight = new THREE.PointLight(0x39ff14, 3, 60);
-        mossLight.position.set(-6, -6, 4);
-        scene.add(mossLight);
+        const dirLight1 = new THREE.DirectionalLight(0xffffff, 2.5);
+        dirLight1.position.set(5, 5, 5);
+        scene.add(dirLight1);
 
-        camera.position.z = 5.5;
+        const dirLight2 = new THREE.DirectionalLight(0x1e3f20, 1.5);
+        dirLight2.position.set(-5, -5, 2);
+        scene.add(dirLight2);
+
+        camera.position.z = 5.2;
+
+        const cartoonPalettes = [
+            { main: 0x8a2be2, bgLight: 0x39ff14 }, 
+            { main: 0xffcc00, bgLight: 0xff4500 }, 
+            { main: 0x00bfff, bgLight: 0xff00ff }, 
+            { main: 0x39ff14, bgLight: 0x000000 }  
+        ];
+        let currentPaletteIdx = 0;
+
+        setInterval(() => {
+            currentPaletteIdx = (currentPaletteIdx + 1) % cartoonPalettes.length;
+            const currentPal = cartoonPalettes[currentPaletteIdx];
+            
+            cartoonMaterial.color.setHex(currentPal.main);
+            dirLight2.color.setHex(currentPal.bgLight);
+        }, 3000);
 
         function animate() {
             requestAnimationFrame(animate);
@@ -497,20 +525,19 @@
                 let bassValue = dataArray[3] / 255;
                 let trebleValue = dataArray[14] / 255;
                 
-                let scaleFactor = 1 + (bassValue * 0.35);
+                let scaleFactor = 1 + (bassValue * 0.45);
                 meshIndustrial.scale.set(scaleFactor, scaleFactor, scaleFactor);
                 
-                meshIndustrial.rotation.x += 0.005 + (trebleValue * 0.05);
-                meshIndustrial.rotation.y += 0.007 + (bassValue * 0.03);
+                meshIndustrial.rotation.x += 0.008 + (trebleValue * 0.06);
+                meshIndustrial.rotation.y += 0.01 + (bassValue * 0.04);
                 
-                purpleLight.intensity = 3 + (trebleValue * 7);
-                mossLight.intensity = 2 + (bassValue * 6);
+                let outlineFactor = 1.03 + (trebleValue * 0.06);
+                outlineMesh.scale.set(outlineFactor, outlineFactor, outlineFactor);
             } else {
-                meshIndustrial.rotation.x += 0.002;
-                meshIndustrial.rotation.y += 0.003;
+                meshIndustrial.rotation.x += 0.004;
+                meshIndustrial.rotation.y += 0.005;
                 meshIndustrial.scale.set(1, 1, 1);
-                purpleLight.intensity = 4;
-                mossLight.intensity = 1.5;
+                outlineMesh.scale.set(1.04, 1.04, 1.04);
             }
 
             renderer.render(scene, camera);
