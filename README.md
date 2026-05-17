@@ -182,8 +182,7 @@
     </header>
 
     <main>
-        <section id="backstage">
-            <h2>[BACKSTAGE]</h2>
+        <section id="manifesto">
             <p>Independência mental, cauda longa e distorção analógica. Blindado contra o transe coletivo do asfalto e operando na frequência invisível do refúgio.</p>
         </section>
 
