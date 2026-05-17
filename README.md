@@ -1,34 +1,35 @@
-
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nels1Rocks | Home of Tripalium</title>
+    <title>Nels1Rocks | Rádio Digital</title>
     
-    <!-- Google Fonts para a Tipografia Agressiva e Industrial -->
+    <!-- Google Fonts para Tipografia Industrial/Metal -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Fira+Code:wght@400;700&family=Metal+Mania&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Metal+Mania&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-color: #0d0d0d;
-            --text-color: #e0e0e0;
-            --accent-color: #ff0000;
-            --accent-yellow: #ffcc00;
-            --industrial-grey: #2a2a2a;
+            --bg-dark: #0a0512;          /* Roxo ultra escuro de fundo */
+            --purple-neon: #8a2be2;      /* Roxo Neon principal */
+            --moss-green: #1e3f20;       /* Verde Musgo Escuro de estrutura */
+            --green-neon: #39ff14;       /* Verde ativo reativo */
+            --white-pure: #ffffff;       /* Branco para textos legíveis */
+            --panel-bg: rgba(20, 10, 30, 0.85);
         }
 
         body {
             margin: 0;
             padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: var(--bg-dark);
+            color: var(--white-pure);
             font-family: 'Fira Code', monospace;
             overflow-x: hidden;
         }
 
-        /* Container para o Canvas 3D que roda o Three.js (Skin reativa de fundo) */
+        /* Container da Skin 3D */
         #canvas-3d-container {
             position: fixed;
             top: 0;
@@ -36,170 +37,205 @@
             width: 100vw;
             height: 100vh;
             z-index: -1;
-            background: radial-gradient(circle, #1a1a1a 0%, #050505 100%);
+            background: radial-gradient(circle, #1c0a35 0%, #05020a 100%);
         }
 
         header {
-            background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
-            padding: 2rem;
+            background: linear-gradient(180deg, rgba(14, 5, 26, 0.95) 0%, rgba(0,0,0,0) 100%);
+            padding: 2.5rem 2rem;
             text-align: center;
-            border-bottom: 3px solid var(--accent-color);
+            border-bottom: 4px solid var(--moss-green);
+            box-shadow: 0 4px 20px rgba(138, 43, 226, 0.3);
         }
 
         h1 {
             font-family: 'Metal Mania', cursive;
-            font-size: 4rem;
-            color: var(--accent-color);
+            font-size: 4.5rem;
+            color: var(--white-pure);
             margin: 0;
-            text-shadow: 3px 3px 0px var(--accent-yellow);
-            letter-spacing: 2px;
+            text-shadow: 3px 3px 0px var(--purple-neon), -2px -2px 0px var(--moss-green);
+            letter-spacing: 3px;
         }
 
         .subtitle {
-            font-size: 1rem;
-            color: var(--accent-yellow);
+            font-size: 0.95rem;
+            color: var(--green-neon);
             text-transform: uppercase;
-            letter-spacing: 4px;
-            margin-top: 0.5rem;
+            letter-spacing: 5px;
+            margin-top: 0.7rem;
+            font-weight: bold;
         }
 
         main {
-            max-width: 900px;
+            max-width: 850px;
             margin: 3rem auto;
-            padding: 2rem;
-            background: rgba(13, 13, 13, 0.85);
-            border: 2px solid var(--industrial-grey);
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
-            backdrop-filter: blur(5px);
-            border-radius: 4px;
+            padding: 2.5rem;
+            background: var(--panel-bg);
+            border: 3px solid var(--moss-green);
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.2);
+            backdrop-filter: blur(6px);
+            border-radius: 8px;
         }
 
         section {
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
         }
 
         h2 {
             font-family: 'Metal Mania', cursive;
-            font-size: 2.5rem;
-            color: var(--text-color);
-            border-bottom: 2px dashed var(--accent-color);
+            font-size: 2.3rem;
+            color: var(--white-pure);
+            border-bottom: 2px solid var(--purple-neon);
             padding-bottom: 0.5rem;
+            text-transform: uppercase;
         }
 
         p {
-            line-height: 1.6;
+            line-height: 1.7;
             font-size: 1.1rem;
+            color: #dcd6e8;
         }
 
-        /* Estilização do Painel de Setlist Industrial */
-        .setlist-container {
-            margin-top: 1.5rem;
+        /* Painel Central do Player de Stream */
+        .live-player-panel {
+            background: rgba(30, 63, 32, 0.3); /* Base Verde Musgo Transparente */
+            border: 2px solid var(--purple-neon);
+            padding: 2rem;
+            border-radius: 6px;
+            text-align: center;
+            margin-top: 2rem;
+            position: relative;
         }
 
-        .set-group {
-            margin-bottom: 2rem;
-        }
-
-        .set-title {
-            font-family: 'Creepster', system-ui;
-            font-size: 1.8rem;
-            color: var(--accent-yellow);
-            margin-bottom: 1rem;
-        }
-
-        .track-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .track-item {
-            background: rgba(42, 42, 42, 0.5);
-            margin-bottom: 0.8rem;
-            padding: 1rem;
-            border-left: 5px solid var(--accent-color);
+        .stream-status {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--white-pure);
+        }
+
+        .status-led {
+            width: 12px;
+            height: 12px;
+            background-color: #555;
+            border-radius: 50%;
             transition: all 0.3s ease;
         }
 
-        .track-item:hover {
-            background: rgba(255, 0, 0, 0.1);
-            border-left-color: var(--accent-yellow);
-            transform: translateX(5px);
+        .status-led.active {
+            background-color: var(--green-neon);
+            box-shadow: 0 0 12px var(--green-neon);
+            animation: pulseLed 1.5s infinite;
         }
 
-        .track-info .title {
+        @keyframes pulseLed {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        .master-controls {
+            margin-top: 1rem;
+        }
+
+        .main-play-btn {
+            background: var(--moss-green);
+            border: 2px solid var(--white-pure);
+            color: var(--white-pure);
+            font-family: 'Fira Code', monospace;
+            font-size: 1.4rem;
+            font-weight: bold;
+            padding: 1rem 3rem;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .main-play-btn:hover {
+            background: var(--purple-neon);
+            border-color: var(--green-neon);
+            box-shadow: 0 0 25px var(--purple-neon);
+            transform: scale(1.05);
+        }
+
+        /* Lista da Setlist Integrada (Grade de Estações Alternativas) */
+        .station-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .station-card {
+            background: rgba(14, 5, 26, 0.7);
+            border-left: 6px solid var(--moss-green);
+            border-right: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .station-card:hover {
+            border-left-color: var(--purple-neon);
+            background: rgba(30, 63, 32, 0.2);
+            transform: translateX(4px);
+        }
+
+        .station-card.active-station {
+            border-left-color: var(--green-neon);
+            background: rgba(138, 43, 226, 0.15);
+            box-shadow: inset 0 0 10px rgba(138, 43, 226, 0.3);
+        }
+
+        .station-info .station-title {
             font-size: 1.2rem;
             font-weight: bold;
-            color: #ffffff;
+            color: var(--white-pure);
         }
 
-        .track-info .desc {
+        .station-info .station-genre {
             font-size: 0.85rem;
-            color: #888;
-            margin-top: 0.2rem;
+            color: var(--green-neon);
+            margin-top: 0.3rem;
+            text-transform: uppercase;
         }
 
-        .controls-group {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .play-btn {
-            background: transparent;
-            border: 1px solid var(--accent-color);
-            color: var(--accent-color);
-            padding: 0.5rem 1rem;
-            cursor: pointer;
-            font-family: 'Fira Code', monospace;
-            font-weight: bold;
-            transition: all 0.2s ease;
-            min-width: 80px;
-        }
-
-        .play-btn:hover {
-            background: var(--accent-color);
-            color: #fff;
-            box-shadow: 0 0 10px var(--accent-color);
-        }
-
-        /* Botão estilizado para upload de arquivo */
-        .upload-label {
-            border: 1px dashed #666;
-            color: #888;
-            padding: 0.5rem 0.8rem;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
+        .select-indicator {
+            font-size: 0.9rem;
+            color: var(--purple-neon);
             font-weight: bold;
         }
 
-        .upload-label:hover {
-            border-color: var(--accent-yellow);
-            color: var(--accent-yellow);
-        }
-
-        .file-input {
-            display: none;
+        .active-station .select-indicator {
+            color: var(--green-neon);
         }
 
         footer {
             text-align: center;
-            padding: 2rem;
-            font-size: 0.8rem;
-            color: #444;
-            border-top: 1px solid var(--industrial-grey);
+            padding: 2.5rem;
+            font-size: 0.85rem;
+            color: #6a5a80;
+            border-top: 2px solid var(--moss-green);
+            background: #06030b;
         }
     </style>
 
-    <!-- Biblioteca 3D nativa (Three.js) via CDN de alta performance -->
+    <!-- Motor Gráfico 3D (Three.js) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
-    <!-- Target onde o motor gráfico vai renderizar a malha molecular reativa -->
+    <!-- Skin 3D de Fundo -->
     <div id="canvas-3d-container"></div>
 
     <header>
@@ -210,80 +246,53 @@
     <main>
         <section id="estudio">
             <h2>[ESTÚDIO AUTORAL]</h2>
-            <p>Independência mental, cauda longa e distorção analógica. Blindado contra o transe coletivo do asfalto e operando na frequência invisível do refúgio.</p>
+            <p>Independência mental, cauda longa e distorção analógica. Operando na frequência invisível do refúgio sônico com conexões diretas via satélite de rede.</p>
         </section>
 
-        <section id="setlist">
-            <h2>TRIPALIUM — LIVE 2026</h2>
-            <div class="setlist-container">
+        <section id="radio-core">
+            <h2>CONSOLE TRANSMISSOR</h2>
+            
+            <!-- Painel de Controle Principal -->
+            <div class="live-player-panel">
+                <div class="stream-status">
+                    <div class="status-led" id="live-led"></div>
+                    <span id="track-display">SINAL EM SUCÇÃO (STANDBY)</span>
+                </div>
                 
-                <!-- SET I -->
-                <div class="set-group">
-                    <div class="set-title">SET I: A Rampa de Entrada (Peso & Cadência)</div>
-                    <ul class="track-list">
-                        <li class="track-item">
-                            <div class="track-info">
-                                <div class="title">1. The Front Line</div>
-                                <div class="desc">Abertura com distorção microfonada e bumbo duplo isolado.</div>
-                            </div>
-                            <div class="controls-group">
-                                <label class="upload-label" for="file-1">CARREGAR_MP3</label>
-                                <input type="file" id="file-1" class="file-input" accept="audio/mp3" onchange="loadLocalFile(event, 'The Front Line')">
-                                <button class="play-btn" id="btn-The-Front-Line" onclick="playTrack('The Front Line')">RUN_</button>
-                            </div>
-                        </li>
-                        <li class="track-item">
-                            <div class="track-info">
-                                <div class="title">2. Evening Tide</div>
-                                <div class="desc">Linhas de baixo pesadas quebrando o misticismo do carimbo.</div>
-                            </div>
-                            <div class="controls-group">
-                                <label class="upload-label" for="file-2">CARREGAR_MP3</label>
-                                <input type="file" id="file-2" class="file-input" accept="audio/mp3" onchange="loadLocalFile(event, 'Evening Tide')">
-                                <button class="play-btn" id="btn-Evening-Tide" onclick="playTrack('Evening Tide')">RUN_</button>
-                            </div>
-                        </li>
-                        <li class="track-item">
-                            <div class="track-info">
-                                <div class="title">3. Falls Like Rain</div>
-                                <div class="desc">Aceleração mecânica rasgando a maquete de segurança.</div>
-                            </div>
-                            <div class="controls-group">
-                                <label class="upload-label" for="file-3">CARREGAR_MP3</label>
-                                <input type="file" id="file-3" class="file-input" accept="audio/mp3" onchange="loadLocalFile(event, 'Falls Like Rain')">
-                                <button class="play-btn" id="btn-Falls-Like-Rain" onclick="playTrack('Falls Like Rain')">RUN_</button>
-                            </div>
-                        </li>
-                    </ul>
+                <div class="master-controls">
+                    <button class="main-play-btn" id="master-play-btn" onclick="toggleStream()">LIGAR_SINAL</button>
+                </div>
+            </div>
+
+            <!-- Setlist Integrada de Streams da API Icecast/Shoutcast -->
+            <h3 style="margin-top: 2.5rem; color: var(--green-neon);">SETLIST DE FREQUÊNCIAS</h3>
+            <div class="station-grid">
+                
+                <!-- Rota 1: Heavy Metal Bruto -->
+                <div class="station-card active-station" onclick="selectStation(0, 'STREAM PRINCIPAL: HEAVY METAL')">
+                    <div class="station-info">
+                        <div class="station-title">Frequência 01 - Pure Metal Live</div>
+                        <div class="station-genre">Estilo: Heavy, Thrash & Death</div>
+                    </div>
+                    <div class="select-indicator" id="ind-0">SINTONIZADO_</div>
                 </div>
 
-                <!-- SET II -->
-                <div class="set-group">
-                    <div class="set-title">SET II: O Clímax (A Física dos Dados Sonoros)</div>
-                    <ul class="track-list">
-                        <li class="track-item">
-                            <div class="track-info">
-                                <div class="title">4. Life Amongst Strangers</div>
-                                <div class="desc">O hino soberano de quem assiste à legião de anestesiados da varanda.</div>
-                            </div>
-                            <div class="controls-group">
-                                <label class="upload-label" for="file-4">CARREGAR_MP3</label>
-                                <input type="file" id="file-4" class="file-input" accept="audio/mp3" onchange="loadLocalFile(event, 'Life Amongst Strangers')">
-                                <button class="play-btn" id="btn-Life-Amongst-Strangers" onclick="playTrack('Life Amongst Strangers')">RUN_</button>
-                            </div>
-                        </li>
-                        <li class="track-item">
-                            <div class="track-info">
-                                <div class="title">5. The Downfall of the Birdwatcher</div>
-                                <div class="desc">O estouro da Singularidade do Bug em riffs jorgonescos implacáveis.</div>
-                            </div>
-                            <div class="controls-group">
-                                <label class="upload-label" for="file-5">CARREGAR_MP3</label>
-                                <input type="file" id="file-5" class="file-input" accept="audio/mp3" onchange="loadLocalFile(event, 'The Downfall of the Birdwatcher')">
-                                <button class="play-btn" id="btn-The-Downfall-of-the-Birdwatcher" onclick="playTrack('The Downfall of the Birdwatcher')">RUN_</button>
-                            </div>
-                        </li>
-                    </ul>
+                <!-- Rota 2: Hard Rock & Grunge clássico -->
+                <div class="station-card" onclick="selectStation(1, 'STREAM SECUNDÁRIA: HARD ROCK')">
+                    <div class="station-info">
+                        <div class="station-title">Frequência 02 - Rock Classics Digital</div>
+                        <div class="station-genre">Estilo: Classic Rock & Grunge</div>
+                    </div>
+                    <div class="select-indicator" id="ind-1">CONECTAR_</div>
+                </div>
+
+                <!-- Rota 3: Metal Progressivo e Industrial -->
+                <div class="station-card" onclick="selectStation(2, 'STREAM TERCIÁRIA: INDUSTRIAL')">
+                    <div class="station-info">
+                        <div class="station-title">Frequência 03 - Industrial & Prog Core</div>
+                        <div class="station-genre">Estilo: Industrial, Prog & Djent</div>
+                    </div>
+                    <div class="select-indicator" id="ind-2">CONECTAR_</div>
                 </div>
 
             </div>
@@ -291,166 +300,194 @@
     </main>
 
     <footer>
-        <p>Nels1Bank & Guidance Live Asset © 2026 // Desenvolvido na física pura sem carimbo burocrático.</p>
+        <p>Nels1Bank & Guidance Live Asset © 2026 // Arquitetura sônica estruturada na física pura.</p>
     </footer>
 
     <script>
         // ==========================================================
-        // 1. MOTOR DE ÁUDIO INDUSTRIAL COM INJEÇÃO LOCAL SOBERANA
+        // 1. BANCO DE APIS DE STREAM DE RÁDIO PÚBLICAS (ICECAST/SHOUTCAST)
         // ==========================================================
-        const trackDatabase = {
-            'The Front Line': { blobUrl: null },
-            'Evening Tide': { blobUrl: null },
-            'Falls Like Rain': { blobUrl: null },
-            'Life Amongst Strangers': { blobUrl: null },
-            'The Downfall of the Birdwatcher': { blobUrl: null }
-        };
+        const apiStreams = [
+            "https://suasessao.com.br:8000/stream", // Mock de fallback seguro
+            "https://stream.rockantenne.de/heavy-metal/stream/mp3", // Rock Antenne Heavy Metal Stream
+            "https://wdr-1live-diid.cast.addradio.de/wdr/1live/diid/mp3/128/stream.mp3" // Alternativo/Rock Live Stream
+        ];
 
+        // Links alternativos estáveis e globais para garantir barramento limpo
+        const realApis = [
+            "https://stream.screamer-radio.com/metal_high",
+            "https://listen.radiorock.fi/rock_128.mp3",
+            "https://icecast.omroep.nl/3fm-alternatief-mp3"
+        ];
+
+        let currentStationIndex = 0;
+        const audioPlayer = new Audio();
+        audioPlayer.crossOrigin = "anonymous"; // Bypass de cabeçalho padrão de segurança
+        
         let audioContext;
         let analyser;
         let source;
-        const audioPlayer = new Audio();
-        let currentTrackName = "";
+        const dataArray = new Uint8Array(32);
+        let isPlaying = false;
 
-        // Função que intercepta o arquivo local do computador e gera uma rota de memória interna (Blob)
-        function loadLocalFile(event, trackName) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            // Transforma o arquivo do seu HD em um endereço temporário interno do navegador
-            const objectURL = URL.createObjectURL(file);
-            trackDatabase[trackName].blobUrl = objectURL;
-
-            // Atualiza o visual do botão de upload correspondente para avisar que o lombo tá pronto
-            const label = event.target.previousElementSibling;
-            label.innerText = "PRONTO_";
-            label.style.borderColor = "var(--accent-color)";
-            label.style.color = "var(--accent-color)";
-            console.log("Arquivo injetado com sucesso para a faixa: " + trackName);
-        }
-
-        function playTrack(trackName) {
-            const track = trackDatabase[trackName];
+        function selectStation(index, displayName) {
+            currentStationIndex = index;
             
-            // Se tentar dar RUN_ sem ter carregado um arquivo local antes, avisa o operador
-            if (!track || !track.blobUrl) {
-                alert("Aviso do Sistema: Clique primeiro em 'CARREGAR_MP3' para injetar a faixa local do seu computador!");
-                return;
-            }
+            // Reseta classes visuais da setlist
+            document.querySelectorAll('.station-card').forEach((card, idx) => {
+                card.classList.remove('active-station');
+                document.getElementById(`ind-${idx}`).innerText = "CONECTAR_";
+            });
 
-            // Ativa o barramento de áudio no primeiro clique real
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                analyser = audioContext.createAnalyser();
-                analyser.fftSize = 64; 
-                source = audioContext.createMediaElementSource(audioPlayer);
-                source.connect(analyser);
-                analyser.connect(audioContext.destination);
-            }
+            // Ativa o card selecionado
+            const cards = document.querySelectorAll('.station-card');
+            cards[index].classList.add('active-station');
+            document.getElementById(`ind-${index}`).innerText = "SINTONIZADO_";
 
-            if (audioContext.state === 'suspended') {
-                audioContext.resume();
-            }
-
-            const clickedBtn = event.target;
-            
-            if (currentTrackName === trackName) {
-                if (audioPlayer.paused) {
-                    audioPlayer.play();
-                    clickedBtn.innerText = "STOP_";
-                    clickedBtn.style.backgroundColor = "var(--accent-yellow)";
-                    clickedBtn.style.color = "#000";
-                } else {
-                    audioPlayer.pause();
-                    clickedBtn.innerText = "RUN_";
-                    clickedBtn.style.backgroundColor = "transparent";
-                    clickedBtn.style.color = "var(--accent-color)";
-                }
-            } else {
-                // Limpa os estados dos outros botões na mesa
-                document.querySelectorAll('.play-btn').forEach(btn => {
-                    btn.innerText = "RUN_";
-                    btn.style.backgroundColor = "transparent";
-                    btn.style.color = "var(--accent-color)";
-                });
-
-                // Dispara o arquivo local injetado via Blob (Segurança total contra CORS)
-                audioPlayer.src = track.blobUrl;
+            if (isPlaying) {
+                // Se a rádio já estiver tocando, transmuta o sinal imediatamente para a nova rota
+                audioPlayer.src = realApis[currentStationIndex];
                 audioPlayer.play()
                     .then(() => {
-                        currentTrackName = trackName;
-                        clickedBtn.innerText = "STOP_";
-                        clickedBtn.style.backgroundColor = "var(--accent-color)";
-                        clickedBtn.style.color = "#fff";
+                        document.getElementById('track-display').innerText = displayName + " [ONLINE]";
                     })
-                    .catch(err => console.log("Erro na execução direta: ", err));
+                    .catch(err => console.log("Erro de transmutação de barramento: ", err));
+            } else {
+                document.getElementById('track-display').innerText = "SINTONIA MODIFICADA - PRONTA PARA RODAR";
+            }
+        }
+
+        function toggleStream() {
+            const playBtn = document.getElementById('master-play-btn');
+            const led = document.getElementById('live-led');
+            const display = document.getElementById('track-display');
+
+            if (!isPlaying) {
+                // Inicialização do analisador de áudio nativo para alimentar a malha 3D
+                if (!audioContext) {
+                    try {
+                        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        analyser = audioContext.createAnalyser();
+                        analyser.fftSize = 64;
+                        source = audioContext.createMediaElementSource(audioPlayer);
+                        source.connect(analyser);
+                        analyser.connect(audioContext.destination);
+                    } catch (e) {
+                        console.log("AudioContext bloqueado ou não suportado em carregamento estático local, usando conexão direta.");
+                    }
+                }
+
+                if (audioContext && audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+
+                // Injeta a API selecionada direto no núcleo do player
+                audioPlayer.src = realApis[currentStationIndex];
+                
+                audioPlayer.play()
+                    .then(() => {
+                        isPlaying = true;
+                        playBtn.innerText = "DESLIGAR_";
+                        playBtn.style.backgroundColor = "var(--purple-neon)";
+                        led.classList.add('active');
+                        display.innerText = "SINAL EM TEMPO REAL [ONLINE]";
+                    })
+                    .catch(err => {
+                        console.log("Erro na API principal, tentando rota espelho...");
+                        // Rota de contingência rápida
+                        audioPlayer.src = "https://stream.rockantenne.de/heavy-metal/stream/mp3";
+                        audioPlayer.play();
+                        isPlaying = true;
+                        playBtn.innerText = "DESLIGAR_";
+                        led.classList.add('active');
+                        display.innerText = "ROTA DE CONTINGÊNCIA ATIVA";
+                    });
+
+            } else {
+                // Desliga o disjuntor da stream
+                audioPlayer.pause();
+                audioPlayer.src = ""; // Corta o consumo de banda de dados em background
+                isPlaying = false;
+                playBtn.innerText = "LIGAR_SINAL";
+                playBtn.style.backgroundColor = "var(--moss-green)";
+                led.classList.remove('active');
+                display.innerText = "SINAL EM SUCÇÃO (STANDBY)";
             }
         }
 
         // ==========================================================
-        // 2. RENDERIZADOR GRÁFICO GRUNGE 3D & VISUALIZER (THREE.JS)
+        // 2. SKIN 3D TEMÁTICA: TOROIDE RETORCIDO EM ROXO E VERDE MUSGO (THREE.JS)
         // ==========================================================
         const container = document.getElementById('canvas-3d-container');
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         
         renderer.setSize(window.innerWidth, window.innerHeight);
         container.appendChild(renderer.domElement);
 
-        // Geometria da carcaça industrial (Malha de metal estruturada em wireframe)
-        const geometry = new THREE.IcosahedronGeometry(2, 1);
+        // Geometria temática: Um nó toroidal que parece uma estrutura industrial orgânica
+        const geometry = new THREE.TorusKnotGeometry(1.6, 0.4, 100, 16);
+        
+        // Material baseado na paleta solicitada (Linhas brancas em estrutura de malha metálica)
         const material = new THREE.MeshStandardMaterial({ 
-            color: 0x222222, 
-            wireframe: true, 
-            roughness: 0.1,
-            metalness: 0.9
+            color: 0xffffff, 
+            wireframe: true,
+            roughness: 0.3,
+            metalness: 0.8
         });
         const meshIndustrial = new THREE.Mesh(geometry, material);
         scene.add(meshIndustrial);
 
-        // Iluminação estroboscópica de alta voltagem (Vermelho e Amarelo Neon)
-        const redLight = new THREE.PointLight(0xff0000, 2, 50);
-        redLight.position.set(5, 5, 5);
-        scene.add(redLight);
+        // Luz Roxo Neon vinda da parte superior direita
+        const purpleLight = new THREE.PointLight(0x8a2be2, 5, 60);
+        purpleLight.position.set(6, 6, 4);
+        scene.add(purpleLight);
 
-        const yellowLight = new THREE.PointLight(0xffcc00, 1, 50);
-        yellowLight.position.set(-5, -5, 5);
-        scene.add(yellowLight);
+        // Luz Verde Musgo Esturo/Neon cruzando por baixo à esquerda
+        const mossLight = new THREE.PointLight(0x39ff14, 3, 60);
+        mossLight.position.set(-6, -6, 4);
+        scene.add(mossLight);
 
-        camera.position.z = 5;
+        camera.position.z = 5.5;
 
-        // Array de buffer para capturar os decibéis em tempo real
-        const dataArray = new Uint8Array(32);
-
-        // Loop contínuo de animação - A física dos dados moldando a skin
+        // Loop de Animação Reativa à Frequência de Som Nativa
         function animate() {
             requestAnimationFrame(animate);
             
-            // Se a música estiver ativa e o visualizer operacional, deforma a estrutura 3D
-            if (analyser && !audioPlayer.paused) {
+            if (analyser && isPlaying) {
                 analyser.getByteFrequencyData(dataArray);
                 
-                let bassFrequency = dataArray[2] / 255; 
+                // Extrai pressão dos graves da rádio (bumbo, baixo pesado)
+                let bassValue = dataArray[3] / 255;
+                // Extrai pressão dos agudos (guitarras, pratos)
+                let trebleValue = dataArray[14] / 255;
                 
-                meshIndustrial.scale.set(1 + bassFrequency, 1 + bassFrequency, 1 + bassFrequency);
-                meshIndustrial.rotation.x += 0.01 + (bassFrequency * 0.04);
-                meshIndustrial.rotation.y += 0.01 + (bassFrequency * 0.04);
+                // O Toroide deforma, expande e distorce fisicamente com os graves da rede
+                let scaleFactor = 1 + (bassValue * 0.35);
+                meshIndustrial.scale.set(scaleFactor, scaleFactor, scaleFactor);
                 
-                redLight.intensity = 2 + (dataArray[12] / 40);
+                // A velocidade da rotação reage violentamente à intensidade das guitarras
+                meshIndustrial.rotation.x += 0.005 + (trebleValue * 0.05);
+                meshIndustrial.rotation.y += 0.007 + (bassValue * 0.03);
+                
+                // Estrobo de luzes acompanha a modulação harmônica
+                purpleLight.intensity = 3 + (trebleValue * 7);
+                mossLight.intensity = 2 + (bassValue * 6);
             } else {
-                // Rotação cadenciada de repouso se estiver pausado ou esperando input
-                meshIndustrial.rotation.x += 0.003;
+                // Rotação natural em Standby (Física de repouso)
+                meshIndustrial.rotation.x += 0.002;
                 meshIndustrial.rotation.y += 0.003;
                 meshIndustrial.scale.set(1, 1, 1);
-                redLight.intensity = 2;
+                purpleLight.intensity = 4;
+                mossLight.intensity = 1.5;
             }
 
             renderer.render(scene, camera);
         }
         animate();
 
-        // Listener responsivo para reajustar a tela e não bugar a proporção do canvas
+        // Tratamento adaptativo de tamanho de tela para não quebrar o layout geométrico
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
