@@ -408,7 +408,6 @@
             <div class="live-player-panel">
                 <div class="stream-status">
                     <div class="segment-display-8" id="bit-display">0</div>
-                    <!-- Modificado para atualizar automaticamente via JS -->
                     <span id="track-display">SINAL EM SUCÇÃO (STANDBY)</span>
                 </div>
                 
@@ -553,13 +552,9 @@
             });
         }
 
-        // FUNÇÃO ATUALIZADA: Mágica do automatismo acontece aqui
         function selectStation(index, displayName) {
             stopHifenStrobe();
             currentStationIndex = index;
-            
-            // Pega dinamicamente os metadados corretos da array trackMeta
-            const musicaAtual = trackMeta[index];
             
             document.querySelectorAll('.station-card').forEach((card, idx) => {
                 card.classList.remove('active-station');
@@ -569,7 +564,7 @@
                     document.getElementById(`ind-${idx}`).innerHTML = `${sintonizadoHTML}<span class="blink-char" id="char-${idx}">_</span>`;
                     if (metaElement) {
                         metaElement.style.display = "block";
-                        metaElement.innerText = musicaAtual; // Injeta o texto automático
+                        metaElement.innerText = trackMeta[idx];
                     }
                 } else {
                     document.getElementById(`ind-${idx}`).innerHTML = `CONECTAR<span class="blink-char" id="char-${idx}">_</span>`;
@@ -586,14 +581,16 @@
                 audioPlayer.src = realApis[currentStationIndex];
                 audioPlayer.play()
                     .then(() => {
-                        // Mostra automaticamente o nome da música ativa no painel principal
-                        document.getElementById('track-display').innerText = `${musicaAtual} [ONLINE]`;
+                        document.getElementById('track-display').innerText = displayName + " [ONLINE]";
                         startHifenStrobe();
                     })
-                    .catch(err => console.log("Erro no barramento: ", err));
+                    .catch(err => {
+                        console.log("Erro de barramento, acionando espelho secundário: ", err);
+                        audioPlayer.src = "https://stream.rockantenne.de/heavy-metal/stream/mp3";
+                        audioPlayer.play().catch(e => console.log("Bloqueio total de codec/CORS nativo."));
+                    });
             } else {
-                // Atualiza o painel principal mesmo com o player desligado
-                document.getElementById('track-display').innerText = `${musicaAtual} - PRONTA PARA RODAR`;
+                document.getElementById('track-display').innerText = "SINTONIA MODIFICADA - PRONTA PARA RODAR";
                 stopHifenStrobe();
             }
         }
@@ -601,7 +598,6 @@
         function toggleStream() {
             const playBtn = document.getElementById('master-play-btn');
             const display = document.getElementById('track-display');
-            const musicaAtual = trackMeta[currentStationIndex];
 
             if (!isPlaying) {
                 if (!audioContext) {
@@ -613,7 +609,7 @@
                         source.connect(analyser);
                         analyser.connect(audioContext.destination);
                     } catch (e) {
-                        console.log("AudioContext em bypass.");
+                        console.log("AudioContext em bypass de hardware.");
                     }
                 }
 
@@ -628,24 +624,26 @@
                         isPlaying = true;
                         playBtn.innerText = "DESLIGAR_";
                         playBtn.style.backgroundColor = "var(--purple-neon)";
-                        // Troca o texto estático pelo nome da música ativa rodando em tempo real
-                        display.innerText = `${musicaAtual} [ONLINE]`;
+                        display.innerText = "SINAL EM TEMPO REAL [ONLINE]";
                         startHifenStrobe(); 
                         startBitDisplay();
                     })
                     .catch(err => {
+                        console.log("Fluxo principal restrito. Injetando redundância estável.");
                         audioPlayer.src = "https://stream.rockantenne.de/heavy-metal/stream/mp3";
-                        audioPlayer.play();
-                        isPlaying = true;
-                        playBtn.innerText = "DESLIGAR_";
-                        display.innerText = `${musicaAtual} - SINGULARIDADE SONORA`; 
-                        startHifenStrobe();
-                        startBitDisplay();
+                        audioPlayer.play()
+                            .then(() => {
+                                isPlaying = true;
+                                playBtn.innerText = "DESLIGAR_";
+                                display.innerText = "SINGULARIDADE SONORA (REDUNDANTE)"; 
+                                startHifenStrobe();
+                                startBitDisplay();
+                            });
                     });
 
             } else {
                 audioPlayer.pause();
-                audioPlayer.src = ""; 
+                audioPlayer.removeAttribute('src'); // Força a limpeza do buffer de rede do browser
                 isPlaying = false;
                 playBtn.innerText = "LIGAR_SINAL";
                 playBtn.style.backgroundColor = "#2a1545";
@@ -666,6 +664,7 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         container.appendChild(renderer.domElement);
 
+        // Configuração do mapa de gradiente para Cel Shading / Gibi Core
         const format = (renderer.capabilities.isWebGL2) ? THREE.RedFormat : THREE.LuminanceFormat;
         const colorsColors = new Uint8Array([0, 0, 0, 100, 100, 100, 255, 255, 255]);
         const gradientMap = new THREE.DataTexture(colorsColors, 3, 1, format);
@@ -678,6 +677,7 @@
         const darkMaterial = new THREE.MeshToonMaterial({ color: 0x11081c, gradientMap: gradientMap });
         const outlineMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.BackSide });
 
+        // Grupo principal da Caveira
         const skullGroup = new THREE.Group();
 
         function createThickMesh(geometry, material) {
@@ -688,12 +688,14 @@
             return mesh;
         }
 
+        // 1. Caixa Craniana (Crânio Superior)
         const craniumGeo = new THREE.SphereGeometry(1.4, 32, 32);
         craniumGeo.scale(1, 1.15, 1);
         const cranium = createThickMesh(craniumGeo, metalMaterial);
         cranium.position.y = 0.3;
         skullGroup.add(cranium);
 
+        // 2. Cavidades Oculares (Olhos)
         const eyeGeo = new THREE.SphereGeometry(0.35, 16, 16);
         const leftEye = createThickMesh(eyeGeo, darkMaterial);
         leftEye.position.set(-0.45, 0.3, 1.1);
@@ -701,6 +703,7 @@
         rightEye.position.set(0.45, 0.3, 1.1);
         skullGroup.add(leftEye, rightEye);
 
+        // 3. Cavidade Nasal (Nariz)
         const noseGeo = new THREE.ConeGeometry(0.2, 0.4, 4);
         noseGeo.rotateX(Math.PI);
         const nose = createThickMesh(noseGeo, darkMaterial);
@@ -708,6 +711,7 @@
         nose.scale.set(1, 1, 0.4);
         skullGroup.add(nose);
 
+        // 4. Maxilar Superior e Dentes
         const jawUpperGeo = new THREE.BoxGeometry(0.9, 0.4, 0.8);
         const jawUpper = createThickMesh(jawUpperGeo, metalMaterial);
         jawUpper.position.set(0, -0.4, 0.8);
@@ -720,6 +724,7 @@
             skullGroup.add(tooth);
         }
 
+        // 5. Mandíbula Inferior Móvel (Sinal de Heavy Metal)
         const jawLowerGroup = new THREE.Group();
         const jawLowerGeo = new THREE.BoxGeometry(0.8, 0.3, 0.7);
         const jawLowerMesh = createThickMesh(jawLowerGeo, metalMaterial);
@@ -737,6 +742,7 @@
 
         scene.add(skullGroup);
 
+        // Iluminação de Palco Industrial
         const dirLight1 = new THREE.DirectionalLight(0xffffff, 2.2);
         dirLight1.position.set(6, 6, 6);
         scene.add(dirLight1);
@@ -755,14 +761,18 @@
                 let bass = dataArray[2] / 255;
                 let treble = dataArray[12] / 255;
                 
+                // Pulsação estrutural com os graves do Heavy Metal
                 let scaleFactor = 1 + (bass * 0.25);
                 skullGroup.scale.set(scaleFactor, scaleFactor, scaleFactor);
                 
+                // Rotação agressiva
                 skullGroup.rotation.x = Math.sin(Date.now() * 0.001) * 0.15 + (treble * 0.1);
                 skullGroup.rotation.y += 0.012 + (bass * 0.03);
                 
+                // Articulação Real da Mandíbula Inferior conforme o som
                 jawLowerGroup.position.y = -0.65 - (bass * 0.35);
             } else {
+                // Animação flutuante em standby
                 let time = Date.now() * 0.001;
                 skullGroup.rotation.x = Math.sin(time) * 0.1;
                 skullGroup.rotation.y += 0.006;
