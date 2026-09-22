@@ -132,12 +132,12 @@
 
     <div class="container">
         <h1>Nels1Rocks</h1>
-        <div class="subtitle">Heavy Metal Distortion Engine</div>
+        <div class="subtitle">Heavy Metal Amp Simulator</div>
         
         <div class="player-box">
             <div class="track-info">
-                <div style="font-size: 0.7rem; color: #39ff14; margin-bottom: 4px;">ESTADO DO MOTOR DE GUITARRA</div>
-                <div id="track-title">PRONTO PARA O SOM PESADO</div>
+                <div style="font-size: 0.7rem; color: #39ff14; margin-bottom: 4px;">ESTÚDIO DE DISTORÇÃO</div>
+                <div id="track-title">PRONTO PARA O RIF_</div>
             </div>
 
             <div class="visualizer" id="viz">
@@ -149,7 +149,7 @@
             </div>
 
             <button class="btn" id="toggleBtn">▶ LIGAR RÁDIO</button>
-            <div class="status" id="statusMsg">Timbre de distorção ativado</div>
+            <div class="status" id="statusMsg">Simulação de amplificador ativa</div>
         </div>
     </div>
 
@@ -163,51 +163,70 @@
         const statusMsg = document.getElementById('statusMsg');
         const viz = document.getElementById('viz');
 
-        // Acordes de Rock Pesado e Metal (Power Chords em Hz: Fundamental + Quinta Justa)
-        const powerChords = [
-            { name: "E5 Power Riff (Drop E)", root: 82.41, fifth: 123.47 },   // E2 + B2
-            { name: "A5 Heavy Metal Attack", root: 110.00, fifth: 164.81 },  // A2 + E3
-            { name: "D5 Distortion Grind", root: 73.42, fifth: 110.00 },   // D2 + A2
-            { name: "G5 Fast Thrash Riff", root: 98.00, fifth: 146.83 },   // G2 + D3
-            { name: "B5 Dark Metal Breakdown", root: 61.74, fifth: 92.50 }   // B1 + F#2
+        // Raízes de Heavy Metal (Drop D e Afinação padrão pesada em Hz)
+        const metalNotes = [
+            73.42,  // D2 (Drop D base)
+            82.41,  // E2 (Low E)
+            92.50,  // F#2
+            110.00, // A2
+            123.47  // B2
         ];
 
         const songTitles = [
-            "Nels1Rocks - Heavy Metal Core Riff",
-            "Underground Distortion Loop (Live)",
-            "Power Metal Blast Beat Machine",
-            "Thrash Guitars Heavy Rotation"
+            "Nels1Rocks - True Distortion Riff",
+            "Heavy Metal Crunch Engine 24/7",
+            "Thrash Metal Power Chords Loop",
+            "Underground Amp Simulator Live"
         ];
 
-        function playPowerChord(ctx, chord) {
-            if (!isPlaying) return;
+        // Função que cria a curva de distorção valvulada (Overdrive pesado)
+        function makeDistortionCurve(amount) {
+            let k = typeof amount === 'number' ? amount : 50,
+                n_samples = 44100,
+                curve = new Float32Array(n_samples),
+                deg = Math.PI / 180;
+            for (let i = 0; i < n_samples; ++i) {
+                let x = (i * 2) / n_samples - 1;
+                curve[i] = ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x));
+            }
+            return curve;
+        }
 
+        function playDistortedGuitar(ctx, rootFreq) {
+            if (!isPlaying) return;
             const now = ctx.currentTime;
 
-            // Função para gerar uma oitava distorcida (simulando amplificador valvulado)
-            function createDistortedOscillator(freq, gainValue) {
+            // 1. Criar Waveshaper para distorção de guitarra
+            const distortion = ctx.createWaveShaper();
+            distortion.curve = makeDistortionCurve(600); // Nível alto de ganho/distorção
+            distortion.oversample = '4x';
+
+            // 2. Filtro de corte (Cabinet Simulator) - remove o som metálico/eletrônico agudo
+            const cabFilter = ctx.createBiquadFilter();
+            cabFilter.type = 'lowpass';
+            cabFilter.frequency.setValueAtTime(2000, now); // Corta tudo acima de 2kHz (deixa encorpado)
+
+            // 3. Ganho geral de volume com decay de palhetada
+            const gainNode = ctx.createGain();
+            gainNode.gain.setValueAtTime(0.18, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+
+            // Conexões: Osciladores -> Distorção -> Filtro Caixa -> Volume -> Saída
+            distortion.connect(cabFilter);
+            cabFilter.connect(gainNode);
+            gainNode.connect(ctx.destination);
+
+            // Toca o Power Chord (Fundamental + Quinta + Oitava)
+            [rootFreq, rootFreq * 1.5, rootFreq * 2].forEach((freq, idx) => {
                 let osc = ctx.createOscillator();
-                let gain = ctx.createGain();
-                
-                // Usando 'sawtooth' (dente de serra) que é a base para timbres de guitarra com distorção
-                osc.type = 'sawtooth';
+                // Mistura onda dente-de-serra e quadrada para encorpar o timbre de crunch
+                osc.type = idx === 0 ? 'sawtooth' : 'square';
                 osc.frequency.setValueAtTime(freq, now);
-
-                // Envoltória de ataque rápido e decay de guitarra pesada
-                gain.gain.setValueAtTime(gainValue, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
-
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-
+                
+                osc.connect(distortion);
                 osc.start(now);
-                osc.stop(now + 0.45);
-            }
-
-            // Toca a fundamental e a quinta simultaneamente (Power Chord encorpado) + oitava grave
-            createDistortedOscillator(chord.root, 0.12);
-            createDistortedOscillator(chord.fifth, 0.10);
-            createDistortedOscillator(chord.root / 2, 0.08); // Sub-grave de peso
+                osc.stop(now + 0.5);
+            });
         }
 
         function startRadio() {
@@ -222,24 +241,23 @@
             toggleBtn.textContent = "⏸ DESLIGAR RÁDIO";
             toggleBtn.classList.add('playing');
             viz.classList.add('playing');
-            statusMsg.textContent = "🔴 ROLANDO O SOM PESADO";
+            statusMsg.textContent = "🔴 AMPLIFICADOR NO MÁXIMO";
 
             let titleIdx = 0;
             trackTitle.textContent = songTitles[titleIdx];
 
-            // Ritmo dinâmico de riffs em loop infinito
+            // Loop de riffs pesados simulando palhetadas rítmicas
             riffInterval = setInterval(() => {
                 if (!isPlaying) return;
 
-                let randomChord = powerChords[Math.floor(Math.random() * powerChords.length)];
-                playPowerChord(audioCtx, randomChord);
+                let randomNote = metalNotes[Math.floor(Math.random() * metalNotes.length)];
+                playDistortedGuitar(audioCtx, randomNote);
 
-                // Troca o título da "música" a cada alguns segundos
                 if (Math.random() < 0.2) {
                     titleIdx = (titleIdx + 1) % songTitles.length;
                     trackTitle.textContent = songTitles[titleIdx];
                 }
-            }, 300); // Ritmo de andamento de metal pesado
+            }, 320);
         }
 
         function stopRadio() {
@@ -249,7 +267,7 @@
             toggleBtn.classList.remove('playing');
             viz.classList.remove('playing');
             statusMsg.textContent = "TRANSMISSÃO PAUSADA";
-            trackTitle.textContent = "PRONTO PARA O SOM PESADO";
+            trackTitle.textContent = "PRONTO PARA O RIF_";
         }
 
         toggleBtn.addEventListener('click', () => {
