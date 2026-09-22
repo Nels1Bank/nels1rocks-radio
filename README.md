@@ -25,7 +25,7 @@
             box-shadow: 6px 6px 0px #000;
             padding: 2rem;
             text-align: center;
-            max-width: 450px;
+            max-width: 480px;
             width: 100%;
         }
         h1 {
@@ -41,15 +41,20 @@
             text-transform: uppercase;
             letter-spacing: 2px;
         }
+        .player-box {
+            background: #000;
+            border: 2px solid #8a2be2;
+            padding: 15px;
+            margin-top: 10px;
+        }
         audio {
             width: 100%;
-            outline: none;
         }
-        .status {
+        .help-text {
+            font-size: 0.75rem;
+            color: #ff5555;
             margin-top: 15px;
-            font-size: 0.85rem;
-            color: #39ff14;
-            font-weight: bold;
+            line-height: 1.4;
         }
     </style>
 </head>
@@ -57,31 +62,20 @@
 
     <div class="card">
         <h1>Nels1Rocks</h1>
-        <p>Heavy Metal & Rock</p>
+        <p>Heavy Metal & Rock Web Radio</p>
         
-        <!-- Player Nativo Otimizado com sufixo de compatibilidade de stream -->
-        <audio id="player" controls preload="none">
-            <source src="https://icecast.somossistemas.com.br/proxy/nels1rocks?mp=/stream/;" type="audio/mpeg">
-            Seu navegador não suporta áudio.
-        </audio>
+        <div class="player-box">
+            <!-- Player com suporte a fallback de stream -->
+            <audio controls preload="none">
+                <source src="https://icecast.somossistemas.com.br/proxy/nels1rocks?mp=/stream/;" type="audio/mpeg">
+                Seu navegador não suporta áudio.
+            </audio>
+        </div>
 
-        <div id="msg" class="status">Pressione Play para conectar</div>
+        <div class="help-text">
+            ⚠️ Se o player ficar carregando eternamente, abra o painel da sua hospedagem de streaming e verifique se o certificado SSL/HTTPS do domínio <b>icecast.somossistemas.com.br</b> está ativo e válido.
+        </div>
     </div>
-
-    <script>
-        const audio = document.getElementById('player');
-        const msg = document.getElementById('msg');
-
-        audio.addEventListener('playing', () => {
-            msg.textContent = '● AO VIVO NO AR';
-        });
-        audio.addEventListener('pause', () => {
-            msg.textContent = 'PAUSADO';
-        });
-        audio.addEventListener('error', () => {
-            msg.textContent = '⚠️ ERRO AO CONECTAR AO STREAM';
-        });
-    </script>
 
 </body>
 </html>
