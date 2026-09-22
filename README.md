@@ -30,14 +30,14 @@
         }
         h1 {
             font-family: 'Metal Mania', cursive;
-            font-size: 3rem;
+            font-size: 2.8rem;
             margin: 0 0 10px 0;
             text-shadow: 3px 3px 0px #000, 6px 6px 0px #8a2be2;
         }
         p {
             color: #bfaad1;
-            font-size: 0.85rem;
-            margin-bottom: 2rem;
+            font-size: 0.8rem;
+            margin-bottom: 1.5rem;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
@@ -48,58 +48,38 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
-        .btn-play {
+        .btn {
             background: #39ff14;
             color: #000;
             border: 3px solid #000;
-            padding: 14px 28px;
+            padding: 12px 20px;
             font-family: 'Fira Code', monospace;
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1rem;
             cursor: pointer;
             box-shadow: 4px 4px 0px #000;
             text-transform: uppercase;
-            transition: 0.1s;
+            width: 100%;
         }
-        .btn-play:active {
+        .btn:active {
             box-shadow: 1px 1px 0px #000;
             transform: translate(3px, 3px);
         }
-        .btn-play.playing {
-            background: #ff3333;
+        .btn-alt {
+            background: #8a2be2;
             color: #fff;
         }
         .status {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #39ff14;
             font-weight: bold;
-            letter-spacing: 1px;
-        }
-        .visualizer {
-            display: flex;
-            gap: 4px;
-            height: 20px;
-            align-items: flex-end;
-            margin-top: 5px;
-        }
-        .bar {
-            width: 6px;
-            background: #39ff14;
-            height: 4px;
-            transition: height 0.2s;
-        }
-        .playing .bar {
-            animation: bounce 0.6s infinite alternate;
-        }
-        .bar:nth-child(2) { animation-delay: 0.2s; }
-        .bar:nth-child(3) { animation-delay: 0.4s; }
-        .bar:nth-child(4) { animation-delay: 0.1s; }
-
-        @keyframes bounce {
-            0% { height: 4px; }
-            100% { height: 18px; }
+            word-break: break-all;
+            background: #111;
+            padding: 8px;
+            width: 100%;
+            border: 1px dashed #444;
         }
     </style>
 </head>
@@ -110,82 +90,53 @@
         <p>Heavy Metal & Rock Stream</p>
         
         <div class="player-box">
-            <button class="btn-play" id="playBtn">▶ LIGAR SOM</button>
-            <div id="statusText" class="status">PRONTO PARA CONECTAR</div>
-            
-            <div class="visualizer" id="viz">
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-            </div>
+            <button class="btn" id="playNels1">▶ OUVIR NELS1ROCKS</button>
+            <button class="btn btn-alt" id="playTest">▶ TESTAR OUTRA RÁDIO (ROCK)</button>
+            <div id="statusText" class="status">PRONTO</div>
         </div>
     </div>
 
     <script>
-        // URLs alternativas de contorno (Estratégia de stream handler independente)
-        const streamUrls = [
-            "https://corsproxy.io/?https://icecast.somossistemas.com.br/proxy/nels1rocks?mp=/stream",
-            "https://icecast.somossistemas.com.br/proxy/nels1rocks?mp=/stream/;"
-        ];
-
-        let audio = null;
-        let currentUrlIndex = 0;
-        const playBtn = document.getElementById('playBtn');
         const statusText = document.getElementById('statusText');
-        const viz = document.getElementById('viz');
+        let currentAudio = null;
 
-        function initAudio() {
-            if (audio) {
-                audio.pause();
-                audio = null;
+        function playStream(url, name) {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
             }
 
-            statusText.textContent = "CONECTANDO AO SERVIDOR...";
-            audio = new Audio(streamUrls[currentUrlIndex]);
-            audio.crossOrigin = "anonymous";
+            statusText.textContent = `Conectando em ${name}...`;
+            currentAudio = new Audio(url);
+            currentAudio.crossOrigin = "anonymous";
 
-            audio.addEventListener('playing', () => {
-                statusText.textContent = "🔴 AO VIVO NO AR";
-                playBtn.textContent = "⏸ DESLIGAR";
-                playBtn.classList.add('playing');
-                viz.classList.add('playing');
+            currentAudio.addEventListener('playing', () => {
+                statusText.textContent = `🔴 ${name}: AO VIVO!`;
             });
 
-            audio.addEventListener('waiting', () => {
-                statusText.textContent = "⏳ BUFFERIZANDO...";
+            currentAudio.addEventListener('waiting', () => {
+                statusText.textContent = `⏳ ${name}: Bufferizando dados...`;
             });
 
-            audio.addEventListener('error', (e) => {
-                console.warn("Tentativa falhou, alternando rota...", e);
-                currentUrlIndex++;
-                if (currentUrlIndex < streamUrls.length) {
-                    initAudio();
-                    audio.play().catch(() => {});
-                } else {
-                    statusText.textContent = "⚠️ ERRO: SERVIDOR BLOQUEADO";
-                    playBtn.textContent = "▶ TENTAR NOVAMENTE";
-                    playBtn.classList.remove('playing');
-                    viz.classList.remove('playing');
-                }
+            currentAudio.addEventListener('error', (e) => {
+                statusText.textContent = `❌ ${name}: Servidor Offline ou Bloqueado.`;
+                console.error(e);
+            });
+
+            currentAudio.play().catch(err => {
+                statusText.textContent = `⚠️ Toque novamente para liberar o áudio.`;
+                console.error(err);
             });
         }
 
-        playBtn.addEventListener('click', () => {
-            if (!audio || audio.paused) {
-                initAudio();
-                audio.play().catch(err => {
-                    statusText.textContent = "⚠️ TOQUE NOVAMENTE PARA LIBERAR";
-                    console.error(err);
-                });
-            } else {
-                audio.pause();
-                audio.currentTime = 0;
-                playBtn.textContent = "▶ LIGAR SOM";
-                playBtn.classList.remove('playing');
-                viz.classList.remove('playing');
-                statusText.textContent = "ESTÚDIO PAUSADO";
-            }
+        // Botão 1: O seu servidor oficial
+        document.getElementById('playNels1').addEventListener('click', () => {
+            playStream("https://icecast.somossistemas.com.br/proxy/nels1rocks?mp=/stream", "Nels1Rocks");
+        });
+
+        // Botão 2: Stream de teste público mundial (Guitarix/Rock Stream) para provar que o player funciona
+        document.getElementById('playTest').addEventListener('click', () => {
+            playStream("https://rautemusik-de-hz-fal-stream13.radiohost.de/hardrock_mp3_192", "Rádio Teste Rock");
         });
     </script>
 </body>
