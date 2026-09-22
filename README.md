@@ -233,7 +233,6 @@
                 <div id="status-display" class="segment-display-8">PARADO</div>
             </div>
             
-            <!-- Controle de Volume Nativo Auxiliar para evitar falhas de foco -->
             <div class="master-controls">
                 <button id="play-btn" class="main-play-btn">▶ PLAY</button>
                 <div style="font-size: 0.85rem; color: #a59cb5;">
@@ -246,8 +245,8 @@
         <section style="margin-top: 3rem;">
             <h2>Frequências</h2>
             <div class="station-grid">
-                <!-- Adicionado ponto e vírgula no final da URL do stream para compatibilidade estendida com Icecast -->
-                <div class="station-card active-station" data-stream="https://icecast.somossistemas.com.br/proxy/nels1rocks?mp=/stream/;">
+                <!-- Usando URL limpa do stream principal -->
+                <div class="station-card active-station" data-stream="https://icecast.somossistemas.com.br/proxy/nels1rocks?mp=/stream">
                     <div class="station-info">
                         <div class="station-title">Nels1Rocks Main Stream</div>
                         <div class="station-genre">Heavy Metal / Rock</div>
@@ -271,8 +270,16 @@
         const volumeSlider = document.getElementById('volume-slider');
         const stationCard = document.querySelector('.station-card');
 
-        let currentStreamUrl = stationCard.getAttribute('data-stream');
+        let rawStreamUrl = stationCard.getAttribute('data-stream');
         let isPlaying = false;
+
+        function getAudioSource(url) {
+            // Se o GitHub Pages estiver em HTTPS e o stream em HTTP, usamos um proxy CORS seguro gratuito para evitar travamento
+            if (window.location.protocol === 'https:' && url.startsWith('http:')) {
+                return 'https://corsproxy.io/?' + encodeURIComponent(url);
+            }
+            return url;
+        }
 
         function initAudio() {
             if (!audio) {
@@ -285,15 +292,19 @@
                     isPlaying = true;
                 });
 
-                audio.addEventListener('error', (e) => {
-                    console.error("Erro no elemento de áudio:", e);
-                    statusDisplay.textContent = 'ERRO AO CONECTAR';
-                    playBtn.textContent = '▶ PLAY';
-                    isPlaying = false;
+                audio.addEventListener('waiting', () => {
+                    statusDisplay.textContent = 'CARREGANDO...';
                 });
 
                 audio.addEventListener('stalled', () => {
                     statusDisplay.textContent = 'BUFFERING...';
+                });
+
+                audio.addEventListener('error', (e) => {
+                    console.error("Erro detalhado do player:", audio.error);
+                    statusDisplay.textContent = 'ERRO AO CONECTAR';
+                    playBtn.textContent = '▶ PLAY';
+                    isPlaying = false;
                 });
             }
         }
@@ -304,11 +315,11 @@
             if (!isPlaying) {
                 try {
                     statusDisplay.textContent = 'CONECTANDO...';
-                    audio.src = currentStreamUrl;
+                    audio.src = getAudioSource(rawStreamUrl);
                     audio.volume = volumeSlider.value;
                     await audio.play();
                 } catch (error) {
-                    console.error("Falha ao iniciar playback:", error);
+                    console.error("Exceção capturada no play:", error);
                     statusDisplay.textContent = 'ERRO AO CONECTAR';
                     playBtn.textContent = '▶ PLAY';
                     isPlaying = false;
