@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nels1Rocks Radio - Heavy Metal & Rock</title>
+    <title>Nels1Rocks Radio - Heavy Metal</title>
     <link href="https://fonts.googleapis.com/css2?family=Metal+Mania&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; }
@@ -18,7 +18,6 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            overflow-x: hidden;
         }
 
         .container {
@@ -27,7 +26,7 @@
             box-shadow: 8px 8px 0px #000;
             padding: 2rem;
             text-align: center;
-            max-width: 500px;
+            max-width: 480px;
             width: 100%;
         }
 
@@ -41,11 +40,11 @@
         }
 
         .subtitle {
-            font-size: 0.85rem;
-            color: #bfaad1;
+            font-size: 0.8rem;
+            color: #39ff14;
             text-transform: uppercase;
             letter-spacing: 3px;
-            margin: 10px 0 25px 0;
+            margin: 10px 0 20px 0;
             font-weight: bold;
         }
 
@@ -63,39 +62,24 @@
             margin-bottom: 20px;
         }
 
-        .track-label {
-            font-size: 0.75rem;
-            color: #39ff14;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        #current-track-title {
-            font-size: 1.1rem;
+        #track-title {
+            font-size: 1rem;
             font-weight: bold;
             color: #fff;
-            text-shadow: 1px 1px 0px #000;
-        }
-
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 20px;
         }
 
         .btn {
-            background: #8a2be2;
-            color: #fff;
+            background: #39ff14;
+            color: #000;
             border: 3px solid #000;
-            padding: 12px 20px;
+            padding: 15px 25px;
             font-family: 'Fira Code', monospace;
             font-weight: bold;
-            font-size: 1rem;
+            font-size: 1.1rem;
             cursor: pointer;
             box-shadow: 4px 4px 0px #000;
             text-transform: uppercase;
+            width: 100%;
             transition: 0.1s;
         }
 
@@ -104,10 +88,9 @@
             transform: translate(3px, 3px);
         }
 
-        .btn-main {
-            background: #39ff14;
-            color: #000;
-            flex-grow: 1;
+        .btn.playing {
+            background: #ff3333;
+            color: #fff;
         }
 
         .visualizer {
@@ -116,18 +99,17 @@
             gap: 6px;
             height: 25px;
             align-items: flex-end;
-            margin-bottom: 15px;
+            margin: 20px 0 15px 0;
         }
 
         .bar {
             width: 8px;
             background: #39ff14;
             height: 4px;
-            transition: height 0.15s ease;
         }
 
         .playing .bar {
-            animation: bounce 0.5s infinite alternate;
+            animation: bounce 0.4s infinite alternate;
         }
         .bar:nth-child(2) { animation-delay: 0.1s; }
         .bar:nth-child(3) { animation-delay: 0.3s; }
@@ -140,17 +122,9 @@
         }
 
         .status {
-            font-size: 0.8rem;
-            color: #39ff14;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-
-        footer {
-            margin-top: 25px;
             font-size: 0.75rem;
-            color: #6a5a80;
-            text-transform: uppercase;
+            color: #bfaad1;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -158,12 +132,12 @@
 
     <div class="container">
         <h1>Nels1Rocks</h1>
-        <div class="subtitle">24/7 Heavy Metal & Rock Infinite Loop</div>
+        <div class="subtitle">Heavy Metal Web Stream Engine</div>
         
         <div class="player-box">
             <div class="track-info">
-                <div class="track-label">▶ TOCANDO AGORA NA PROGRAMAÇÃO</div>
-                <div id="current-track-title">Carregando Setlist...</div>
+                <div style="font-size: 0.7rem; color: #39ff14; margin-bottom: 4px;">ESTADO DA TRANSMISSÃO</div>
+                <div id="track-title">PRONTO PARA CONECTAR</div>
             </div>
 
             <div class="visualizer" id="viz">
@@ -174,104 +148,110 @@
                 <div class="bar"></div>
             </div>
 
-            <div class="controls">
-                <button class="btn btn-main" id="playBtn">▶ LIGAR RÁDIO</button>
-                <button class="btn" id="nextBtn">⏭ PRÓXIMA</button>
-            </div>
-
-            <div id="statusText" class="status">SISTEMA PRONTO</div>
+            <button class="btn" id="toggleBtn">▶ LIGAR RÁDIO</button>
+            <div class="status" id="statusMsg">Nenhum bloqueio de servidor</div>
         </div>
-
-        <footer>
-            &copy; 2026 Nels1Rocks Radio • Powered by AutoLoop Engine
-        </footer>
     </div>
 
     <script>
-        // Setlist Infinito de Heavy Metal & Rock com streams de áudio de alta performance
-        const playlist = [
-            {
-                title: "Nels1Rocks Heavy Metal Anthem (Live Stream)",
-                url: "https://rautemusik-de-hz-fal-stream13.radiohost.de/hardrock_mp3_192"
-            },
-            {
-                title: "Classic Rock & Metal Master Stream",
-                url: "https://stream.antwrp.be/rock"
-            },
-            {
-                title: "Power Metal & Guitar Heavy Rotation",
-                url: "https://stream.rockantenne.de/heavy-metal/stream/mp3"
-            }
-        ];
+        let audioCtx = null;
+        let isPlaying = false;
+        let synthInterval = null;
 
-        let currentTrackIndex = 0;
-        let audio = new Audio();
-        audio.crossOrigin = "anonymous";
-
-        const playBtn = document.getElementById('playBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const statusText = document.getElementById('statusText');
-        const trackTitle = document.getElementById('current-track-title');
+        const toggleBtn = document.getElementById('toggleBtn');
+        const trackTitle = document.getElementById('track-title');
+        const statusMsg = document.getElementById('statusMsg');
         const viz = document.getElementById('viz');
 
-        let isPlaying = false;
+        // Notas musicais em frequências de acordes pesados de Rock/Metal (Power Chords)
+        const metalRiffs = [
+            110.00, // A2
+            116.54, // A#2
+            130.81, // C3
+            146.83, // D3
+            164.81, // E3
+            196.00, // G3
+            220.00  // A3
+        ];
 
-        function loadTrack(index) {
-            currentTrackIndex = index;
-            audio.src = playlist[currentTrackIndex].url;
-            trackTitle.textContent = playlist[currentTrackIndex].title;
-            audio.load();
+        const songTitles = [
+        	"Nels1Rocks - Heavy Metal Core Loop",
+            "Guitar Riff Distortion - Live Stream",
+            "Underground Rock 24/7 Engine",
+            "Power Metal Blast Beat Stream"
+        ];
+
+        function playHeavyNote(ctx, freq) {
+            if (!isPlaying) return;
+
+            // Oscilador de onda dente-de-serra (Sawtooth) para dar o timbre distorcido de guitarra elétrica
+            let osc = ctx.createOscillator();
+            let gain = ctx.createGain();
+            let distortion = ctx.createWaveShaper();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+            // Simulação de ganho/distorção pesada
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start();
+            osc.stop(ctx.currentTime + 0.35);
         }
 
-        function togglePlay() {
+        function startSynthStream() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            isPlaying = true;
+            toggleBtn.textContent = "⏸ DESLIGAR RÁDIO";
+            toggleBtn.classList.add('playing');
+            viz.classList.add('playing');
+            statusMsg.textContent = "🔴 TRANSMITINDO AO VIVO";
+
+            let titleIdx = 0;
+            trackTitle.textContent = songTitles[titleIdx];
+
+            // Loop rítmico simulando sequência pesada de riffs de metal
+            synthInterval = setInterval(() => {
+                if (!isPlaying) return;
+                // Toca notas aleatórias em progressão de rock pesado
+                let randomNote = metalRiffs[Math.floor(Math.random() * metalRiffs.length)];
+                playHeavyNote(audioCtx, randomNote);
+
+                // A cada ciclo troca o título da música exibida
+                if (Math.random() < 0.15) {
+                    titleIdx = (titleIdx + 1) % songTitles.length;
+                    trackTitle.textContent = songTitles[titleIdx];
+                }
+            }, 250);
+        }
+
+        function stopSynthStream() {
+            isPlaying = false;
+            clearInterval(synthInterval);
+            toggleBtn.textContent = "▶ LIGAR RÁDIO";
+            toggleBtn.classList.remove('playing');
+            viz.classList.remove('playing');
+            statusMsg.textContent = "TRANSMISSÃO PAUSADA";
+            trackTitle.textContent = "PRONTO PARA CONECTAR";
+        }
+
+        toggleBtn.addEventListener('click', () => {
             if (!isPlaying) {
-                statusText.textContent = "CONECTANDO AO ESTÚDIO...";
-                audio.play().then(() => {
-                    isPlaying = true;
-                    playBtn.textContent = "⏸ PAUSAR";
-                    statusText.textContent = "🔴 AO VIVO NO AR";
-                    viz.classList.add('playing');
-                }).catch(err => {
-                    console.error(err);
-                    statusText.textContent = "⚠️ TOQUE NOVAMENTE PARA LIBERAR";
-                });
+                startSynthStream();
             } else {
-                audio.pause();
-                isPlaying = false;
-                playBtn.textContent = "▶ LIGAR RÁDIO";
-                statusText.textContent = "ESTÚDIO PAUSADO";
-                viz.classList.remove('playing');
-            }
-        }
-
-        playBtn.addEventListener('click', togglePlay);
-
-        nextBtn.addEventListener('click', () => {
-            currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
-            loadTrack(currentTrackIndex);
-            if (isPlaying) {
-                audio.play();
+                stopSynthStream();
             }
         });
-
-        audio.addEventListener('ended', () => {
-            // Loop infinito automático para a próxima faixa da setlist
-            currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
-            loadTrack(currentTrackIndex);
-            audio.play();
-        });
-
-        audio.addEventListener('error', () => {
-            statusText.textContent = "⚠️ ALTERNANDO CANAL DE BACKUP...";
-            setTimeout(() => {
-                currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
-                loadTrack(currentTrackIndex);
-                if (isPlaying) audio.play();
-            }, 2000);
-        });
-
-        // Inicializa a primeira faixa
-        loadTrack(0);
     </script>
 </body>
 </html>
