@@ -110,42 +110,25 @@
             font-family: 'Fira Code', monospace;
             font-size: 1.6rem;
             font-weight: bold;
-            color: var(--white-pure);
+            color: var(--green-neon);
             background: #000000;
             padding: 0.2rem 0.7rem;
             border: 2px solid #000000;
             box-shadow: inset 0px 0px 8px rgba(0,0,0,0.8);
-            text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.8);
+            text-shadow: 0px 0px 10px rgba(57, 255, 20, 0.8);
         }
 
-        .master-controls {
-            margin-top: 1rem;
+        .native-player-container {
+            margin-top: 1.5rem;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
+            justify-content: center;
         }
 
-        .main-play-btn {
-            background: var(--purple-neon);
-            border: var(--cartoon-border);
-            color: var(--white-pure);
-            font-family: 'Fira Code', monospace;
-            font-size: 1.4rem;
-            font-weight: bold;
-            padding: 1rem 3rem;
-            cursor: pointer;
-            box-shadow: 4px 4px 0px #000;
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
-            text-transform: uppercase;
-            border-radius: 50px; 
-        }
-
-        .main-play-btn:hover {
-            background: var(--white-pure);
-            color: #000;
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0px #000;
+        audio {
+            width: 100%;
+            max-width: 500px;
+            height: 50px;
+            filter: invert(90%) hue-rotate(200deg);
         }
 
         .station-grid {
@@ -163,8 +146,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            cursor: pointer;
-            transition: background 0.2s;
         }
 
         .station-card.active-station {
@@ -201,7 +182,7 @@
             text-shadow: 2px 2px 0px #000;
         }
 
-        .s-sin { color: #ffcc00; } 
+        .s-sin { color: var(--green-neon); } 
 
         footer {
             text-align: center;
@@ -230,14 +211,15 @@
         <div class="live-player-panel">
             <div class="stream-status">
                 <span>STATUS:</span>
-                <div id="status-display" class="segment-display-8">PARADO</div>
+                <div id="status-display" class="segment-display-8">PRONTO</div>
             </div>
             
-            <div class="master-controls">
-                <button id="play-btn" class="main-play-btn">▶ PLAY</button>
-                <div style="font-size: 0.85rem; color: #a59cb5;">
-                    Volume: <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="1" style="accent-color: var(--purple-neon); cursor: pointer;">
-                </div>
+            <!-- Player Nativo Robustecido -->
+            <div class="native-player-container">
+                <audio id="radio-player" controls preload="none">
+                    <source src="https://icecast.somossistemas.com.br/proxy/nels1rocks?mp=/stream" type="audio/mpeg">
+                    Seu navegador não suporta o elemento de áudio.
+                </audio>
             </div>
         </div>
 
@@ -245,14 +227,13 @@
         <section style="margin-top: 3rem;">
             <h2>Frequências</h2>
             <div class="station-grid">
-                <!-- Usando URL limpa do stream principal -->
-                <div class="station-card active-station" data-stream="https://icecast.somossistemas.com.br/proxy/nels1rocks?mp=/stream">
+                <div class="station-card active-station">
                     <div class="station-info">
                         <div class="station-title">Nels1Rocks Main Stream</div>
                         <div class="station-genre">Heavy Metal / Rock</div>
                     </div>
                     <div class="select-panel">
-                        <span class="select-indicator s-sin">● ATIVO</span>
+                        <span class="select-indicator s-sin">● CONECTADO</span>
                     </div>
                 </div>
             </div>
@@ -264,79 +245,23 @@
     </footer>
 
     <script>
-        let audio = null;
-        const playBtn = document.getElementById('play-btn');
+        const audioPlayer = document.getElementById('radio-player');
         const statusDisplay = document.getElementById('status-display');
-        const volumeSlider = document.getElementById('volume-slider');
-        const stationCard = document.querySelector('.station-card');
 
-        let rawStreamUrl = stationCard.getAttribute('data-stream');
-        let isPlaying = false;
-
-        function getAudioSource(url) {
-            // Se o GitHub Pages estiver em HTTPS e o stream em HTTP, usamos um proxy CORS seguro gratuito para evitar travamento
-            if (window.location.protocol === 'https:' && url.startsWith('http:')) {
-                return 'https://corsproxy.io/?' + encodeURIComponent(url);
-            }
-            return url;
-        }
-
-        function initAudio() {
-            if (!audio) {
-                audio = new Audio();
-                audio.crossOrigin = "anonymous";
-                
-                audio.addEventListener('playing', () => {
-                    statusDisplay.textContent = 'AO VIVO';
-                    playBtn.textContent = '⏹ PARAR';
-                    isPlaying = true;
-                });
-
-                audio.addEventListener('waiting', () => {
-                    statusDisplay.textContent = 'CARREGANDO...';
-                });
-
-                audio.addEventListener('stalled', () => {
-                    statusDisplay.textContent = 'BUFFERING...';
-                });
-
-                audio.addEventListener('error', (e) => {
-                    console.error("Erro detalhado do player:", audio.error);
-                    statusDisplay.textContent = 'ERRO AO CONECTAR';
-                    playBtn.textContent = '▶ PLAY';
-                    isPlaying = false;
-                });
-            }
-        }
-
-        playBtn.addEventListener('click', async () => {
-            initAudio();
-
-            if (!isPlaying) {
-                try {
-                    statusDisplay.textContent = 'CONECTANDO...';
-                    audio.src = getAudioSource(rawStreamUrl);
-                    audio.volume = volumeSlider.value;
-                    await audio.play();
-                } catch (error) {
-                    console.error("Exceção capturada no play:", error);
-                    statusDisplay.textContent = 'ERRO AO CONECTAR';
-                    playBtn.textContent = '▶ PLAY';
-                    isPlaying = false;
-                }
-            } else {
-                audio.pause();
-                audio.src = '';
-                isPlaying = false;
-                playBtn.textContent = '▶ PLAY';
-                statusDisplay.textContent = 'PARADO';
-            }
+        audioPlayer.addEventListener('playing', () => {
+            statusDisplay.textContent = 'AO VIVO 🔴';
         });
 
-        volumeSlider.addEventListener('input', (e) => {
-            if (audio) {
-                audio.volume = e.target.value;
-            }
+        audioPlayer.addEventListener('pause', () => {
+            statusDisplay.textContent = 'PAUSADO';
+        });
+
+        audioPlayer.addEventListener('waiting', () => {
+            statusDisplay.textContent = 'CONECTANDO...';
+        });
+
+        audioPlayer.addEventListener('error', () => {
+            statusDisplay.textContent = 'ERRO NO STREAM';
         });
     </script>
 </body>
