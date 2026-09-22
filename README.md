@@ -23,20 +23,20 @@
             background: #10061d;
             border: 4px solid #000;
             box-shadow: 6px 6px 0px #000;
-            padding: 2rem;
+            padding: 2.5rem;
             text-align: center;
             max-width: 480px;
             width: 100%;
         }
         h1 {
             font-family: 'Metal Mania', cursive;
-            font-size: 2.8rem;
+            font-size: 3rem;
             margin: 0 0 10px 0;
             text-shadow: 3px 3px 0px #000, 6px 6px 0px #8a2be2;
         }
         p {
             color: #bfaad1;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             margin-bottom: 2rem;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -45,32 +45,61 @@
             background: #000;
             border: 2px solid #8a2be2;
             padding: 20px;
-            margin-top: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 15px;
         }
         .btn-play {
-            background: #8a2be2;
-            color: #fff;
+            background: #39ff14;
+            color: #000;
             border: 3px solid #000;
-            padding: 12px 25px;
+            padding: 14px 28px;
             font-family: 'Fira Code', monospace;
             font-weight: bold;
             font-size: 1.1rem;
             cursor: pointer;
             box-shadow: 4px 4px 0px #000;
             text-transform: uppercase;
+            transition: 0.1s;
         }
         .btn-play:active {
             box-shadow: 1px 1px 0px #000;
             transform: translate(3px, 3px);
         }
+        .btn-play.playing {
+            background: #ff3333;
+            color: #fff;
+        }
         .status {
             font-size: 0.8rem;
             color: #39ff14;
             font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .visualizer {
+            display: flex;
+            gap: 4px;
+            height: 20px;
+            align-items: flex-end;
+            margin-top: 5px;
+        }
+        .bar {
+            width: 6px;
+            background: #39ff14;
+            height: 4px;
+            transition: height 0.2s;
+        }
+        .playing .bar {
+            animation: bounce 0.6s infinite alternate;
+        }
+        .bar:nth-child(2) { animation-delay: 0.2s; }
+        .bar:nth-child(3) { animation-delay: 0.4s; }
+        .bar:nth-child(4) { animation-delay: 0.1s; }
+
+        @keyframes bounce {
+            0% { height: 4px; }
+            100% { height: 18px; }
         }
     </style>
 </head>
@@ -78,45 +107,86 @@
 
     <div class="card">
         <h1>Nels1Rocks</h1>
-        <p>Rádio Online de Heavy Metal e Rock</p>
+        <p>Heavy Metal & Rock Stream</p>
         
         <div class="player-box">
-            <!-- Botão de controle manual via objeto de Audio do JS -->
-            <button class="btn-play" id="toggleBtn">▶ OUVIR RÁDIO</button>
-            <div id="status-msg" class="status">ESTÚDIO PRONTO</div>
+            <button class="btn-play" id="playBtn">▶ LIGAR SOM</button>
+            <div id="statusText" class="status">PRONTO PARA CONECTAR</div>
+            
+            <div class="visualizer" id="viz">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Instancia o stream diretamente via objeto JavaScript
-        const audio = new Audio("https://icecast.somossistemas.com.br/proxy/nels1rocks?mp=/stream");
-        audio.preload = 'none';
+        // URLs alternativas de contorno (Estratégia de stream handler independente)
+        const streamUrls = [
+            "https://corsproxy.io/?https://icecast.somossistemas.com.br/proxy/nels1rocks?mp=/stream",
+            "https://icecast.somossistemas.com.br/proxy/nels1rocks?mp=/stream/;"
+        ];
 
-        const btn = document.getElementById('toggleBtn');
-        const statusMsg = document.getElementById('status-msg');
+        let audio = null;
+        let currentUrlIndex = 0;
+        const playBtn = document.getElementById('playBtn');
+        const statusText = document.getElementById('statusText');
+        const viz = document.getElementById('viz');
 
-        let isPlaying = false;
+        function initAudio() {
+            if (audio) {
+                audio.pause();
+                audio = null;
+            }
 
-        btn.addEventListener('click', () => {
-            if (!isPlaying) {
-                statusMsg.textContent = '⏳ CONECTANDO AO SERVIDOR...';
-                audio.src = "https://icecast.somossistemas.com.br/proxy/nels1rocks?mp=/stream";
-                audio.play().then(() => {
-                    isPlaying = true;
-                    btn.textContent = '⏸ PARAR RÁDIO';
-                    statusMsg.textContent = '🔴 AO VIVO NO AR';
-                }).catch(err => {
+            statusText.textContent = "CONECTANDO AO SERVIDOR...";
+            audio = new Audio(streamUrls[currentUrlIndex]);
+            audio.crossOrigin = "anonymous";
+
+            audio.addEventListener('playing', () => {
+                statusText.textContent = "🔴 AO VIVO NO AR";
+                playBtn.textContent = "⏸ DESLIGAR";
+                playBtn.classList.add('playing');
+                viz.classList.add('playing');
+            });
+
+            audio.addEventListener('waiting', () => {
+                statusText.textContent = "⏳ BUFFERIZANDO...";
+            });
+
+            audio.addEventListener('error', (e) => {
+                console.warn("Tentativa falhou, alternando rota...", e);
+                currentUrlIndex++;
+                if (currentUrlIndex < streamUrls.length) {
+                    initAudio();
+                    audio.play().catch(() => {});
+                } else {
+                    statusText.textContent = "⚠️ ERRO: SERVIDOR BLOQUEADO";
+                    playBtn.textContent = "▶ TENTAR NOVAMENTE";
+                    playBtn.classList.remove('playing');
+                    viz.classList.remove('playing');
+                }
+            });
+        }
+
+        playBtn.addEventListener('click', () => {
+            if (!audio || audio.paused) {
+                initAudio();
+                audio.play().catch(err => {
+                    statusText.textContent = "⚠️ TOQUE NOVAMENTE PARA LIBERAR";
                     console.error(err);
-                    statusMsg.textContent = '⚠️ ERRO DE BLOQUEIO DO SERVIDOR';
                 });
             } else {
                 audio.pause();
-                isPlaying = false;
-                btn.textContent = '▶ OUVIR RÁDIO';
-                statusMsg.textContent = 'ESTÚDIO PAUSADO';
+                audio.currentTime = 0;
+                playBtn.textContent = "▶ LIGAR SOM";
+                playBtn.classList.remove('playing');
+                viz.classList.remove('playing');
+                statusText.textContent = "ESTÚDIO PAUSADO";
             }
         });
     </script>
-
 </body>
 </html>
