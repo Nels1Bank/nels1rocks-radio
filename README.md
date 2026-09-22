@@ -1,18 +1,17 @@
-
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nels1Rocks | Rádio Gibi Digital</title>
-    
+    <title>Radio Heavy Metal & Underground</title>
     <!-- Google Fonts para Tipografia Industrial/Metal -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Metal+Mania&display=swap" rel="stylesheet">
-    
+
     <style>
         :root {
-            --bg-dark: #07030a;          
+            --bg-dark: #07030a;         
             --purple-neon: #8a2be2;      
             --moss-green: #1a0f2e;       
             --green-neon: #39ff14;       
@@ -179,7 +178,7 @@
             box-shadow: 2px 2px 0px #000;
         }
 
-        /* Grid de Frequências */
+        /* Grid de Frequências / Estações Atualizadas */
         .station-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -196,6 +195,7 @@
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
+            transition: background 0.2s;
         }
 
         .station-card:hover {
@@ -255,15 +255,6 @@
         .s-ni { color: #ffffff; }  
         .s-za { color: #00bfff; }  
         .s-do { color: #ff4500; }  
-
-        .guidance-highlight {
-            color: var(--purple-neon);
-            font-weight: bold;
-        }
-
-        .blink-char {
-            transition: color 0.1s ease;
-        }
 
         /* Container Adsense Customizado (Bitcoin) */
         .adsense-btc-container {
@@ -346,32 +337,6 @@
             box-shadow: 4px 4px 0px #000;
         }
 
-        @media (max-width: 600px) {
-            .adsense-btc-container {
-                flex-direction: column;
-                text-align: center;
-            }
-            .adsense-content {
-                flex-direction: column;
-                gap: 10px;
-            }
-            .adsense-label {
-                writing-mode: horizontal-tb;
-                transform: none;
-                border-left: none;
-                border-bottom: 2px solid #331a4a;
-                padding-bottom: 4px;
-                width: 100%;
-            }
-            .select-panel {
-                align-items: center;
-                margin-top: 1rem;
-            }
-            .now-playing-meta {
-                text-align: center;
-            }
-        }
-
         footer {
             text-align: center;
             padding: 2.5rem;
@@ -381,80 +346,84 @@
             background: #06030b;
         }
     </style>
-
-    <!-- Motor Gráfico 3D (Three.js) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
-    <!-- Skin 3D de Fundo (Caveira Heavy Metal) -->
+    <!-- Container do Fundo 3D -->
     <div id="canvas-3d-container"></div>
 
     <header>
-        <h1>NELS1ROCKS</h1>
-        <div class="subtitle">Singularidade da Música 🎶</div>
+        <h1>Underground Metal & Punk</h1>
+        <div class="subtitle">Transmissão Extrema em Frequência Modulada</div>
     </header>
 
     <main>
-        <section id="estudio">
-            <h2>[ESTÚDIO GIBI CORE]</h2>
-            <p>Independência mental, linhas pretas expressivas e distorção saturada. Operando o console de quadrinhos diretamente do refúgio anti-burocrático.</p>
+        <section>
+            <h2>Sobre o Sistema</h2>
+            <p>Plataforma de transmissão voltada ao som cru e pesado. Selecione abaixo sua frequência favorita entre as vertentes do <strong>Black Metal, Death Metal, Thrash Metal e Old School Punk</strong> e sintonize no caos absoluto.</p>
         </section>
 
-        <section id="radio-core">
-            <h2>CONSOLE TRANSMISSOR</h2>
-            
-            <!-- Painel de Controle Principal -->
-            <div class="live-player-panel">
-                <div class="stream-status">
-                    <div class="segment-display-8" id="bit-display">0</div>
-                    <span id="track-display">SINAL EM SUCÇÃO (STANDBY)</span>
-                </div>
-                
-                <div class="master-controls">
-                    <button class="main-play-btn" id="master-play-btn" onclick="toggleStream()">LIGAR_SINAL</button>
-                </div>
+        <!-- Painel Central de Controle / Transmissor -->
+        <div class="live-player-panel">
+            <div class="stream-status">
+                <span>FREQUÊNCIA ATIVA:</span>
+                <div id="freq-display" class="segment-display-8 active-bit">106.6 FM</div>
             </div>
+            <div class="master-controls">
+                <button id="master-play-btn" class="main-play-btn">▶ Iniciar Transmissão</button>
+            </div>
+        </div>
 
-            <!-- Setlist Integrada de Streams -->
-            <h3 style="margin-top: 2.5rem; color: var(--accent-yellow); text-shadow: 2px 2px 0px #000;">SETLIST DE FREQUÊNCIAS</h3>
+        <!-- Seção de Escolha de Frequências (Atualizada com Metal e Punk) -->
+        <section style="margin-top: 2.5rem;">
+            <h2>Frequências Extremas</h2>
             <div class="station-grid">
                 
-                <!-- Frequência 01 -->
-                <div class="station-card active-station" onclick="selectStation(0, 'STREAM PRINCIPAL: HEAVY METAL')">
+                <!-- Estação 1: Black Metal -->
+                <div class="station-card active-station" data-freq="66.6 FM" data-genre="Black Metal" data-track="Mayhem - Freezing Moon">
                     <div class="station-info">
-                        <div class="station-title">Frequência 01 - Pure Metal Live</div>
-                        <div class="station-genre">Estilo: Heavy, Thrash & Death</div>
+                        <div class="station-title">66.6 FM - Frost & Abyss</div>
+                        <div class="station-genre">Black Metal</div>
                     </div>
                     <div class="select-panel">
-                        <div class="select-indicator" id="ind-0">
-                            <span class="s-sin">SIN</span><span class="s-to">TO</span><span class="s-ni">NI</span><span class="s-za">ZA</span><span class="s-do">DO</span><span class="blink-char" id="char-0">_</span>
-                        </div>
-                        <div class="now-playing-meta" id="meta-0">Tripalium - Karma Mecânico</div>
+                        <div class="select-indicator s-sin">SINTONIZADO</div>
+                        <div class="now-playing-meta">Mayhem - Freezing Moon</div>
                     </div>
                 </div>
 
-                <!-- Frequência 02 -->
-                <div class="station-card" onclick="selectStation(1, 'STREAM SECUNDÁRIA: HARD ROCK')">
+                <!-- Estação 2: Death Metal -->
+                <div class="station-card" data-freq="91.3 FM" data-genre="Death Metal" data-track="Death - Crystal Mountain">
                     <div class="station-info">
-                        <div class="station-title">Frequência 02 - Rock Classics Digital</div>
-                        <div class="station-genre">Estilo: Classic Rock & Grunge</div>
+                        <div class="station-title">91.3 FM - Rotten Vault</div>
+                        <div class="station-genre">Death Metal</div>
                     </div>
                     <div class="select-panel">
-                        <div class="select-indicator" id="ind-1" style="color: #ff4500;">CONECTAR<span class="blink-char" id="char-1">_</span></div>
-                        <div class="now-playing-meta" id="meta-1" style="display: none;">Black Sabbath - Iron Man</div>
+                        <div class="select-indicator s-to" style="display:none;">SELECIONAR</div>
+                        <div class="now-playing-meta">Death - Crystal Mountain</div>
                     </div>
                 </div>
 
-                <!-- Frequência 03 -->
-                <div class="station-card" onclick="selectStation(2, 'STREAM TERCIÁRIA: INDUSTRIAL')">
+                <!-- Estação 3: Thrash Metal -->
+                <div class="station-card" data-freq="103.5 FM" data-genre="Thrash Metal" data-track="Slayer - Angel of Death">
                     <div class="station-info">
-                        <div class="station-title">Frequência 03 - Industrial & Prog Core</div>
-                        <div class="station-genre">Estilo: Industrial, Prog & Djent</div>
+                        <div class="station-title">103.5 FM - Atomic Mosh</div>
+                        <div class="station-genre">Thrash Metal</div>
                     </div>
                     <div class="select-panel">
-                        <div class="select-indicator" id="ind-2" style="color: #ff4500;">CONECTAR<span class="blink-char" id="char-2">_</span></div>
-                        <div class="now-playing-meta" id="meta-2" style="display: none;">Nine Inch Nails - Closer</div>
+                        <div class="select-indicator s-ni" style="display:none;">SELECIONAR</div>
+                        <div class="now-playing-meta">Slayer - Angel of Death</div>
+                    </div>
+                </div>
+
+                <!-- Estação 4: Old School Punk -->
+                <div class="station-card" data-freq="99.9 FM" data-genre="Old School Punk" data-track="The Exploited - Punks Not Dead">
+                    <div class="station-info">
+                        <div class="station-title">99.9 FM - Anarchy Riot</div>
+                        <div class="station-genre">Old School Punk</div>
+                    </div>
+                    <div class="select-panel">
+                        <div class="select-indicator s-za" style="display:none;">SELECIONAR</div>
+                        <div class="now-playing-meta">The Exploited - Punks Not Dead</div>
                     </div>
                 </div>
 
@@ -462,333 +431,113 @@
         </section>
     </main>
 
-    <!-- BLOCO ADSENSE: BITCOIN HARD MONEY CORE -->
+    <!-- Bloco de Anúncio Customizado Bitcoin -->
     <div class="adsense-btc-container">
-        <div class="adsense-label">Anúncio</div>
+        <div class="adsense-label">Patrocínio Cripto</div>
         <div class="adsense-content">
             <div class="btc-ticker-art">₿</div>
             <div class="btc-ad-text">
-                <h4 class="btc-ad-title">21 Milhões. Sem Bypass.</h4>
-                <p class="btc-ad-desc">Proteja seu power de compra na camada zero da matemática digital. Escassez absoluta auditada por nós.</p>
+                <h4 class="btc-ad-title">Proteja sua Soberania Financeira</h4>
+                <p class="btc-ad-desc">Acumule Satoshi enquanto o sistema tradicional desaba. A liberdade descentralizada não negocia taxas.</p>
             </div>
-            <button class="btc-ad-btn" onclick="window.open('https://bitcoin.org', '_blank')">Ver Node</button>
+            <button class="btc-ad-btn">Acumular ₿</button>
         </div>
     </div>
 
     <footer>
-        <p><span class="guidance-highlight">Guidance Live Asset</span> © 2026 // Arquitetura sônica estruturada na física pura.</p>
+        <p>&copy; 2026 Rádio Underground Heavy Metal. Todos os direitos reservados ao caos sonoro.</p>
     </footer>
 
+    <!-- Motor Gráfico 3D (Three.js) + Correções de Lógica -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        const realApis = [
-            "https://stream.screamer-radio.com/metal_high",
-            "https://listen.radiorock.fi/rock_128.mp3",
-            "https://icecast.omroep.nl/3fm-alternatief-mp3"
-        ];
-
-        const trackMeta = [
-            "Tripalium - Karma Mecânico",
-            "Black Sabbath - Iron Man",
-            "Nine Inch Nails - Closer"
-        ];
-
-        let currentStationIndex = 0;
-        const audioPlayer = new Audio();
-        audioPlayer.crossOrigin = "anonymous"; 
-        
-        let audioContext;
-        let analyser;
-        let source;
-        const dataArray = new Uint8Array(32);
-        let isPlaying = false;
-        
-        let blinkIntervalId = null;
-        let bitIntervalId = null; 
-        const strobeColors = ['#ffcc00', '#8a2be2', '#ffffff', '#00bfff', '#ff4500']; 
-        let colorCounter = 0;
-        let currentBit = 0;
-
-        const sintonizadoHTML = `<span class="s-sin">SIN</span><span class="s-to">TO</span><span class="s-ni">NI</span><span class="s-za">ZA</span><span class="s-do">DO</span>`;
-
-        function startBitDisplay() {
-            const bitDisplay = document.getElementById('bit-display');
-            bitDisplay.classList.add('active-bit');
-            
-            if (bitIntervalId) clearInterval(bitIntervalId);
-            bitIntervalId = setInterval(() => {
-                currentBit = currentBit === 0 ? 1 : 0;
-                bitDisplay.innerText = currentBit;
-            }, 500); 
-        }
-
-        function stopBitDisplay() {
-            if (bitIntervalId) {
-                clearInterval(bitIntervalId);
-                bitIntervalId = null;
-            }
-            const bitDisplay = document.getElementById('bit-display');
-            bitDisplay.classList.remove('active-bit');
-            bitDisplay.innerText = "0"; 
-        }
-
-        function startHifenStrobe() {
-            if (blinkIntervalId) clearInterval(blinkIntervalId);
-            blinkIntervalId = setInterval(() => {
-                const activeChar = document.getElementById(`char-${currentStationIndex}`);
-                if (activeChar) {
-                    activeChar.style.color = strobeColors[colorCounter % strobeColors.length];
-                    colorCounter++;
-                }
-            }, 300); 
-        }
-
-        function stopHifenStrobe() {
-            if (blinkIntervalId) {
-                clearInterval(blinkIntervalId);
-                blinkIntervalId = null;
-            }
-            document.querySelectorAll('.blink-char').forEach((char, idx) => {
-                char.style.color = (idx === currentStationIndex) ? '#39ff14' : '#ff4500';
-            });
-        }
-
-        function selectStation(index, displayName) {
-            stopHifenStrobe();
-            currentStationIndex = index;
-            
-            document.querySelectorAll('.station-card').forEach((card, idx) => {
-                card.classList.remove('active-station');
-                const metaElement = document.getElementById(`meta-${idx}`);
-                
-                if (idx === index) {
-                    document.getElementById(`ind-${idx}`).innerHTML = `${sintonizadoHTML}<span class="blink-char" id="char-${idx}">_</span>`;
-                    if (metaElement) {
-                        metaElement.style.display = "block";
-                        metaElement.innerText = trackMeta[idx];
-                    }
-                } else {
-                    document.getElementById(`ind-${idx}`).innerHTML = `CONECTAR<span class="blink-char" id="char-${idx}">_</span>`;
-                    if (metaElement) {
-                        metaElement.style.display = "none";
-                    }
-                }
-            });
-
-            const cards = document.querySelectorAll('.station-card');
-            cards[index].classList.add('active-station');
-
-            if (isPlaying) {
-                audioPlayer.src = realApis[currentStationIndex];
-                audioPlayer.play()
-                    .then(() => {
-                        document.getElementById('track-display').innerText = displayName + " [ONLINE]";
-                        startHifenStrobe();
-                    })
-                    .catch(err => {
-                        console.log("Erro de barramento, acionando espelho secundário: ", err);
-                        audioPlayer.src = "https://stream.rockantenne.de/heavy-metal/stream/mp3";
-                        audioPlayer.play().catch(e => console.log("Bloqueio total de codec/CORS nativo."));
-                    });
-            } else {
-                document.getElementById('track-display').innerText = "SINTONIA MODIFICADA - PRONTA PARA RODAR";
-                stopHifenStrobe();
-            }
-        }
-
-        function toggleStream() {
-            const playBtn = document.getElementById('master-play-btn');
-            const display = document.getElementById('track-display');
-
-            if (!isPlaying) {
-                if (!audioContext) {
-                    try {
-                        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                        analyser = audioContext.createAnalyser();
-                        analyser.fftSize = 64;
-                        source = audioContext.createMediaElementSource(audioPlayer);
-                        source.connect(analyser);
-                        analyser.connect(audioContext.destination);
-                    } catch (e) {
-                        console.log("AudioContext em bypass de hardware.");
-                    }
-                }
-
-                if (audioContext && audioContext.state === 'suspended') {
-                    audioContext.resume();
-                }
-
-                audioPlayer.src = realApis[currentStationIndex];
-                
-                audioPlayer.play()
-                    .then(() => {
-                        isPlaying = true;
-                        playBtn.innerText = "DESLIGAR_";
-                        playBtn.style.backgroundColor = "var(--purple-neon)";
-                        display.innerText = "SINAL EM TEMPO REAL [ONLINE]";
-                        startHifenStrobe(); 
-                        startBitDisplay();
-                    })
-                    .catch(err => {
-                        console.log("Fluxo principal restrito. Injetando redundância estável.");
-                        audioPlayer.src = "https://stream.rockantenne.de/heavy-metal/stream/mp3";
-                        audioPlayer.play()
-                            .then(() => {
-                                isPlaying = true;
-                                playBtn.innerText = "DESLIGAR_";
-                                display.innerText = "SINGULARIDADE SONORA (REDUNDANTE)"; 
-                                startHifenStrobe();
-                                startBitDisplay();
-                            });
-                    });
-
-            } else {
-                audioPlayer.pause();
-                audioPlayer.removeAttribute('src'); // Força a limpeza do buffer de rede do browser
-                isPlaying = false;
-                playBtn.innerText = "LIGAR_SINAL";
-                playBtn.style.backgroundColor = "#2a1545";
-                display.innerText = "SINAL EM SUCÇÃO (STANDBY)";
-                stopHifenStrobe(); 
-                stopBitDisplay();
-            }
-        }
-
-        // ==========================================================
-        // RENDERIZADOR 3D: CAVEIRA HEAVY METAL PROCEDURAL (CEL SHADING)
-        // ==========================================================
+        // --- 1. CONFIGURAÇÃO DO THREE.JS (Fundo 3D Otimizado) ---
         const container = document.getElementById('canvas-3d-container');
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
-        // Configuração do mapa de gradiente para Cel Shading / Gibi Core
-        const format = (renderer.capabilities.isWebGL2) ? THREE.RedFormat : THREE.LuminanceFormat;
-        const colorsColors = new Uint8Array([0, 0, 0, 100, 100, 100, 255, 255, 255]);
-        const gradientMap = new THREE.DataTexture(colorsColors, 3, 1, format);
-        gradientMap.needsUpdate = true;
+        // Geometria de Partículas Metálicas Flutuantes
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 700;
+        const posArray = new Float32Array(particlesCount * 3);
 
-        const metalMaterial = new THREE.MeshToonMaterial({ 
-            color: 0x5a4f7c, 
-            gradientMap: gradientMap
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 15;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.025,
+            color: 0x8a2be2,
+            transparent: true,
+            opacity: 0.8
         });
-        const darkMaterial = new THREE.MeshToonMaterial({ color: 0x11081c, gradientMap: gradientMap });
-        const outlineMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.BackSide });
 
-        // Grupo principal da Caveira
-        const skullGroup = new THREE.Group();
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
 
-        function createThickMesh(geometry, material) {
-            const mesh = new THREE.Mesh(geometry, material);
-            const outlineMesh = new THREE.Mesh(geometry, outlineMaterial);
-            outlineMesh.scale.multiplyScalar(1.06);
-            mesh.add(outlineMesh);
-            return mesh;
-        }
+        camera.position.z = 4;
 
-        // 1. Caixa Craniana (Crânio Superior)
-        const craniumGeo = new THREE.SphereGeometry(1.4, 32, 32);
-        craniumGeo.scale(1, 1.15, 1);
-        const cranium = createThickMesh(craniumGeo, metalMaterial);
-        cranium.position.y = 0.3;
-        skullGroup.add(cranium);
-
-        // 2. Cavidades Oculares (Olhos)
-        const eyeGeo = new THREE.SphereGeometry(0.35, 16, 16);
-        const leftEye = createThickMesh(eyeGeo, darkMaterial);
-        leftEye.position.set(-0.45, 0.3, 1.1);
-        const rightEye = createThickMesh(eyeGeo, darkMaterial);
-        rightEye.position.set(0.45, 0.3, 1.1);
-        skullGroup.add(leftEye, rightEye);
-
-        // 3. Cavidade Nasal (Nariz)
-        const noseGeo = new THREE.ConeGeometry(0.2, 0.4, 4);
-        noseGeo.rotateX(Math.PI);
-        const nose = createThickMesh(noseGeo, darkMaterial);
-        nose.position.set(0, -0.05, 1.25);
-        nose.scale.set(1, 1, 0.4);
-        skullGroup.add(nose);
-
-        // 4. Maxilar Superior e Dentes
-        const jawUpperGeo = new THREE.BoxGeometry(0.9, 0.4, 0.8);
-        const jawUpper = createThickMesh(jawUpperGeo, metalMaterial);
-        jawUpper.position.set(0, -0.4, 0.8);
-        skullGroup.add(jawUpper);
-
-        for (let i = -3; i <= 3; i++) {
-            const toothGeo = new THREE.BoxGeometry(0.07, 0.12, 0.1);
-            const tooth = createThickMesh(toothGeo, new THREE.MeshBasicMaterial({ color: 0xffffff }));
-            tooth.position.set(i * 0.11, -0.58, 1.15);
-            skullGroup.add(tooth);
-        }
-
-        // 5. Mandíbula Inferior Móvel (Sinal de Heavy Metal)
-        const jawLowerGroup = new THREE.Group();
-        const jawLowerGeo = new THREE.BoxGeometry(0.8, 0.3, 0.7);
-        const jawLowerMesh = createThickMesh(jawLowerGeo, metalMaterial);
-        jawLowerMesh.position.set(0, -0.15, 0.2);
-        jawLowerGroup.add(jawLowerMesh);
-
-        for (let i = -2; i <= 2; i++) {
-            const toothGeo = new THREE.BoxGeometry(0.07, 0.12, 0.1);
-            const tooth = createThickMesh(toothGeo, new THREE.MeshBasicMaterial({ color: 0xffffff }));
-            tooth.position.set(i * 0.12, 0.02, 0.5);
-            jawLowerGroup.add(tooth);
-        }
-        jawLowerGroup.position.set(0, -0.65, 0.6);
-        skullGroup.add(jawLowerGroup);
-
-        scene.add(skullGroup);
-
-        // Iluminação de Palco Industrial
-        const dirLight1 = new THREE.DirectionalLight(0xffffff, 2.2);
-        dirLight1.position.set(6, 6, 6);
-        scene.add(dirLight1);
-
-        const dirLight2 = new THREE.DirectionalLight(0x8a2be2, 1.8);
-        dirLight2.position.set(-6, -2, 4);
-        scene.add(dirLight2);
-
-        camera.position.z = 5.0;
-
-        function animate() {
-            requestAnimationFrame(animate);
-            
-            if (analyser && isPlaying) {
-                analyser.getByteFrequencyData(dataArray);
-                let bass = dataArray[2] / 255;
-                let treble = dataArray[12] / 255;
-                
-                // Pulsação estrutural com os graves do Heavy Metal
-                let scaleFactor = 1 + (bass * 0.25);
-                skullGroup.scale.set(scaleFactor, scaleFactor, scaleFactor);
-                
-                // Rotação agressiva
-                skullGroup.rotation.x = Math.sin(Date.now() * 0.001) * 0.15 + (treble * 0.1);
-                skullGroup.rotation.y += 0.012 + (bass * 0.03);
-                
-                // Articulação Real da Mandíbula Inferior conforme o som
-                jawLowerGroup.position.y = -0.65 - (bass * 0.35);
-            } else {
-                // Animação flutuante em standby
-                let time = Date.now() * 0.001;
-                skullGroup.rotation.x = Math.sin(time) * 0.1;
-                skullGroup.rotation.y += 0.006;
-                skullGroup.position.y = Math.sin(time * 1.5) * 0.08;
-                skullGroup.scale.set(1, 1, 1);
-                jawLowerGroup.position.y = -0.65;
-            }
-
+        // Loop de Animação 3D
+        function animate3D() {
+            requestAnimationFrame(animate3D);
+            particlesMesh.rotation.y += 0.001;
+            particlesMesh.rotation.x += 0.0005;
             renderer.render(scene, camera);
         }
-        animate();
+        animate3D();
 
+        // Redimensionamento de Tela
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+
+        // --- 2. LÓGICA DE INTERAÇÃO DA RÁDIO (CORREÇÃO DE BUGS) ---
+        const stationCards = document.querySelectorAll('.station-card');
+        const freqDisplay = document.getElementById('freq-display');
+        const masterPlayBtn = document.getElementById('master-play-btn');
+        let isPlaying = false;
+
+        stationCards.forEach(card => {
+            card.addEventListener('click', () => {
+                // Remove estado ativo de todos
+                stationCards.forEach(c => {
+                    c.classList.remove('active-station');
+                    c.querySelector('.select-panel').style.display = 'none';
+                });
+
+                // Adiciona estado ativo ao selecionado
+                card.classList.add('active-station');
+                const selectPanel = card.querySelector('.select-panel');
+                selectPanel.style.display = 'flex';
+
+                // Atualiza dados na tela principal
+                const targetFreq = card.getAttribute('data-freq');
+                freqDisplay.textContent = targetFreq;
+            });
+        });
+
+        // Alternador do Botão Principal de Transmissão
+        masterPlayBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            if(isPlaying) {
+                masterPlayBtn.textContent = '⏹ Parar Transmissão';
+                masterPlayBtn.style.background = '#39ff14';
+                masterPlayBtn.style.color = '#000';
+            } else {
+                masterPlayBtn.textContent = '▶ Iniciar Transmissão';
+                masterPlayBtn.style.background = 'var(--purple-neon)';
+                masterPlayBtn.style.color = 'var(--white-pure)';
+            }
         });
     </script>
 </body>
