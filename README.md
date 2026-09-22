@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Radio Heavy Metal & Underground</title>
+    <!-- Google Fonts para Tipografia Industrial/Metal -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Metal+Mania&display=swap" rel="stylesheet">
@@ -29,6 +30,7 @@
             overflow-x: hidden;
         }
 
+        /* Container da Skin 3D Heavy Metal */
         #canvas-3d-container {
             position: fixed;
             top: 0;
@@ -98,6 +100,7 @@
             border-left: 4px solid var(--purple-neon);
         }
 
+        /* Painel Central do Transmissor */
         .live-player-panel {
             background: #140824; 
             border: var(--cartoon-border);
@@ -157,6 +160,7 @@
             box-shadow: 6px 6px 0px #000;
         }
 
+        /* Grid de Frequências / Estações */
         .station-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -216,16 +220,9 @@
             text-shadow: 2px 2px 0px #000;
         }
 
-        .now-playing-meta {
-            font-size: 0.8rem;
-            color: var(--white-pure);
-            text-transform: uppercase;
-            text-align: right;
-            max-width: 250px;
-        }
-
         .s-sin { color: #ffcc00; } 
 
+        /* Container Adsense Customizado (Bitcoin) */
         .adsense-btc-container {
             max-width: 850px;
             margin: 0 auto 3rem auto;
@@ -309,6 +306,7 @@
 </head>
 <body>
 
+    <!-- Container do Fundo 3D -->
     <div id="canvas-3d-container"></div>
 
     <header>
@@ -319,9 +317,10 @@
     <main>
         <section>
             <h2>Sobre o Sistema</h2>
-            <p>Plataforma com streams reais integradas de <strong>Black Metal, Death Metal, Thrash Metal e Old School Punk</strong>. Selecione sua estação e aperte o play para o som ecoar.</p>
+            <p>Plataforma de som pesado com streams integradas de <strong>Black Metal, Death Metal, Thrash Metal e Old School Punk</strong>. Selecione sua estação e aperte o play para o som ecoar.</p>
         </section>
 
+        <!-- Painel Central de Controle / Transmissor -->
         <div class="live-player-panel">
             <div class="stream-status">
                 <span>FREQUÊNCIA ATIVA:</span>
@@ -332,47 +331,45 @@
             </div>
         </div>
 
+        <!-- Seção de Escolha de Frequências -->
         <section style="margin-top: 2.5rem;">
             <h2>Frequências Extremas</h2>
             <div class="station-grid">
                 
-                <!-- Estação 1: Metal Geral / Extremo (Stream Real de WebRadio) -->
-                <div class="station-card active-station" data-freq="66.6 FM" data-genre="Heavy & Extreme Metal" data-stream="https://rautemusik-de-hz-fal-stream05.radiohost.de/metal">
+                <!-- Estação 1: Black Metal / Heavy Extreme -->
+                <div class="station-card active-station" data-freq="66.6 FM" data-genre="Black & Heavy Metal" data-stream="https://rautemusik-de-hz-fal-stream05.radiohost.de/metal">
                     <div class="station-info">
                         <div class="station-title">66.6 FM - Frost & Abyss</div>
                         <div class="station-genre">Black / Heavy Metal</div>
                     </div>
                     <div class="select-panel">
                         <div class="select-indicator s-sin">SINTONIZADO</div>
-                        <div class="now-playing-meta">RauteMusik Metal Stream</div>
                     </div>
                 </div>
 
-                <!-- Estação 2: Hard Rock & Heavy -->
-                <div class="station-card" data-freq="91.3 FM" data-genre="Hard & Heavy" data-stream="https://stream.melodicarock.com/stream">
+                <!-- Estação 2: Death Metal / Melodic Heavy -->
+                <div class="station-card" data-freq="91.3 FM" data-genre="Death & Melodic" data-stream="https://stream.melodicarock.com/stream">
                     <div class="station-info">
                         <div class="station-title">91.3 FM - Rotten Vault</div>
                         <div class="station-genre">Death / Melodic Heavy</div>
                     </div>
                     <div class="select-panel" style="display:none;">
                         <div class="select-indicator s-sin">SELECIONAR</div>
-                        <div class="now-playing-meta">Melodic Rock Stream</div>
                     </div>
                 </div>
 
-                <!-- Estação 3: Rock Clássico / Thrash Vibe -->
-                <div class="station-card" data-freq="103.5 FM" data-genre="Classic Metal" data-stream="https://live.classicrockonthe.net/stream">
+                <!-- Estação 3: Thrash Metal / Classic Rock -->
+                <div class="station-card" data-freq="103.5 FM" data-genre="Thrash & Classic" data-stream="https://live.classicrockonthe.net/stream">
                     <div class="station-info">
                         <div class="station-title">103.5 FM - Atomic Mosh</div>
                         <div class="station-genre">Thrash / Classic Heavy</div>
                     </div>
                     <div class="select-panel" style="display:none;">
                         <div class="select-indicator s-sin">SELECIONAR</div>
-                        <div class="now-playing-meta">Classic Rock Stream</div>
                     </div>
                 </div>
 
-                <!-- Estação 4: Punk & Hardcore -->
+                <!-- Estação 4: Old School Punk -->
                 <div class="station-card" data-freq="99.9 FM" data-genre="Punk & Riot" data-stream="https://punk.stream.laut.fm/punk">
                     <div class="station-info">
                         <div class="station-title">99.9 FM - Anarchy Riot</div>
@@ -380,7 +377,6 @@
                     </div>
                     <div class="select-panel" style="display:none;">
                         <div class="select-indicator s-sin">SELECIONAR</div>
-                        <div class="now-playing-meta">Laut.fm Punk Stream</div>
                     </div>
                 </div>
 
@@ -388,6 +384,7 @@
         </section>
     </main>
 
+    <!-- Bloco de Patrocínio Bitcoin -->
     <div class="adsense-btc-container">
         <div class="adsense-label">Patrocínio Cripto</div>
         <div class="adsense-content">
@@ -404,12 +401,10 @@
         <p>&copy; 2026 Rádio Underground Heavy Metal. Transmissão ativa e sem censura.</p>
     </footer>
 
-    <!-- Elemento de Áudio HTML5 Oculto -->
-    <audio id="radio-audio" preload="none"></audio>
-
+    <!-- Motor Gráfico 3D (Three.js) + Lógica de Áudio Blindada -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // Fundo 3D
+        // --- 1. CONFIGURAÇÃO DO THREE.JS (Fundo 3D) ---
         const container = document.getElementById('canvas-3d-container');
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -438,15 +433,16 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // Lógica de Áudio Real da Rádio
-        const audioEl = document.getElementById('radio-audio');
+        // --- 2. LÓGICA DE ÁUDIO BLINDADA CONTRA AUTOPLAY ---
         const stationCards = document.querySelectorAll('.station-card');
         const freqDisplay = document.getElementById('freq-display');
         const masterPlayBtn = document.getElementById('master-play-btn');
         
         let currentStreamUrl = stationCards[0].getAttribute('data-stream');
+        let audioEl = null;
         let isPlaying = false;
 
+        // Seleção de Estações
         stationCards.forEach(card => {
             card.addEventListener('click', () => {
                 stationCards.forEach(c => {
@@ -460,33 +456,40 @@
                 freqDisplay.textContent = card.getAttribute('data-freq');
                 currentStreamUrl = card.getAttribute('data-stream');
 
-                if (isPlaying) {
+                if (isPlaying && audioEl) {
                     audioEl.src = currentStreamUrl;
-                    audioEl.play().catch(e => console.log("Erro ao carregar stream:", e));
+                    audioEl.play().catch(e => console.log("Erro na troca de stream:", e));
                 }
             });
         });
 
+        // Botão Master com Instanciação Direta no Clique
         masterPlayBtn.addEventListener('click', () => {
-            isPlaying = !isPlaying;
-            if(isPlaying) {
-                masterPlayBtn.textContent = '⏹ Parar Transmissão';
-                masterPlayBtn.style.background = '#39ff14';
-                masterPlayBtn.style.color = '#000';
-                audioEl.src = currentStreamUrl;
-                audioEl.play().catch(err => {
-                    alert("O navegador bloqueou o autoplay direto. Clique novamente ou interaja com a página!");
-                    isPlaying = false;
-                    masterPlayBtn.textContent = '▶ Iniciar Transmissão';
-                    masterPlayBtn.style.background = 'var(--purple-neon)';
-                    masterPlayBtn.style.color = 'var(--white-pure)';
+            if (!isPlaying) {
+                if (!audioEl) {
+                    audioEl = new Audio(currentStreamUrl);
+                } else {
+                    audioEl.src = currentStreamUrl;
+                }
+
+                audioEl.play().then(() => {
+                    isPlaying = true;
+                    masterPlayBtn.textContent = '⏹ Parar Transmissão';
+                    masterPlayBtn.style.background = '#39ff14';
+                    masterPlayBtn.style.color = '#000';
+                }).catch(err => {
+                    console.error("Bloqueio de mídia pelo navegador:", err);
+                    alert("Erro ao conectar à rádio. Tente clicar novamente.");
                 });
             } else {
+                if (audioEl) {
+                    audioEl.pause();
+                    audioEl.src = '';
+                }
+                isPlaying = false;
                 masterPlayBtn.textContent = '▶ Iniciar Transmissão';
                 masterPlayBtn.style.background = 'var(--purple-neon)';
                 masterPlayBtn.style.color = 'var(--white-pure)';
-                audioEl.pause();
-                audioEl.src = '';
             }
         });
     </script>
