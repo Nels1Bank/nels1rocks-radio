@@ -85,7 +85,6 @@
             border-left: 4px solid var(--purple-neon);
         }
 
-        /* Painel Central do Transmissor */
         .live-player-panel {
             background: #140824; 
             border: var(--cartoon-border);
@@ -121,6 +120,10 @@
 
         .master-controls {
             margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
         }
 
         .main-play-btn {
@@ -145,7 +148,6 @@
             box-shadow: 6px 6px 0px #000;
         }
 
-        /* Grid de Frequências / Estações */
         .station-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -163,12 +165,6 @@
             align-items: center;
             cursor: pointer;
             transition: background 0.2s;
-        }
-
-        .station-card:hover {
-            background: #190a2e;
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0px #000;
         }
 
         .station-card.active-station {
@@ -237,19 +233,21 @@
                 <div id="status-display" class="segment-display-8">PARADO</div>
             </div>
             
-            <!-- Elemento de áudio escondido para tocar o stream -->
-            <audio id="radio-audio" preload="none"></audio>
-
+            <!-- Controle de Volume Nativo Auxiliar para evitar falhas de foco -->
             <div class="master-controls">
                 <button id="play-btn" class="main-play-btn">▶ PLAY</button>
+                <div style="font-size: 0.85rem; color: #a59cb5;">
+                    Volume: <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="1" style="accent-color: var(--purple-neon); cursor: pointer;">
+                </div>
             </div>
         </div>
 
-        <!-- Estações / Links de Stream -->
+        <!-- Frequências / Estações -->
         <section style="margin-top: 3rem;">
             <h2>Frequências</h2>
             <div class="station-grid">
-                <div class="station-card active-station" data-stream="https://icecast.somossistemas.com.br/proxy/nels1rocks?mp=/stream">
+                <!-- Adicionado ponto e vírgula no final da URL do stream para compatibilidade estendida com Icecast -->
+                <div class="station-card active-station" data-stream="https://icecast.somossistemas.com.br/proxy/nels1rocks?mp=/stream/;">
                     <div class="station-info">
                         <div class="station-title">Nels1Rocks Main Stream</div>
                         <div class="station-genre">Heavy Metal / Rock</div>
@@ -267,28 +265,54 @@
     </footer>
 
     <script>
-        const audio = document.getElementById('radio-audio');
+        let audio = null;
         const playBtn = document.getElementById('play-btn');
         const statusDisplay = document.getElementById('status-display');
+        const volumeSlider = document.getElementById('volume-slider');
         const stationCard = document.querySelector('.station-card');
 
         let currentStreamUrl = stationCard.getAttribute('data-stream');
         let isPlaying = false;
 
-        playBtn.addEventListener('click', () => {
-            if (!isPlaying) {
-                statusDisplay.textContent = 'CONECTANDO...';
-                audio.src = currentStreamUrl;
-                audio.play().then(() => {
-                    isPlaying = true;
-                    playBtn.textContent = '⏹ PARAR';
+        function initAudio() {
+            if (!audio) {
+                audio = new Audio();
+                audio.crossOrigin = "anonymous";
+                
+                audio.addEventListener('playing', () => {
                     statusDisplay.textContent = 'AO VIVO';
-                }).catch((error) => {
-                    console.error("Erro ao reproduzir:", error);
-                    statusDisplay.textContent = 'ERRO AO CONECTAR';
-                    isPlaying = false;
-                    playBtn.textContent = '▶ PLAY';
+                    playBtn.textContent = '⏹ PARAR';
+                    isPlaying = true;
                 });
+
+                audio.addEventListener('error', (e) => {
+                    console.error("Erro no elemento de áudio:", e);
+                    statusDisplay.textContent = 'ERRO AO CONECTAR';
+                    playBtn.textContent = '▶ PLAY';
+                    isPlaying = false;
+                });
+
+                audio.addEventListener('stalled', () => {
+                    statusDisplay.textContent = 'BUFFERING...';
+                });
+            }
+        }
+
+        playBtn.addEventListener('click', async () => {
+            initAudio();
+
+            if (!isPlaying) {
+                try {
+                    statusDisplay.textContent = 'CONECTANDO...';
+                    audio.src = currentStreamUrl;
+                    audio.volume = volumeSlider.value;
+                    await audio.play();
+                } catch (error) {
+                    console.error("Falha ao iniciar playback:", error);
+                    statusDisplay.textContent = 'ERRO AO CONECTAR';
+                    playBtn.textContent = '▶ PLAY';
+                    isPlaying = false;
+                }
             } else {
                 audio.pause();
                 audio.src = '';
@@ -298,11 +322,10 @@
             }
         });
 
-        // Tratamento caso caia a conexão do stream
-        audio.addEventListener('error', () => {
-            statusDisplay.textContent = 'ERRO NO STREAM';
-            playBtn.textContent = '▶ PLAY';
-            isPlaying = false;
+        volumeSlider.addEventListener('input', (e) => {
+            if (audio) {
+                audio.volume = e.target.value;
+            }
         });
     </script>
 </body>
