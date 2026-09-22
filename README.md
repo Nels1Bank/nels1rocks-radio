@@ -85,15 +85,16 @@
 
     <div class="container">
         <h1>Nels1Rocks</h1>
-        <div class="subtitle">Heavy Metal 24/7</div>
+        <div class="subtitle">Heavy Metal 24/7 (HTTPS Secure)</div>
         
         <div class="player-box">
+            <!-- Stream 100% HTTPS compatível com GitHub Pages -->
             <audio id="radioStream" preload="none">
                 <source src="https://stream.rockantenne.de/heavy-metal/stream/mp3" type="audio/mpeg">
                 Seu navegador não suporta áudio.
             </audio>
 
-            <div id="statusText" class="status">TOQUE NO BOTÃO ABAIXO PARA OUVIR</div>
+            <div id="statusText" class="status">PRONTO PARA CONECTAR AO AR</div>
             <button class="btn-live" id="playBtn">▶ LIGAR SOM DA RÁDIO</button>
         </div>
     </div>
@@ -107,9 +108,8 @@
 
         playBtn.addEventListener('click', () => {
             if (!isPlaying) {
-                statusText.textContent = "CONECTANDO AO TRANSMISSOR...";
+                statusText.textContent = "CONECTANDO AO SERVIDOR SEGURO...";
                 
-                // Força o carregamento e play limpo
                 audio.load();
                 audio.play().then(() => {
                     isPlaying = true;
@@ -119,7 +119,7 @@
                     statusText.textContent = "🔴 AO VIVO NO AR!";
                 }).catch(error => {
                     console.error(error);
-                    statusText.textContent = "⚠️ ERRO: CLIQUE NOVAMENTE NO BOTÃO";
+                    statusText.textContent = "⚠️ TOQUE NOVAMENTE PARA LIBERAR";
                 });
             } else {
                 audio.pause();
