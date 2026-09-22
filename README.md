@@ -6,263 +6,82 @@
     <title>Nels1Rocks Radio</title>
     <link href="https://fonts.googleapis.com/css2?family=Metal+Mania&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-dark: #07030a;         
-            --purple-neon: #8a2be2;      
-            --moss-green: #1a0f2e;       
-            --green-neon: #39ff14;       
-            --white-pure: #ffffff;       
-            --accent-yellow: #ffcc00;    
-            --panel-bg: rgba(10, 5, 20, 0.93);
-            --cartoon-border: 4px solid #000000; 
-        }
-
+        * { box-sizing: border-box; }
         body {
             margin: 0;
-            padding: 0;
-            background-color: var(--bg-dark);
-            color: var(--white-pure);
+            background: #07030a;
+            color: #ffffff;
             font-family: 'Fira Code', monospace;
-            overflow-x: hidden;
-        }
-
-        header {
-            background: #0f051c;
-            padding: 2.5rem 2rem;
-            text-align: center;
-            border-bottom: 6px solid #000000; 
-            box-shadow: 0 6px 0 #1f0b3a;
-        }
-
-        h1 {
-            font-family: 'Metal Mania', cursive;
-            font-size: 4.5rem;
-            color: var(--white-pure);
-            margin: 0;
-            text-shadow: 4px 4px 0px #000000, 8px 8px 0px var(--purple-neon);
-            letter-spacing: 3px;
-        }
-
-        .subtitle {
-            font-size: 0.95rem;
-            color: var(--purple-neon);
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            margin-top: 0.7rem;
-            font-weight: bold;
-            text-shadow: 2px 2px 0px #000;
-        }
-
-        main {
-            max-width: 850px;
-            margin: 3rem auto;
-            padding: 2.5rem;
-            background: var(--panel-bg);
-            border: var(--cartoon-border);
-            box-shadow: 8px 8px 0px #000000; 
-        }
-
-        section {
-            margin-bottom: 2.5rem;
-        }
-
-        h2 {
-            font-family: 'Metal Mania', cursive;
-            font-size: 2.3rem;
-            color: var(--white-pure);
-            border-bottom: 4px solid #000000;
-            padding-bottom: 0.5rem;
-            text-transform: uppercase;
-            text-shadow: 2px 2px 0px var(--purple-neon);
-        }
-
-        p {
-            line-height: 1.7;
-            font-size: 1.1rem;
-            color: #dcd6e8;
-            background: rgba(0,0,0,0.5);
-            padding: 1rem;
-            border-left: 4px solid var(--purple-neon);
-        }
-
-        .live-player-panel {
-            background: #140824; 
-            border: var(--cartoon-border);
-            padding: 2rem;
-            text-align: center;
-            margin-top: 2rem;
-            box-shadow: 5px 5px 0px #000000;
-        }
-
-        .stream-status {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-            color: var(--white-pure);
-            text-shadow: 2px 2px 0px #000;
-        }
-
-        .segment-display-8 {
-            font-family: 'Fira Code', monospace;
-            font-size: 1.6rem;
-            font-weight: bold;
-            color: var(--green-neon);
-            background: #000000;
-            padding: 0.2rem 0.7rem;
-            border: 2px solid #000000;
-            box-shadow: inset 0px 0px 8px rgba(0,0,0,0.8);
-            text-shadow: 0px 0px 10px rgba(57, 255, 20, 0.8);
-        }
-
-        .native-player-container {
-            margin-top: 1.5rem;
-            display: flex;
-            justify-content: center;
-        }
-
-        audio {
-            width: 100%;
-            max-width: 500px;
-            height: 50px;
-            filter: invert(90%) hue-rotate(200deg);
-        }
-
-        .station-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.2rem;
-            margin-top: 1.5rem;
-        }
-
-        .station-card {
-            background: #0e051a;
-            border: var(--cartoon-border);
-            box-shadow: 4px 4px 0px #000;
-            padding: 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .station-card.active-station {
-            background: #25123e;
-            border-color: var(--purple-neon);
-            box-shadow: 5px 5px 0px var(--purple-neon);
-        }
-
-        .station-info .station-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--white-pure);
-            text-shadow: 1px 1px 0px #000;
-        }
-
-        .station-info .station-genre {
-            font-size: 0.85rem;
-            color: #a59cb5;
-            margin-top: 0.3rem;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        .select-panel {
             display: flex;
             flex-direction: column;
-            align-items: flex-end;
-            gap: 4px;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
-
-        .select-indicator {
-            font-size: 1rem;
-            font-weight: bold;
-            text-shadow: 2px 2px 0px #000;
-        }
-
-        .s-sin { color: var(--green-neon); } 
-
-        footer {
+        .card {
+            background: #10061d;
+            border: 4px solid #000;
+            box-shadow: 6px 6px 0px #000;
+            padding: 2rem;
             text-align: center;
-            padding: 2.5rem;
+            max-width: 450px;
+            width: 100%;
+        }
+        h1 {
+            font-family: 'Metal Mania', cursive;
+            font-size: 3rem;
+            margin: 0 0 10px 0;
+            text-shadow: 3px 3px 0px #000, 6px 6px 0px #8a2be2;
+        }
+        p {
+            color: #bfaad1;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        audio {
+            width: 100%;
+            outline: none;
+        }
+        .status {
+            margin-top: 15px;
             font-size: 0.85rem;
-            color: #6a5a80;
-            border-top: 6px solid #000000;
-            background: #06030b;
+            color: #39ff14;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <header>
+    <div class="card">
         <h1>Nels1Rocks</h1>
-        <div class="subtitle">Heavy Metal & Rock Web Radio</div>
-    </header>
+        <p>Heavy Metal & Rock</p>
+        
+        <!-- Player Nativo Otimizado com sufixo de compatibilidade de stream -->
+        <audio id="player" controls preload="none">
+            <source src="https://icecast.somossistemas.com.br/proxy/nels1rocks?mp=/stream/;" type="audio/mpeg">
+            Seu navegador não suporta áudio.
+        </audio>
 
-    <main>
-        <section>
-            <h2>Sobre a Rádio</h2>
-            <p>Seja bem-vindo ao transmissor oficial da Nels1Rocks. Som pesado, sem frescura e direto na sua frequência.</p>
-        </section>
-
-        <!-- Painel Central do Transmissor -->
-        <div class="live-player-panel">
-            <div class="stream-status">
-                <span>STATUS:</span>
-                <div id="status-display" class="segment-display-8">PRONTO</div>
-            </div>
-            
-            <!-- Player Nativo Robustecido -->
-            <div class="native-player-container">
-                <audio id="radio-player" controls preload="none">
-                    <source src="https://icecast.somossistemas.com.br/proxy/nels1rocks?mp=/stream" type="audio/mpeg">
-                    Seu navegador não suporta o elemento de áudio.
-                </audio>
-            </div>
-        </div>
-
-        <!-- Frequências / Estações -->
-        <section style="margin-top: 3rem;">
-            <h2>Frequências</h2>
-            <div class="station-grid">
-                <div class="station-card active-station">
-                    <div class="station-info">
-                        <div class="station-title">Nels1Rocks Main Stream</div>
-                        <div class="station-genre">Heavy Metal / Rock</div>
-                    </div>
-                    <div class="select-panel">
-                        <span class="select-indicator s-sin">● CONECTADO</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        &copy; 2026 Nels1Rocks Radio. Todos os direitos reservados.
-    </footer>
+        <div id="msg" class="status">Pressione Play para conectar</div>
+    </div>
 
     <script>
-        const audioPlayer = document.getElementById('radio-player');
-        const statusDisplay = document.getElementById('status-display');
+        const audio = document.getElementById('player');
+        const msg = document.getElementById('msg');
 
-        audioPlayer.addEventListener('playing', () => {
-            statusDisplay.textContent = 'AO VIVO 🔴';
+        audio.addEventListener('playing', () => {
+            msg.textContent = '● AO VIVO NO AR';
         });
-
-        audioPlayer.addEventListener('pause', () => {
-            statusDisplay.textContent = 'PAUSADO';
+        audio.addEventListener('pause', () => {
+            msg.textContent = 'PAUSADO';
         });
-
-        audioPlayer.addEventListener('waiting', () => {
-            statusDisplay.textContent = 'CONECTANDO...';
-        });
-
-        audioPlayer.addEventListener('error', () => {
-            statusDisplay.textContent = 'ERRO NO STREAM';
+        audio.addEventListener('error', () => {
+            msg.textContent = '⚠️ ERRO AO CONECTAR AO STREAM';
         });
     </script>
+
 </body>
 </html>
