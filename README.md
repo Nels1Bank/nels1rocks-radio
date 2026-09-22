@@ -132,12 +132,12 @@
 
     <div class="container">
         <h1>Nels1Rocks</h1>
-        <div class="subtitle">Heavy Metal Web Stream Engine</div>
+        <div class="subtitle">Heavy Metal Distortion Engine</div>
         
         <div class="player-box">
             <div class="track-info">
-                <div style="font-size: 0.7rem; color: #39ff14; margin-bottom: 4px;">ESTADO DA TRANSMISSÃO</div>
-                <div id="track-title">PRONTO PARA CONECTAR</div>
+                <div style="font-size: 0.7rem; color: #39ff14; margin-bottom: 4px;">ESTADO DO MOTOR DE GUITARRA</div>
+                <div id="track-title">PRONTO PARA O SOM PESADO</div>
             </div>
 
             <div class="visualizer" id="viz">
@@ -149,61 +149,68 @@
             </div>
 
             <button class="btn" id="toggleBtn">▶ LIGAR RÁDIO</button>
-            <div class="status" id="statusMsg">Nenhum bloqueio de servidor</div>
+            <div class="status" id="statusMsg">Timbre de distorção ativado</div>
         </div>
     </div>
 
     <script>
         let audioCtx = null;
         let isPlaying = false;
-        let synthInterval = null;
+        let riffInterval = null;
 
         const toggleBtn = document.getElementById('toggleBtn');
         const trackTitle = document.getElementById('track-title');
         const statusMsg = document.getElementById('statusMsg');
         const viz = document.getElementById('viz');
 
-        // Notas musicais em frequências de acordes pesados de Rock/Metal (Power Chords)
-        const metalRiffs = [
-            110.00, // A2
-            116.54, // A#2
-            130.81, // C3
-            146.83, // D3
-            164.81, // E3
-            196.00, // G3
-            220.00  // A3
+        // Acordes de Rock Pesado e Metal (Power Chords em Hz: Fundamental + Quinta Justa)
+        const powerChords = [
+            { name: "E5 Power Riff (Drop E)", root: 82.41, fifth: 123.47 },   // E2 + B2
+            { name: "A5 Heavy Metal Attack", root: 110.00, fifth: 164.81 },  // A2 + E3
+            { name: "D5 Distortion Grind", root: 73.42, fifth: 110.00 },   // D2 + A2
+            { name: "G5 Fast Thrash Riff", root: 98.00, fifth: 146.83 },   // G2 + D3
+            { name: "B5 Dark Metal Breakdown", root: 61.74, fifth: 92.50 }   // B1 + F#2
         ];
 
         const songTitles = [
-        	"Nels1Rocks - Heavy Metal Core Loop",
-            "Guitar Riff Distortion - Live Stream",
-            "Underground Rock 24/7 Engine",
-            "Power Metal Blast Beat Stream"
+            "Nels1Rocks - Heavy Metal Core Riff",
+            "Underground Distortion Loop (Live)",
+            "Power Metal Blast Beat Machine",
+            "Thrash Guitars Heavy Rotation"
         ];
 
-        function playHeavyNote(ctx, freq) {
+        function playPowerChord(ctx, chord) {
             if (!isPlaying) return;
 
-            // Oscilador de onda dente-de-serra (Sawtooth) para dar o timbre distorcido de guitarra elétrica
-            let osc = ctx.createOscillator();
-            let gain = ctx.createGain();
-            let distortion = ctx.createWaveShaper();
+            const now = ctx.currentTime;
 
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(freq, ctx.currentTime);
+            // Função para gerar uma oitava distorcida (simulando amplificador valvulado)
+            function createDistortedOscillator(freq, gainValue) {
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                
+                // Usando 'sawtooth' (dente de serra) que é a base para timbres de guitarra com distorção
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(freq, now);
 
-            // Simulação de ganho/distorção pesada
-            gain.gain.setValueAtTime(0.15, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+                // Envoltória de ataque rápido e decay de guitarra pesada
+                gain.gain.setValueAtTime(gainValue, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
 
-            osc.connect(gain);
-            gain.connect(ctx.destination);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
 
-            osc.start();
-            osc.stop(ctx.currentTime + 0.35);
+                osc.start(now);
+                osc.stop(now + 0.45);
+            }
+
+            // Toca a fundamental e a quinta simultaneamente (Power Chord encorpado) + oitava grave
+            createDistortedOscillator(chord.root, 0.12);
+            createDistortedOscillator(chord.fifth, 0.10);
+            createDistortedOscillator(chord.root / 2, 0.08); // Sub-grave de peso
         }
 
-        function startSynthStream() {
+        function startRadio() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             }
@@ -215,41 +222,41 @@
             toggleBtn.textContent = "⏸ DESLIGAR RÁDIO";
             toggleBtn.classList.add('playing');
             viz.classList.add('playing');
-            statusMsg.textContent = "🔴 TRANSMITINDO AO VIVO";
+            statusMsg.textContent = "🔴 ROLANDO O SOM PESADO";
 
             let titleIdx = 0;
             trackTitle.textContent = songTitles[titleIdx];
 
-            // Loop rítmico simulando sequência pesada de riffs de metal
-            synthInterval = setInterval(() => {
+            // Ritmo dinâmico de riffs em loop infinito
+            riffInterval = setInterval(() => {
                 if (!isPlaying) return;
-                // Toca notas aleatórias em progressão de rock pesado
-                let randomNote = metalRiffs[Math.floor(Math.random() * metalRiffs.length)];
-                playHeavyNote(audioCtx, randomNote);
 
-                // A cada ciclo troca o título da música exibida
-                if (Math.random() < 0.15) {
+                let randomChord = powerChords[Math.floor(Math.random() * powerChords.length)];
+                playPowerChord(audioCtx, randomChord);
+
+                // Troca o título da "música" a cada alguns segundos
+                if (Math.random() < 0.2) {
                     titleIdx = (titleIdx + 1) % songTitles.length;
                     trackTitle.textContent = songTitles[titleIdx];
                 }
-            }, 250);
+            }, 300); // Ritmo de andamento de metal pesado
         }
 
-        function stopSynthStream() {
+        function stopRadio() {
             isPlaying = false;
-            clearInterval(synthInterval);
+            clearInterval(riffInterval);
             toggleBtn.textContent = "▶ LIGAR RÁDIO";
             toggleBtn.classList.remove('playing');
             viz.classList.remove('playing');
             statusMsg.textContent = "TRANSMISSÃO PAUSADA";
-            trackTitle.textContent = "PRONTO PARA CONECTAR";
+            trackTitle.textContent = "PRONTO PARA O SOM PESADO";
         }
 
         toggleBtn.addEventListener('click', () => {
             if (!isPlaying) {
-                startSynthStream();
+                startRadio();
             } else {
-                stopSynthStream();
+                stopRadio();
             }
         });
     </script>
