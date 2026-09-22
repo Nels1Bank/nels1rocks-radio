@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nels1Rocks Radio</title>
+    <title>Nels1Rocks Rádio</title>
     <link href="https://fonts.googleapis.com/css2?family=Metal+Mania&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; }
@@ -30,13 +30,13 @@
         }
         h1 {
             font-family: 'Metal Mania', cursive;
-            font-size: 3rem;
+            font-size: 2.8rem;
             margin: 0 0 10px 0;
             text-shadow: 3px 3px 0px #000, 6px 6px 0px #8a2be2;
         }
         p {
             color: #bfaad1;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             margin-bottom: 2rem;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -50,11 +50,11 @@
         audio {
             width: 100%;
         }
-        .help-text {
-            font-size: 0.75rem;
-            color: #ff5555;
+        .status {
             margin-top: 15px;
-            line-height: 1.4;
+            font-size: 0.8rem;
+            color: #39ff14;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -62,20 +62,35 @@
 
     <div class="card">
         <h1>Nels1Rocks</h1>
-        <p>Heavy Metal & Rock Web Radio</p>
+        <p>Rádio Online de Heavy Metal e Rock</p>
         
         <div class="player-box">
-            <!-- Player com suporte a fallback de stream -->
-            <audio controls preload="none">
-                <source src="https://icecast.somossistemas.com.br/proxy/nels1rocks?mp=/stream/;" type="audio/mpeg">
+            <!-- Rota roteada via proxy seguro para contornar bloqueio de celular/HTTPS -->
+            <audio id="audio-stream" controls preload="none">
+                <source src="https://corsproxy.io/?https://icecast.somossistemas.com.br/proxy/nels1rocks?mp=/stream" type="audio/mpeg">
                 Seu navegador não suporta áudio.
             </audio>
         </div>
 
-        <div class="help-text">
-            ⚠️ Se o player ficar carregando eternamente, abra o painel da sua hospedagem de streaming e verifique se o certificado SSL/HTTPS do domínio <b>icecast.somossistemas.com.br</b> está ativo e válido.
-        </div>
+        <div id="status-msg" class="status">Toque em Play para sintonizar</div>
     </div>
+
+    <script>
+        const player = document.getElementById('audio-stream');
+        const statusMsg = document.getElementById('status-msg');
+
+        player.addEventListener('playing', () => {
+            statusMsg.textContent = '🔴 AO VIVO NO AR';
+        });
+
+        player.addEventListener('waiting', () => {
+            statusMsg.textContent = '⏳ SINTONIZANDO FREQUÊNCIA...';
+        });
+
+        player.addEventListener('error', () => {
+            statusMsg.textContent = '⚠️ ERRO NO SERVIDOR DE STREAM';
+        });
+    </script>
 
 </body>
 </html>
