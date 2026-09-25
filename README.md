@@ -161,7 +161,7 @@
                 <option value="https://stream.antenne.de/heavy-metal/stream/mp3">🔥 Heavy Metal / NWOBHM (Rock Antenne)</option>
                 <option value="https://rautemusik-de-hz-fal-stream02.radiohost.de/hardrock">🎸 Hard Rock Arena (RauteMusic)</option>
                 <option value="https://stream.schwarzwaldradio.com/schwarzwaldradio/mp3-192/stream.mp3">⚡ Rock Clássico & Alternativo (Schwarzwald)</option>
-                <option value="https://radio.streampie.org/hardrock">💀 Hard Rock & Heavy Underground</option>
+                <option value="https://s2.radio.co/s83713f83c/listen">💀 Extreme Metal & Thrash (Underground)</option>
             </select>
         </div>
 
@@ -171,7 +171,6 @@
         </div>
 
         <div class="audio-console">
-            <!-- Usamos crossOrigin para mitigar barreiras de CORS no Chrome -->
             <audio id="globalAudioPlayer" crossorigin="anonymous" preload="none"></audio>
 
             <div class="vu-container" id="vuMeter">
@@ -197,6 +196,7 @@
         const gainSlider = document.getElementById('gainSlider');
 
         let isLive = false;
+        let reconnectTimer = null;
 
         audio.volume = gainSlider.value;
 
@@ -226,12 +226,10 @@
 
                 const streamUrl = metalStreamSelect.value;
                 
-                // Força o reset completo do elemento de áudio para limpar qualquer buffer travado no Chrome
                 audio.pause();
                 audio.removeAttribute('src');
                 audio.load();
 
-                // Define nova fonte com parâmetro anti-cache
                 audio.src = `${streamUrl}${streamUrl.includes('?') ? '&' : '?'}_cb=${Date.now()}`;
                 
                 await audio.play();
@@ -243,15 +241,16 @@
                 statusConsole.textContent = "🔴 AO VIVO NO AR!";
                 vuMeter.classList.add('streaming');
             } catch (err) {
-                console.error("Erro capturado pelo Chrome:", err);
-                statusConsole.textContent = "⚠️ BLOQUEIO DE REDE. CLIQUE NOVAMENTE";
-                deactivateRadio(false);
+                console.error("Erro na ativação:", err);
+                statusConsole.textContent = "⚠️ SERVIDOR OCUPADO. TENTANDO RECONECTAR...";
+                scheduleReconnect();
             } finally {
                 togglePowerBtn.disabled = false;
             }
         }
 
         function deactivateRadio(manual = false) {
+            if (reconnectTimer) clearTimeout(reconnectTimer);
             audio.pause();
             audio.removeAttribute('src');
             audio.load();
@@ -267,17 +266,28 @@
             }
         }
 
+        function scheduleReconnect() {
+            if (!isLive) return;
+            statusConsole.textContent = "🔄 TENTANDO RECUPERAR SINAL...";
+            if (reconnectTimer) clearTimeout(reconnectTimer);
+            
+            reconnectTimer = setTimeout(() => {
+                if (isLive) {
+                    activateRadio();
+                }
+            }, 3000);
+        }
+
         audio.addEventListener('stalled', () => {
             if (isLive) {
-                statusConsole.textContent = "⚠️ BUFFER LENTO. AGUARDANDO...";
+                statusConsole.textContent = "⚠️ SINAL ENGASGADO. RECALIBRANDO...";
             }
         });
 
         audio.addEventListener('error', (e) => {
-            console.error("Erro nativo da stream:", e);
+            console.error("Queda de fluxo:", e);
             if (isLive) {
-                statusConsole.textContent = "⚠️ ERRO DE CORS/SINAL NO CHROME";
-                deactivateRadio(false);
+                scheduleReconnect();
             }
         });
     </script>
