@@ -62,7 +62,7 @@
             text-transform: uppercase;
         }
 
-        select, input[type="range"] {
+        select {
             width: 100%;
             background: #000;
             color: #39ff14;
@@ -74,11 +74,6 @@
             cursor: pointer;
         }
 
-        input[type="range"] {
-            padding: 5px;
-            accent-color: #39ff14;
-        }
-
         .audio-console {
             background: #000000;
             border: 3px solid #8a2be2;
@@ -87,61 +82,17 @@
             box-shadow: inset 0 0 10px rgba(138, 43, 226, 0.4);
         }
 
-        .vu-container {
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            gap: 5px;
-            height: 40px;
-            margin-bottom: 15px;
-        }
-
-        .vu-bar {
-            width: 6px;
-            background: #39ff14;
-            height: 6px;
-        }
-
-        .streaming .vu-bar {
-            animation: freq-pulse 0.4s infinite alternate ease-in-out;
-        }
-
-        .streaming .vu-bar:nth-child(2) { animation-delay: 0.1s; }
-        .streaming .vu-bar:nth-child(3) { animation-delay: 0.3s; }
-        .streaming .vu-bar:nth-child(4) { animation-delay: 0.15s; }
-        .streaming .vu-bar:nth-child(5) { animation-delay: 0.25s; }
-        .streaming .vu-bar:nth-child(6) { animation-delay: 0.05s; }
-
-        @keyframes freq-pulse {
-            0% { height: 6px; background: #39ff14; }
-            50% { height: 22px; background: #b1fc03; }
-            100% { height: 38px; background: #ff0055; }
-        }
-
-        .btn-stream {
-            background: #39ff14;
-            color: #000000;
-            border: 3px solid #000;
-            padding: 16px;
-            font-family: 'Share Tech Mono', monospace;
-            font-weight: bold;
-            font-size: 1.1rem;
-            cursor: pointer;
-            box-shadow: 4px 4px 0px #000;
-            text-transform: uppercase;
+        /* Player nativo estilizado para o Chrome não bloquear */
+        audio {
             width: 100%;
-            transition: all 0.08s ease;
-        }
-
-        .btn-stream:hover { background: #b1fc03; }
-        .btn-stream:active {
-            box-shadow: 1px 1px 0px #000;
-            transform: translate(3px, 3px);
+            margin-top: 10px;
+            accent-color: #39ff14;
+            filter: invert(100%) hue-rotate(180deg) brightness(1.5);
         }
 
         .status-screen {
             font-size: 0.75rem;
-            color: #bfaad1;
+            color: #39ff14;
             margin-top: 15px;
             font-weight: bold;
             letter-spacing: 1px;
@@ -161,134 +112,39 @@
                 <option value="https://stream.antenne.de/heavy-metal/stream/mp3">🔥 Heavy Metal / NWOBHM (Rock Antenne)</option>
                 <option value="https://rautemusik-de-hz-fal-stream02.radiohost.de/hardrock">🎸 Hard Rock Arena (RauteMusic)</option>
                 <option value="https://stream.schwarzwaldradio.com/schwarzwaldradio/mp3-192/stream.mp3">⚡ Rock Clássico & Alternativo (Schwarzwald)</option>
-                <option value="https://s2.radio.co/s83713f83c/listen">💀 Extreme Metal & Thrash (Underground)</option>
             </select>
         </div>
 
-        <div class="panel-section">
-            <label for="gainSlider">Volume do Amplificador:</label>
-            <input type="range" id="gainSlider" min="0" max="1" step="0.05" value="0.85">
-        </div>
-
         <div class="audio-console">
-            <audio id="globalAudioPlayer" crossorigin="anonymous" preload="none"></audio>
+            <!-- Player nativo visível para evitar qualquer bloqueio de script do Chrome -->
+            <audio id="nativeAudio" controls preload="none">
+                <source src="https://stream.antenne.de/heavy-metal/stream/mp3" type="audio/mpeg">
+                Seu navegador não suporta áudio HTML5.
+            </audio>
 
-            <div class="vu-container" id="vuMeter">
-                <div class="vu-bar"></div>
-                <div class="vu-bar"></div>
-                <div class="vu-bar"></div>
-                <div class="vu-bar"></div>
-                <div class="vu-bar"></div>
-                <div class="vu-bar"></div>
-            </div>
-
-            <div id="statusConsole" class="status-screen">SISTEMA EM ESPERA</div>
-            <button class="btn-stream" id="togglePowerBtn">▶ LIGAR SOM DA RÁDIO</button>
+            <div id="statusConsole" class="status-screen">CLIQUE NO PLAY DO PLAYER ACIMA 👆</div>
         </div>
     </div>
 
     <script>
-        const audio = document.getElementById('globalAudioPlayer');
-        const togglePowerBtn = document.getElementById('togglePowerBtn');
+        const audio = document.getElementById('nativeAudio');
+        const select = document.getElementById('metalStreamSelect');
         const statusConsole = document.getElementById('statusConsole');
-        const vuMeter = document.getElementById('vuMeter');
-        const metalStreamSelect = document.getElementById('metalStreamSelect');
-        const gainSlider = document.getElementById('gainSlider');
 
-        let isLive = false;
-        let reconnectTimer = null;
-
-        audio.volume = gainSlider.value;
-
-        gainSlider.addEventListener('input', (e) => {
-            audio.volume = e.target.value;
-        });
-
-        togglePowerBtn.addEventListener('click', async () => {
-            if (!isLive) {
-                await activateRadio();
-            } else {
-                deactivateRadio(true);
-            }
-        });
-
-        metalStreamSelect.addEventListener('change', async () => {
-            if (isLive) {
-                deactivateRadio(false);
-                await activateRadio();
-            }
-        });
-
-        async function activateRadio() {
-            try {
-                statusConsole.textContent = "CONECTANDO AO SERVIDOR SEGURO...";
-                togglePowerBtn.disabled = true;
-
-                const streamUrl = metalStreamSelect.value;
-                
-                audio.pause();
-                audio.removeAttribute('src');
-                audio.load();
-
-                audio.src = `${streamUrl}${streamUrl.includes('?') ? '&' : '?'}_cb=${Date.now()}`;
-                
-                await audio.play();
-                isLive = true;
-
-                togglePowerBtn.textContent = "⏸ PARAR RÁDIO";
-                togglePowerBtn.style.background = "#ff0055";
-                togglePowerBtn.style.color = "#ffffff";
-                statusConsole.textContent = "🔴 AO VIVO NO AR!";
-                vuMeter.classList.add('streaming');
-            } catch (err) {
-                console.error("Erro na ativação:", err);
-                statusConsole.textContent = "⚠️ SERVIDOR OCUPADO. TENTANDO RECONECTAR...";
-                scheduleReconnect();
-            } finally {
-                togglePowerBtn.disabled = false;
-            }
-        }
-
-        function deactivateRadio(manual = false) {
-            if (reconnectTimer) clearTimeout(reconnectTimer);
+        select.addEventListener('change', (e) => {
             audio.pause();
-            audio.removeAttribute('src');
+            audio.src = e.target.value;
             audio.load();
-            isLive = false;
-
-            togglePowerBtn.textContent = "▶ LIGAR SOM DA RÁDIO";
-            togglePowerBtn.style.background = "#39ff14";
-            togglePowerBtn.style.color = "#000000";
-            vuMeter.classList.remove('streaming');
-            
-            if (manual) {
-                statusConsole.textContent = "TRANSMISSÃO INTERROMPIDA";
-            }
-        }
-
-        function scheduleReconnect() {
-            if (!isLive) return;
-            statusConsole.textContent = "🔄 TENTANDO RECUPERAR SINAL...";
-            if (reconnectTimer) clearTimeout(reconnectTimer);
-            
-            reconnectTimer = setTimeout(() => {
-                if (isLive) {
-                    activateRadio();
-                }
-            }, 3000);
-        }
-
-        audio.addEventListener('stalled', () => {
-            if (isLive) {
-                statusConsole.textContent = "⚠️ SINAL ENGASGADO. RECALIBRANDO...";
-            }
+            audio.play().catch(err => console.log("Aguardando interação do usuário"));
+            statusConsole.textContent = "🔴 TRANSMITINDO FREQUÊNCIA SELECIONADA";
         });
 
-        audio.addEventListener('error', (e) => {
-            console.error("Queda de fluxo:", e);
-            if (isLive) {
-                scheduleReconnect();
-            }
+        audio.addEventListener('playing', () => {
+            statusConsole.textContent = "🔴 AO VIVO NO AR!";
+        });
+
+        audio.addEventListener('error', () => {
+            statusConsole.textContent = "⚠️ ERRO NO STREAM. TENTE OUTRA OPÇÃO";
         });
     </script>
 </body>
