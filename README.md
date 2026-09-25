@@ -87,7 +87,6 @@
             box-shadow: inset 0 0 10px rgba(138, 43, 226, 0.4);
         }
 
-        /* VU Meter / Equalizador Estilizado */
         .vu-container {
             display: flex;
             justify-content: center;
@@ -157,23 +156,23 @@
         <div class="bank-tag">// Nels1Bank Media Division // S1 Secure Stream</div>
         
         <div class="panel-section">
-            <label for="metalStreamSelect">Selecione a Frequência / Gênero:</label>
+            <label for="metalStreamSelect">Selecione o Subgênero:</label>
             <select id="metalStreamSelect">
                 <option value="https://stream.antenne.de/heavy-metal/stream/mp3">🔥 Heavy Metal / NWOBHM (Rock Antenne)</option>
                 <option value="https://rautemusik-de-hz-fal-stream02.radiohost.de/hardrock">🎸 Hard Rock Arena (RauteMusic)</option>
                 <option value="https://stream.schwarzwaldradio.com/schwarzwaldradio/mp3-192/stream.mp3">⚡ Rock Clássico & Alternativo (Schwarzwald)</option>
-                <option value="https://s2.radio.co/s83713f83c/listen">💀 Extreme Metal & Thrash (Underground Channel)</option>
+                <option value="https://radio.streampie.org/hardrock">💀 Hard Rock & Heavy Underground</option>
             </select>
         </div>
 
         <div class="panel-section">
-            <label for="gainSlider">Ganho do Amplificador (Volume):</label>
+            <label for="gainSlider">Volume do Amplificador:</label>
             <input type="range" id="gainSlider" min="0" max="1" step="0.05" value="0.85">
         </div>
 
         <div class="audio-console">
-            <!-- Tag de áudio limpa sem source estática -->
-            <audio id="globalAudioPlayer" preload="none"></audio>
+            <!-- Usamos crossOrigin para mitigar barreiras de CORS no Chrome -->
+            <audio id="globalAudioPlayer" crossorigin="anonymous" preload="none"></audio>
 
             <div class="vu-container" id="vuMeter">
                 <div class="vu-bar"></div>
@@ -199,7 +198,6 @@
 
         let isLive = false;
 
-        // Configura volume inicial
         audio.volume = gainSlider.value;
 
         gainSlider.addEventListener('input', (e) => {
@@ -223,14 +221,19 @@
 
         async function activateRadio() {
             try {
-                statusConsole.textContent = "INICIALIZANDO STREAM SEGURO...";
+                statusConsole.textContent = "CONECTANDO AO SERVIDOR SEGURO...";
                 togglePowerBtn.disabled = true;
 
                 const streamUrl = metalStreamSelect.value;
-                // Injeta parâmetro dinâmico para zerar o cache do navegador
-                audio.src = `${streamUrl}${streamUrl.includes('?') ? '&' : '?'}_t=${Date.now()}`;
+                
+                // Força o reset completo do elemento de áudio para limpar qualquer buffer travado no Chrome
+                audio.pause();
+                audio.removeAttribute('src');
                 audio.load();
 
+                // Define nova fonte com parâmetro anti-cache
+                audio.src = `${streamUrl}${streamUrl.includes('?') ? '&' : '?'}_cb=${Date.now()}`;
+                
                 await audio.play();
                 isLive = true;
 
@@ -240,8 +243,8 @@
                 statusConsole.textContent = "🔴 AO VIVO NO AR!";
                 vuMeter.classList.add('streaming');
             } catch (err) {
-                console.error("Erro na ativação:", err);
-                statusConsole.textContent = "⚠️ FALHA DE CONEXÃO. TENTE OUTRO CANAL";
+                console.error("Erro capturado pelo Chrome:", err);
+                statusConsole.textContent = "⚠️ BLOQUEIO DE REDE. CLIQUE NOVAMENTE";
                 deactivateRadio(false);
             } finally {
                 togglePowerBtn.disabled = false;
@@ -250,7 +253,8 @@
 
         function deactivateRadio(manual = false) {
             audio.pause();
-            audio.src = "";
+            audio.removeAttribute('src');
+            audio.load();
             isLive = false;
 
             togglePowerBtn.textContent = "▶ LIGAR SOM DA RÁDIO";
@@ -263,10 +267,16 @@
             }
         }
 
-        audio.addEventListener('error', (e) => {
-            console.error("Erro no fluxo de áudio:", e);
+        audio.addEventListener('stalled', () => {
             if (isLive) {
-                statusConsole.textContent = "⚠️ QUEDA DE SINAL DETECTADA";
+                statusConsole.textContent = "⚠️ BUFFER LENTO. AGUARDANDO...";
+            }
+        });
+
+        audio.addEventListener('error', (e) => {
+            console.error("Erro nativo da stream:", e);
+            if (isLive) {
+                statusConsole.textContent = "⚠️ ERRO DE CORS/SINAL NO CHROME";
                 deactivateRadio(false);
             }
         });
