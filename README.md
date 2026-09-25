@@ -66,6 +66,7 @@
             text-transform: uppercase;
             width: 100%;
             margin-top: 15px;
+            transition: transform 0.1s, box-shadow 0.1s;
         }
 
         .btn-live:active {
@@ -88,7 +89,7 @@
         <div class="subtitle">Heavy Metal 24/7 (HTTPS Secure)</div>
         
         <div class="player-box">
-            <!-- Stream 100% HTTPS compatível com GitHub Pages -->
+            <!-- Stream robusto com tratamento de erros -->
             <audio id="radioStream" preload="none">
                 <source src="https://stream.rockantenne.de/heavy-metal/stream/mp3" type="audio/mpeg">
                 Seu navegador não suporta áudio.
@@ -104,31 +105,72 @@
         const playBtn = document.getElementById('playBtn');
         const statusText = document.getElementById('statusText');
         
+        const streamUrl = "https://stream.rockantenne.de/heavy-metal/stream/mp3";
         let isPlaying = false;
 
-        playBtn.addEventListener('click', () => {
+        playBtn.addEventListener('click', async () => {
             if (!isPlaying) {
-                statusText.textContent = "CONECTANDO AO SERVIDOR SEGURO...";
-                
-                audio.load();
-                audio.play().then(() => {
+                try {
+                    statusText.textContent = "CONECTANDO AO SERVIDOR SEGURO...";
+                    playBtn.disabled = true; // Evita cliques duplos que travam a stack
+
+                    // Se a source foi limpa antes, readiciona para garantir reload limpo do buffer
+                    if (!audio.src) {
+                        audio.src = streamUrl;
+                    }
+
+                    await audio.play();
                     isPlaying = true;
                     playBtn.textContent = "⏸ PARAR RÁDIO";
                     playBtn.style.background = "#ff3333";
                     playBtn.style.color = "#fff";
                     statusText.textContent = "🔴 AO VIVO NO AR!";
-                }).catch(error => {
-                    console.error(error);
-                    statusText.textContent = "⚠️ TOQUE NOVAMENTE PARA LIBERAR";
-                });
+                } catch (error) {
+                    console.error("Erro ao reproduzir:", error);
+                    statusText.textContent = "⚠️ ERRO DE FLUXO. TENTE NOVAMENTE.";
+                    resetPlayerState();
+                } finally {
+                    playBtn.disabled = false;
+                }
             } else {
-                audio.pause();
-                isPlaying = false;
-                playBtn.textContent = "▶ LIGAR SOM DA RÁDIO";
-                playBtn.style.background = "#39ff14";
-                playBtn.style.color = "#000";
+                stopRadio();
+            }
+        });
+
+        function stopRadio() {
+            audio.pause();
+            // Limpa o stream atual para evitar que o navegador fique guardando cache corrompido de rádio ao vivo
+            audio.src = ""; 
+            resetPlayerState();
+        }
+
+        function resetPlayerState() {
+            isPlaying = false;
+            playBtn.textContent = "▶ LIGAR SOM DA RÁDIO";
+            playBtn.style.background = "#39ff14";
+            playBtn.style.color = "#000";
+            if (statusText.textContent.includes("AO VIVO")) {
                 statusText.textContent = "TRANSMISSÃO PAUSADA";
             }
+        }
+
+        // Tratamento robusto para quedas de conexão do stream ao vivo
+        audio.addEventListener('stalled', () => {
+            statusText.textContent = "⚠️ SINAL INSTÁVEL. RECONECTANDO...";
+        });
+
+        audio.addEventListener('waiting', () => {
+            statusText.textContent = "⏳ CARREGANDO BUFFER DO METAL...";
+        });
+
+        audio.addEventListener('playing', () => {
+            statusText.textContent = "🔴 AO VIVO NO AR!";
+        });
+
+        audio.addEventListener('error', (e) => {
+            console.error("Erro na stream de áudio:", e);
+            statusText.textContent = "❌ FALHA NA CONEXÃO COM A RÁDIO";
+            stopRadio();
         });
     </script>
 </body>
