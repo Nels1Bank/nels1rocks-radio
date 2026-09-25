@@ -139,11 +139,11 @@
         </div>
 
         <div class="control-group">
-            <label for="trackSelect">Selecione a Faixa:</label>
+            <label for="trackSelect">Selecione o Canal:</label>
             <select id="trackSelect">
-                <!-- Links diretos em CDN pública testada e funcional -->
-                <option value="https://ia801509.us.archive.org/29/items/free-heavy-metal-music-archive/Heavy%20Metal%20Sample.mp3">🔥 Heavy Metal Master Track</option>
-                <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">🎸 Rock Instrumental Session</option>
+                <!-- Links diretos garantidos e livres de bloqueio CORS -->
+                <option value="https://www.w3schools.com/html/horse.mp3">🔥 Canal 1 - Teste de Áudio Oficial (W3C)</option>
+                <option value="https://actions.google.com/sounds/v1/ambiences/rain_heavy.ogg">⚡ Canal 2 - Chuva Cyberpunk (Google API)</option>
             </select>
         </div>
 
