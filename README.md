@@ -89,11 +89,8 @@
         <div class="subtitle">Heavy Metal 24/7 (HTTPS Secure)</div>
         
         <div class="player-box">
-            <!-- Stream robusto com tratamento de erros -->
-            <audio id="radioStream" preload="none">
-                <source src="https://stream.rockantenne.de/heavy-metal/stream/mp3" type="audio/mpeg">
-                Seu navegador não suporta áudio.
-            </audio>
+            <!-- Elemento de áudio sem source estática para controle total via JS -->
+            <audio id="radioStream" preload="none"></audio>
 
             <div id="statusText" class="status">PRONTO PARA CONECTAR AO AR</div>
             <button class="btn-live" id="playBtn">▶ LIGAR SOM DA RÁDIO</button>
@@ -105,62 +102,80 @@
         const playBtn = document.getElementById('playBtn');
         const statusText = document.getElementById('statusText');
         
-        const streamUrl = "https://stream.rockantenne.de/heavy-metal/stream/mp3";
+        const baseUrl = "https://stream.rockantenne.de/heavy-metal/stream/mp3";
         let isPlaying = false;
+        let reconnectTimeout = null;
 
         playBtn.addEventListener('click', async () => {
             if (!isPlaying) {
-                try {
-                    statusText.textContent = "CONECTANDO AO SERVIDOR SEGURO...";
-                    playBtn.disabled = true; // Evita cliques duplos que travam a stack
-
-                    // Se a source foi limpa antes, readiciona para garantir reload limpo do buffer
-                    if (!audio.src) {
-                        audio.src = streamUrl;
-                    }
-
-                    await audio.play();
-                    isPlaying = true;
-                    playBtn.textContent = "⏸ PARAR RÁDIO";
-                    playBtn.style.background = "#ff3333";
-                    playBtn.style.color = "#fff";
-                    statusText.textContent = "🔴 AO VIVO NO AR!";
-                } catch (error) {
-                    console.error("Erro ao reproduzir:", error);
-                    statusText.textContent = "⚠️ ERRO DE FLUXO. TENTE NOVAMENTE.";
-                    resetPlayerState();
-                } finally {
-                    playBtn.disabled = false;
-                }
+                await startRadio();
             } else {
-                stopRadio();
+                stopRadio(true);
             }
         });
 
-        function stopRadio() {
-            audio.pause();
-            // Limpa o stream atual para evitar que o navegador fique guardando cache corrompido de rádio ao vivo
-            audio.src = ""; 
-            resetPlayerState();
+        async function startRadio() {
+            try {
+                statusText.textContent = "CONECTANDO AO SERVIDOR SEGURO...";
+                playBtn.disabled = true;
+
+                // Adiciona timestamp para burlar cache de rede travado
+                audio.src = `${baseUrl}?cb=${new Date().getTime()}`;
+                audio.load();
+
+                await audio.play();
+                isPlaying = true;
+                playBtn.textContent = "⏸ PARAR RÁDIO";
+                playBtn.style.background = "#ff3333";
+                playBtn.style.color = "#fff";
+                statusText.textContent = "🔴 AO VIVO NO AR!";
+            } catch (error) {
+                console.error("Erro na reprodução:", error);
+                statusText.textContent = "⚠️ ERRO DE SINAL. TENTANDO DE NOVO...";
+                scheduleReconnect();
+            } finally {
+                playBtn.disabled = false;
+            }
         }
 
-        function resetPlayerState() {
+        function stopRadio(userManual = false) {
+            if (reconnectTimeout) clearTimeout(reconnectTimeout);
+            audio.pause();
+            audio.src = "";
             isPlaying = false;
+            
             playBtn.textContent = "▶ LIGAR SOM DA RÁDIO";
             playBtn.style.background = "#39ff14";
             playBtn.style.color = "#000";
-            if (statusText.textContent.includes("AO VIVO")) {
+            
+            if (userManual) {
                 statusText.textContent = "TRANSMISSÃO PAUSADA";
             }
         }
 
-        // Tratamento robusto para quedas de conexão do stream ao vivo
+        function scheduleReconnect() {
+            if (!isPlaying) return;
+            statusText.textContent = "🔄 RECONECTANDO AUTOMATICAMENTE...";
+            if (reconnectTimeout) clearTimeout(reconnectTimeout);
+            
+            reconnectTimeout = setTimeout(() => {
+                if (isPlaying) {
+                    startRadio();
+                }
+            }, 3000); // Tenta reconectar após 3 segundos
+        }
+
+        // Eventos nativos de monitoramento de fluxo
         audio.addEventListener('stalled', () => {
-            statusText.textContent = "⚠️ SINAL INSTÁVEL. RECONECTANDO...";
+            if (isPlaying) {
+                statusText.textContent = "⚠️ SINAL ENGASGADO. RECUPERANDO...";
+            }
         });
 
         audio.addEventListener('waiting', () => {
-            statusText.textContent = "⏳ CARREGANDO BUFFER DO METAL...";
+            if (isPlaying) {
+                statusText.textContent = "⏳ AGUARDANDO BUFFER DO METAL...";
+            }
         });
 
         audio.addEventListener('playing', () => {
@@ -168,9 +183,10 @@
         });
 
         audio.addEventListener('error', (e) => {
-            console.error("Erro na stream de áudio:", e);
-            statusText.textContent = "❌ FALHA NA CONEXÃO COM A RÁDIO";
-            stopRadio();
+            console.error("Erro de sinal disparado pelo stream:", e);
+            if (isPlaying) {
+                scheduleReconnect();
+            }
         });
     </script>
 </body>
