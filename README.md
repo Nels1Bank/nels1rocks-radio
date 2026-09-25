@@ -62,7 +62,7 @@
             text-transform: uppercase;
         }
 
-        select {
+        select, input[type="range"] {
             width: 100%;
             background: #000;
             color: #39ff14;
@@ -74,6 +74,11 @@
             cursor: pointer;
         }
 
+        input[type="range"] {
+            padding: 5px;
+            accent-color: #39ff14;
+        }
+
         .audio-console {
             background: #000000;
             border: 3px solid #8a2be2;
@@ -82,17 +87,61 @@
             box-shadow: inset 0 0 10px rgba(138, 43, 226, 0.4);
         }
 
-        /* Player nativo estilizado para o Chrome não bloquear */
-        audio {
+        .vu-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 5px;
+            height: 40px;
+            margin-bottom: 15px;
+        }
+
+        .vu-bar {
+            width: 6px;
+            background: #39ff14;
+            height: 6px;
+        }
+
+        .streaming .vu-bar {
+            animation: freq-pulse 0.4s infinite alternate ease-in-out;
+        }
+
+        .streaming .vu-bar:nth-child(2) { animation-delay: 0.1s; }
+        .streaming .vu-bar:nth-child(3) { animation-delay: 0.3s; }
+        .streaming .vu-bar:nth-child(4) { animation-delay: 0.15s; }
+        .streaming .vu-bar:nth-child(5) { animation-delay: 0.25s; }
+        .streaming .vu-bar:nth-child(6) { animation-delay: 0.05s; }
+
+        @keyframes freq-pulse {
+            0% { height: 6px; background: #39ff14; }
+            50% { height: 22px; background: #b1fc03; }
+            100% { height: 38px; background: #ff0055; }
+        }
+
+        .btn-stream {
+            background: #39ff14;
+            color: #000000;
+            border: 3px solid #000;
+            padding: 16px;
+            font-family: 'Share Tech Mono', monospace;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px #000;
+            text-transform: uppercase;
             width: 100%;
-            margin-top: 10px;
-            accent-color: #39ff14;
-            filter: invert(100%) hue-rotate(180deg) brightness(1.5);
+            transition: all 0.08s ease;
+        }
+
+        .btn-stream:hover { background: #b1fc03; }
+        .btn-stream:active {
+            box-shadow: 1px 1px 0px #000;
+            transform: translate(3px, 3px);
         }
 
         .status-screen {
             font-size: 0.75rem;
-            color: #39ff14;
+            color: #bfaad1;
             margin-top: 15px;
             font-weight: bold;
             letter-spacing: 1px;
@@ -107,44 +156,123 @@
         <div class="bank-tag">// Nels1Bank Media Division // S1 Secure Stream</div>
         
         <div class="panel-section">
-            <label for="metalStreamSelect">Selecione o Subgênero:</label>
+            <label for="metalStreamSelect">Selecione o Canal:</label>
             <select id="metalStreamSelect">
-                <option value="https://stream.antenne.de/heavy-metal/stream/mp3">🔥 Heavy Metal / NWOBHM (Rock Antenne)</option>
-                <option value="https://rautemusik-de-hz-fal-stream02.radiohost.de/hardrock">🎸 Hard Rock Arena (RauteMusic)</option>
-                <option value="https://stream.schwarzwaldradio.com/schwarzwaldradio/mp3-192/stream.mp3">⚡ Rock Clássico & Alternativo (Schwarzwald)</option>
+                <!-- Links diretos testados com codificação limpa em MP3 -->
+                <option value="https://stream.antenne.de/heavy-metal/stream/mp3">🔥 Rock Antenne Heavy Metal</option>
+                <option value="https://streaming.exclusive.radio/er/heavyrock/icecast.audio">🎸 Exclusive Heavy Rock Radio</option>
+                <option value="https://edge.mixlr.com/channel/vfnql">⚡ Mixlr Underground Metal Stream</option>
             </select>
         </div>
 
-        <div class="audio-console">
-            <!-- Player nativo visível para evitar qualquer bloqueio de script do Chrome -->
-            <audio id="nativeAudio" controls preload="none">
-                <source src="https://stream.antenne.de/heavy-metal/stream/mp3" type="audio/mpeg">
-                Seu navegador não suporta áudio HTML5.
-            </audio>
+        <div class="panel-section">
+            <label for="gainSlider">Volume do Amplificador:</label>
+            <input type="range" id="gainSlider" min="0" max="1" step="0.05" value="0.85">
+        </div>
 
-            <div id="statusConsole" class="status-screen">CLIQUE NO PLAY DO PLAYER ACIMA 👆</div>
+        <div class="audio-console">
+            <!-- Atributos otimizados para burlar restrições de cache e buffer do Chrome -->
+            <audio id="globalAudioPlayer" crossorigin="anonymous" preload="auto"></audio>
+
+            <div class="vu-container" id="vuMeter">
+                <div class="vu-bar"></div>
+                <div class="vu-bar"></div>
+                <div class="vu-bar"></div>
+                <div class="vu-bar"></div>
+                <div class="vu-bar"></div>
+                <div class="vu-bar"></div>
+            </div>
+
+            <div id="statusConsole" class="status-screen">SISTEMA EM ESPERA</div>
+            <button class="btn-stream" id="togglePowerBtn">▶ LIGAR SOM DA RÁDIO</button>
         </div>
     </div>
 
     <script>
-        const audio = document.getElementById('nativeAudio');
-        const select = document.getElementById('metalStreamSelect');
+        const audio = document.getElementById('globalAudioPlayer');
+        const togglePowerBtn = document.getElementById('togglePowerBtn');
         const statusConsole = document.getElementById('statusConsole');
+        const vuMeter = document.getElementById('vuMeter');
+        const metalStreamSelect = document.getElementById('metalStreamSelect');
+        const gainSlider = document.getElementById('gainSlider');
 
-        select.addEventListener('change', (e) => {
+        let isLive = false;
+
+        audio.volume = gainSlider.value;
+
+        gainSlider.addEventListener('input', (e) => {
+            audio.volume = e.target.value;
+        });
+
+        togglePowerBtn.addEventListener('click', async () => {
+            if (!isLive) {
+                await activateRadio();
+            } else {
+                deactivateRadio(true);
+            }
+        });
+
+        metalStreamSelect.addEventListener('change', async () => {
+            if (isLive) {
+                deactivateRadio(false);
+                await activateRadio();
+            }
+        });
+
+        async function activateRadio() {
+            try {
+                statusConsole.textContent = "INICIALIZANDO FLUXO...";
+                togglePowerBtn.disabled = true;
+
+                const streamUrl = metalStreamSelect.value;
+                
+                audio.pause();
+                audio.removeAttribute('src');
+                audio.load();
+
+                // Adiciona carimbo de tempo para forçar o navegador a buscar o stream atualizado
+                audio.src = `${streamUrl}${streamUrl.includes('?') ? '&' : '?'}_t=${Date.now()}`;
+                audio.load();
+
+                await audio.play();
+                isLive = true;
+
+                togglePowerBtn.textContent = "⏸ PARAR RÁDIO";
+                togglePowerBtn.style.background = "#ff0055";
+                togglePowerBtn.style.color = "#ffffff";
+                statusConsole.textContent = "🔴 AO VIVO NO AR!";
+                vuMeter.classList.add('streaming');
+            } catch (err) {
+                console.error("Erro na ativação:", err);
+                statusConsole.textContent = "⚠️ CLIQUE NOVAMENTE NO PLAY";
+                deactivateRadio(false);
+            } finally {
+                togglePowerBtn.disabled = false;
+            }
+        }
+
+        function deactivateRadio(manual = false) {
             audio.pause();
-            audio.src = e.target.value;
+            audio.removeAttribute('src');
             audio.load();
-            audio.play().catch(err => console.log("Aguardando interação do usuário"));
-            statusConsole.textContent = "🔴 TRANSMITINDO FREQUÊNCIA SELECIONADA";
-        });
+            isLive = false;
 
-        audio.addEventListener('playing', () => {
-            statusConsole.textContent = "🔴 AO VIVO NO AR!";
-        });
+            togglePowerBtn.textContent = "▶ LIGAR SOM DA RÁDIO";
+            togglePowerBtn.style.background = "#39ff14";
+            togglePowerBtn.style.color = "#000000";
+            vuMeter.classList.remove('streaming');
+            
+            if (manual) {
+                statusConsole.textContent = "TRANSMISSÃO INTERROMPIDA";
+            }
+        }
 
-        audio.addEventListener('error', () => {
-            statusConsole.textContent = "⚠️ ERRO NO STREAM. TENTE OUTRA OPÇÃO";
+        audio.addEventListener('error', (e) => {
+            console.error("Queda de fluxo:", e);
+            if (isLive) {
+                statusConsole.textContent = "⚠️ FALHA DE CONEXÃO COM O SERVIDOR";
+                deactivateRadio(false);
+            }
         });
     </script>
 </body>
