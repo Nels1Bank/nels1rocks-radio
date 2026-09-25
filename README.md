@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nels1Rocks Radio - Core Engine v3</title>
-    <link href="https://fonts.googleapis.com/css2?family=Metal+Mania&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <title>Nels1Rocks // Cyber-Metal Radio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Metal+Mania&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; }
         body {
             margin: 0;
-            background-color: #030105;
-            color: #ffffff;
-            font-family: 'Fira Code', monospace;
+            background-color: #020104;
+            color: #39ff14;
+            font-family: 'Share Tech Mono', monospace;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -20,45 +20,45 @@
             padding: 20px;
         }
 
-        .radio-card {
-            background: #0d0417;
+        .terminal-box {
+            background: #090310;
             border: 4px solid #39ff14;
-            box-shadow: 12px 12px 0px #000000, 0px 0px 20px rgba(57, 255, 20, 0.15);
+            box-shadow: 12px 12px 0px #000000, 0px 0px 25px rgba(57, 255, 20, 0.2);
             padding: 2rem;
-            max-width: 480px;
+            max-width: 500px;
             width: 100%;
             text-align: center;
         }
 
-        .header-title {
+        .logo-title {
             font-family: 'Metal Mania', cursive;
-            font-size: 3.5rem;
+            font-size: 3.2rem;
             margin: 0;
             color: #ffffff;
-            text-shadow: 3px 3px 0px #000, 6px 6px 0px #8a2be2;
+            text-shadow: 3px 3px 0px #000, 5px 5px 0px #39ff14;
             letter-spacing: 2px;
         }
 
-        .tagline {
-            font-size: 0.7rem;
-            color: #39ff14;
+        .bank-tag {
+            font-size: 0.65rem;
+            color: #bfaad1;
             text-transform: uppercase;
             letter-spacing: 3px;
-            margin: 8px 0 20px 0;
+            margin: 5px 0 20px 0;
             font-weight: bold;
         }
 
-        .control-group {
+        .panel-section {
             margin-bottom: 15px;
             text-align: left;
         }
 
-        .control-group label {
+        .panel-section label {
             font-size: 0.7rem;
-            color: #bfaad1;
+            color: #39ff14;
             font-weight: bold;
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             text-transform: uppercase;
         }
 
@@ -66,11 +66,10 @@
             width: 100%;
             background: #000;
             color: #39ff14;
-            border: 2px solid #8a2be2;
+            border: 2px solid #39ff14;
             padding: 12px;
-            font-family: 'Fira Code', monospace;
-            font-weight: bold;
-            font-size: 0.85rem;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.9rem;
             outline: none;
             cursor: pointer;
         }
@@ -80,15 +79,16 @@
             accent-color: #39ff14;
         }
 
-        .player-console {
+        .audio-console {
             background: #000000;
             border: 3px solid #8a2be2;
             padding: 20px;
             margin-top: 15px;
+            box-shadow: inset 0 0 10px rgba(138, 43, 226, 0.4);
         }
 
-        /* Equalizador Gráfico */
-        .eq-visualizer {
+        /* VU Meter / Equalizador Estilizado */
+        .vu-container {
             display: flex;
             justify-content: center;
             align-items: flex-end;
@@ -97,50 +97,50 @@
             margin-bottom: 15px;
         }
 
-        .eq-bar {
+        .vu-bar {
             width: 6px;
             background: #39ff14;
             height: 6px;
         }
 
-        .active-playback .eq-bar {
-            animation: pulse-bar 0.5s infinite alternate ease-in-out;
+        .streaming .vu-bar {
+            animation: freq-pulse 0.4s infinite alternate ease-in-out;
         }
 
-        .active-playback .eq-bar:nth-child(2) { animation-delay: 0.1s; }
-        .active-playback .eq-bar:nth-child(3) { animation-delay: 0.3s; }
-        .active-playback .eq-bar:nth-child(4) { animation-delay: 0.2s; }
-        .active-playback .eq-bar:nth-child(5) { animation-delay: 0.4s; }
-        .active-playback .eq-bar:nth-child(6) { animation-delay: 0.15s; }
+        .streaming .vu-bar:nth-child(2) { animation-delay: 0.1s; }
+        .streaming .vu-bar:nth-child(3) { animation-delay: 0.3s; }
+        .streaming .vu-bar:nth-child(4) { animation-delay: 0.15s; }
+        .streaming .vu-bar:nth-child(5) { animation-delay: 0.25s; }
+        .streaming .vu-bar:nth-child(6) { animation-delay: 0.05s; }
 
-        @keyframes pulse-bar {
+        @keyframes freq-pulse {
             0% { height: 6px; background: #39ff14; }
-            50% { height: 25px; background: #b1fc03; }
-            100% { height: 38px; background: #ff3333; }
+            50% { height: 22px; background: #b1fc03; }
+            100% { height: 38px; background: #ff0055; }
         }
 
-        .btn-action {
+        .btn-stream {
             background: #39ff14;
             color: #000000;
             border: 3px solid #000;
             padding: 16px;
-            font-family: 'Fira Code', monospace;
+            font-family: 'Share Tech Mono', monospace;
             font-weight: bold;
-            font-size: 1rem;
+            font-size: 1.1rem;
             cursor: pointer;
             box-shadow: 4px 4px 0px #000;
             text-transform: uppercase;
             width: 100%;
-            transition: all 0.1s ease;
+            transition: all 0.08s ease;
         }
 
-        .btn-action:hover { background: #4eff28; }
-        .btn-action:active {
+        .btn-stream:hover { background: #b1fc03; }
+        .btn-stream:active {
             box-shadow: 1px 1px 0px #000;
             transform: translate(3px, 3px);
         }
 
-        .status-display {
+        .status-screen {
             font-size: 0.75rem;
             color: #bfaad1;
             margin-top: 15px;
@@ -152,119 +152,122 @@
 </head>
 <body>
 
-    <div class="radio-card">
-        <h1 class="header-title">Nels1Rocks</h1>
-        <div class="tagline">Engine v3 // Secured Metal Streams</div>
+    <div class="terminal-box">
+        <h1 class="logo-title">Nels1Rocks</h1>
+        <div class="bank-tag">// Nels1Bank Media Division // S1 Secure Stream</div>
         
-        <div class="control-group">
-            <label for="streamSelector">Selecione o Gênero:</label>
-            <select id="streamSelector">
+        <div class="panel-section">
+            <label for="metalStreamSelect">Selecione a Frequência / Gênero:</label>
+            <select id="metalStreamSelect">
                 <option value="https://stream.antenne.de/heavy-metal/stream/mp3">🔥 Heavy Metal / NWOBHM (Rock Antenne)</option>
-                <option value="https://rautemusik-de-hz-fal-stream02.radiohost.de/hardrock">🎸 Hard Rock Classic (RauteMusic)</option>
-                <option value="https://stream.schwarzwaldradio.com/schwarzwaldradio/mp3-192/stream.mp3">⚡ Rock & Melodic Arena (Schwarzwald)</option>
-                <option value="https://s2.radio.co/s83713f83c/listen">💀 Thrash, Death & Extreme (Underground)</option>
+                <option value="https://rautemusik-de-hz-fal-stream02.radiohost.de/hardrock">🎸 Hard Rock Arena (RauteMusic)</option>
+                <option value="https://stream.schwarzwaldradio.com/schwarzwaldradio/mp3-192/stream.mp3">⚡ Rock Clássico & Alternativo (Schwarzwald)</option>
+                <option value="https://s2.radio.co/s83713f83c/listen">💀 Extreme Metal & Thrash (Underground Channel)</option>
             </select>
         </div>
 
-        <div class="control-group">
-            <label for="volumeSlider">Volume do Amplificador:</label>
-            <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.8">
+        <div class="panel-section">
+            <label for="gainSlider">Ganho do Amplificador (Volume):</label>
+            <input type="range" id="gainSlider" min="0" max="1" step="0.05" value="0.85">
         </div>
 
-        <div class="player-console">
-            <!-- Elemento de Áudio Nativo Isolado -->
-            <audio id="audioEngine" preload="none"></audio>
+        <div class="audio-console">
+            <!-- Tag de áudio limpa sem source estática -->
+            <audio id="globalAudioPlayer" preload="none"></audio>
 
-            <div class="eq-visualizer" id="eqVisualizer">
-                <div class="eq-bar"></div>
-                <div class="eq-bar"></div>
-                <div class="eq-bar"></div>
-                <div class="eq-bar"></div>
-                <div class="eq-bar"></div>
-                <div class="eq-bar"></div>
+            <div class="vu-container" id="vuMeter">
+                <div class="vu-bar"></div>
+                <div class="vu-bar"></div>
+                <div class="vu-bar"></div>
+                <div class="vu-bar"></div>
+                <div class="vu-bar"></div>
+                <div class="vu-bar"></div>
             </div>
 
-            <div id="statusLabel" class="status-display">SISTEMA PRONTO</div>
-            <button class="btn-action" id="powerBtn">▶ LIGAR SOM DA RÁDIO</button>
+            <div id="statusConsole" class="status-screen">SISTEMA EM ESPERA</div>
+            <button class="btn-stream" id="togglePowerBtn">▶ LIGAR SOM DA RÁDIO</button>
         </div>
     </div>
 
     <script>
-        const audio = document.getElementById('audioEngine');
-        const powerBtn = document.getElementById('powerBtn');
-        const statusLabel = document.getElementById('statusLabel');
-        const eqVisualizer = document.getElementById('eqVisualizer');
-        const streamSelector = document.getElementById('streamSelector');
-        const volumeSlider = document.getElementById('volumeSlider');
+        const audio = document.getElementById('globalAudioPlayer');
+        const togglePowerBtn = document.getElementById('togglePowerBtn');
+        const statusConsole = document.getElementById('statusConsole');
+        const vuMeter = document.getElementById('vuMeter');
+        const metalStreamSelect = document.getElementById('metalStreamSelect');
+        const gainSlider = document.getElementById('gainSlider');
 
-        let isRunning = false;
+        let isLive = false;
 
         // Configura volume inicial
-        audio.volume = volumeSlider.value;
+        audio.volume = gainSlider.value;
 
-        volumeSlider.addEventListener('input', (e) => {
+        gainSlider.addEventListener('input', (e) => {
             audio.volume = e.target.value;
         });
 
-        powerBtn.addEventListener('click', async () => {
-            if (!isRunning) {
-                await turnOnRadio();
+        togglePowerBtn.addEventListener('click', async () => {
+            if (!isLive) {
+                await activateRadio();
             } else {
-                turnOffRadio();
+                deactivateRadio(true);
             }
         });
 
-        streamSelector.addEventListener('change', async () => {
-            if (isRunning) {
-                turnOffRadio();
-                await turnOnRadio();
+        metalStreamSelect.addEventListener('change', async () => {
+            if (isLive) {
+                deactivateRadio(false);
+                await activateRadio();
             }
         });
 
-        async function turnOnRadio() {
+        async function activateRadio() {
             try {
-                statusLabel.textContent = "ESTABELECENDO CONEXÃO...";
-                powerBtn.disabled = true;
+                statusConsole.textContent = "INICIALIZANDO STREAM SEGURO...";
+                togglePowerBtn.disabled = true;
 
-                const url = streamSelector.value;
-                // Injeta parâmetro único para evitar cache persistente do navegador
-                audio.src = `${url}?ts=${Date.now()}`;
+                const streamUrl = metalStreamSelect.value;
+                // Injeta parâmetro dinâmico para zerar o cache do navegador
+                audio.src = `${streamUrl}${streamUrl.includes('?') ? '&' : '?'}_t=${Date.now()}`;
                 audio.load();
 
                 await audio.play();
-                isRunning = true;
+                isLive = true;
 
-                powerBtn.textContent = "⏸ PARAR RÁDIO";
-                powerBtn.style.background = "#ff3333";
-                powerBtn.style.color = "#ffffff";
-                statusLabel.textContent = "🔴 TRANSMITINDO AO VIVO!";
-                eqVisualizer.classList.add('active-playback');
+                togglePowerBtn.textContent = "⏸ PARAR RÁDIO";
+                togglePowerBtn.style.background = "#ff0055";
+                togglePowerBtn.style.color = "#ffffff";
+                statusConsole.textContent = "🔴 AO VIVO NO AR!";
+                vuMeter.classList.add('streaming');
             } catch (err) {
-                console.error("Erro ao tocar:", err);
-                statusLabel.textContent = "⚠️ ERRO NO STREAM. TENTE OUTRO GÊNERO";
-                turnOffRadio();
+                console.error("Erro na ativação:", err);
+                statusConsole.textContent = "⚠️ FALHA DE CONEXÃO. TENTE OUTRO CANAL";
+                deactivateRadio(false);
             } finally {
-                powerBtn.disabled = false;
+                togglePowerBtn.disabled = false;
             }
         }
 
-        function turnOffRadio() {
+        function deactivateRadio(manual = false) {
             audio.pause();
             audio.src = "";
-            isRunning = false;
+            isLive = false;
 
-            powerBtn.textContent = "▶ LIGAR SOM DA RÁDIO";
-            powerBtn.style.background = "#39ff14";
-            powerBtn.style.color = "#000000";
-            statusLabel.textContent = "TRANSMISSÃO INTERROMPIDA";
-            eqVisualizer.classList.remove('active-playback');
+            togglePowerBtn.textContent = "▶ LIGAR SOM DA RÁDIO";
+            togglePowerBtn.style.background = "#39ff14";
+            togglePowerBtn.style.color = "#000000";
+            vuMeter.classList.remove('streaming');
+            
+            if (manual) {
+                statusConsole.textContent = "TRANSMISSÃO INTERROMPIDA";
+            }
         }
 
         audio.addEventListener('error', (e) => {
-            console.error("Erro na tag de áudio:", e);
-            if (isRunning) {
-                statusLabel.textContent = "⚠️ QUEDA DE SINAL DETECTADA";
-                turnOffRadio();
+            console.error("Erro no fluxo de áudio:", e);
+            if (isLive) {
+                statusConsole.textContent = "⚠️ QUEDA DE SINAL DETECTADA";
+                deactivateRadio(false);
             }
         });
     </script>
