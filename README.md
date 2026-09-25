@@ -21,7 +21,7 @@
         }
 
         .radio-card {
-            background: rgba(18, 22, 36, 0.8);
+            background: rgba(18, 22, 36, 0.85);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(0, 255, 204, 0.3);
             border-radius: 32px;
@@ -92,23 +92,38 @@
             background: rgba(5, 7, 12, 0.95);
             border: 1px solid rgba(0, 255, 204, 0.25);
             border-radius: 20px;
-            padding: 22px;
+            padding: 24px;
             margin-top: 25px;
         }
 
-        /* Player nativo customizado com bordas totalmente arredondadas */
-        audio {
+        .btn-play {
+            background: #00ffcc;
+            color: #05060a;
+            border: none;
+            border-radius: 16px;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
             width: 100%;
-            margin-top: 10px;
-            border-radius: 12px;
-            accent-color: #00ffcc;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 20px rgba(0, 255, 204, 0.3);
+            text-transform: uppercase;
+        }
+
+        .btn-play:hover {
+            background: #00cca3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 255, 204, 0.4);
         }
 
         .status-text {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
-            color: #00ffcc;
-            margin-top: 14px;
+            color: #8b9bb4;
+            margin-top: 15px;
             letter-spacing: 1.5px;
             text-transform: uppercase;
             font-weight: 700;
@@ -120,48 +135,68 @@
     <div class="radio-card">
         <div class="radio-header">
             <h1>Nels1<span>Rocks</span></h1>
-            <div class="radio-tag">// Cyber-Glass Secure Stream</div>
+            <div class="radio-tag">// Cyber-Glass Station</div>
         </div>
 
         <div class="control-group">
-            <label for="streamSelect">Selecione o Canal de Áudio:</label>
-            <select id="streamSelect">
-                <!-- Links públicos e diretos validados com HTTPS -->
-                <option value="https://stream.zeno.fm/f3wvbb757fhvv">🔥 Zeno FM - Heavy & Rock Channel</option>
-                <option value="https://radios.justradio.com/stream/8002">🎸 Just Radio - Rock Classics</option>
+            <label for="trackSelect">Selecione a Faixa:</label>
+            <select id="trackSelect">
+                <!-- Links diretos em CDN pública testada e funcional -->
+                <option value="https://ia801509.us.archive.org/29/items/free-heavy-metal-music-archive/Heavy%20Metal%20Sample.mp3">🔥 Heavy Metal Master Track</option>
+                <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">🎸 Rock Instrumental Session</option>
             </select>
         </div>
 
         <div class="player-box">
-            <!-- Player nativo do navegador tratado com link direto -->
-            <audio id="nativeAudio" controls preload="none">
-                <source src="https://stream.zeno.fm/f3wvbb757fhvv" type="audio/mpeg">
-                Seu navegador não suporta o elemento de áudio.
-            </audio>
-
-            <div id="statusLabel" class="status-text">CLIQUE NO PLAY PARA OUVIR 👆</div>
+            <audio id="audioPlayer" preload="auto"></audio>
+            <button class="btn-play" id="playBtn">▶ LIGAR SOM</button>
+            <div id="statusLabel" class="status-text">SISTEMA EM ESPERA</div>
         </div>
     </div>
 
     <script>
-        const audio = document.getElementById('nativeAudio');
-        const select = document.getElementById('streamSelect');
+        const audio = document.getElementById('audioPlayer');
+        const playBtn = document.getElementById('playBtn');
+        const trackSelect = document.getElementById('trackSelect');
         const statusLabel = document.getElementById('statusLabel');
 
-        select.addEventListener('change', (e) => {
-            audio.pause();
-            audio.src = e.target.value;
-            audio.load();
-            audio.play().catch(() => {});
-            statusLabel.textContent = "🔴 CONECTANDO AO CANAL...";
+        let isPlaying = false;
+
+        playBtn.addEventListener('click', () => {
+            if (!isPlaying) {
+                audio.src = trackSelect.value;
+                audio.play().then(() => {
+                    isPlaying = true;
+                    playBtn.textContent = "⏸ PARAR SOM";
+                    playBtn.style.background = "#ff007f";
+                    playBtn.style.boxShadow = "0 4px 20px rgba(255, 0, 127, 0.3)";
+                    statusLabel.textContent = "● TOCANDO AO VIVO";
+                }).catch(err => {
+                    console.error(err);
+                    statusLabel.textContent = "⚠️ CLIQUE NOVAMENTE NO BOTÃO";
+                });
+            } else {
+                audio.pause();
+                isPlaying = false;
+                playBtn.textContent = "▶ LIGAR SOM";
+                playBtn.style.background = "#00ffcc";
+                playBtn.style.boxShadow = "0 4px 20px rgba(0, 255, 204, 0.3)";
+                statusLabel.textContent = "SISTEMA PAUSADO";
+            }
         });
 
-        audio.addEventListener('playing', () => {
-            statusLabel.textContent = "🔴 TRANSMITINDO AO VIVO";
+        trackSelect.addEventListener('change', () => {
+            if (isPlaying) {
+                audio.src = trackSelect.value;
+                audio.play().catch(() => {});
+            }
         });
 
-        audio.addEventListener('error', () => {
-            statusLabel.textContent = "⚠️ ERRO DE FLUXO. CLIQUE NO PLAY";
+        audio.addEventListener('ended', () => {
+            if (isPlaying) {
+                audio.currentTime = 0;
+                audio.play().catch(() => {});
+            }
         });
     </script>
 </body>
