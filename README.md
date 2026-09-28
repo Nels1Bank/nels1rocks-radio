@@ -3,280 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nels1Rocks // Heavy Metal Broadcast</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>Nels1Rocks // True Heavy & Thrash Metal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; }
+        :root {
+            --bg-deep: #050507;
+            --bg-card: #0d0e12;
+            --bg-hover: #161821;
+            --accent: #e50914;
+            --accent-glow: rgba(229, 9, 20, 0.25);
+            --text-main: #f4f4f6;
+            --text-muted: #8c92a4;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-active: rgba(229, 9, 20, 0.5);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            margin: 0;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
-            background: #05060a;
-            color: #fff;
-            font-family: 'Outfit', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 15px;
+            padding: 20px;
         }
-        .player-card {
+
+        .app-container {
             width: 100%;
-            max-width: 400px;
-            background: #0f131f;
-            border: 2px solid #ff3366;
+            max-width: 440px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 20px;
             padding: 25px;
-            box-shadow: 0 0 30px rgba(255, 51, 102, 0.2);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 40px var(--accent-glow);
         }
+
         .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .logo {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.8rem;
-            font-weight: 700;
-        }
-        .logo span { color: #ff3366; }
-        .tag {
-            font-size: 0.65rem;
-            color: #8190a8;
-            font-family: 'JetBrains Mono', monospace;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-top: 5px;
-        }
-        .now-playing {
-            text-align: center;
-            margin-bottom: 20px;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 51, 102, 0.4);
-        }
-        .track-title {
-            font-weight: 700;
-            font-size: 1.05rem;
-            margin-bottom: 4px;
-        }
-        .track-band {
-            color: #ff3366;
-            font-size: 0.75rem;
-            font-family: 'JetBrains Mono', monospace;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        button {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 51, 102, 0.3);
-            color: #fff;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-        }
-        button:hover {
-            border-color: #ff3366;
-            color: #ff3366;
-            background: rgba(255, 51, 102, 0.1);
-            transform: scale(1.05);
-        }
-        button.play-btn {
-            width: 65px;
-            height: 65px;
-            background: #ff3366;
-            color: #05060a;
-            border: none;
-            font-size: 1.4rem;
-            font-weight: bold;
-        }
-        button.play-btn:hover {
-            background: #ff5580;
-            color: #05060a;
-            box-shadow: 0 0 15px #ff3366;
-        }
-        .metal-setlist-header {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: #ff3366;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            font-weight: 700;
-            border-left: 3px solid #ff3366;
-            padding-left: 8px;
-        }
-        .metal-box {
-            max-height: 190px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            background: #07090f;
-            padding: 8px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .metal-box::-webkit-scrollbar { width: 5px; }
-        .metal-box::-webkit-scrollbar-thumb { background: #ff3366; border-radius: 10px; }
-        
-        .setlist-item {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            text-align: left;
-            color: #fff;
-            font-size: 0.85rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: 0.2s;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand {
             font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            font-weight: 700;
         }
-        .setlist-item:hover {
-            background: rgba(255, 51, 102, 0.15);
-            border-color: rgba(255, 51, 102, 0.4);
-        }
-        .setlist-item.active {
-            border-color: #ff3366;
-            background: rgba(255, 51, 102, 0.25);
-            color: #fff;
-            font-weight: bold;
-        }
-        .status {
-            text-align: center;
+
+        .brand span { color: var(--accent); }
+
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.65rem;
-            color: #8190a8;
-            margin-top: 15px;
-            letter-spacing: 1px;
+            background: rgba(229, 9, 20, 0.1);
+            color: var(--accent);
+            padding: 5px 10px;
+            border-radius: 20px;
+            border: 1px solid var(--border-active);
+            text-transform: uppercase;
         }
+
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .now-playing {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .current-band {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 4px;
+        }
+
+        .current-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 14px;
+        }
+
+        audio {
+            width: 100%;
+            height: 40px;
+            accent-color: var(--accent);
+        }
+
+        .playlist-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .section-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .playlist-list {
+            max-height: 240px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding-right: 4px;
+        }
+
+        .playlist-list::-webkit-scrollbar { width: 4px; }
+        .playlist-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+        .track-item {
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .track-item:hover {
+            background: var(--bg-hover);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .track-item.active {
+            background: rgba(229, 9, 20, 0.1);
+            border-color: var(--border-active);
+        }
+
+        .track-info-mini {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .mini-band {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .track-item.active .mini-band { color: var(--accent); }
+
+        .mini-title {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .play-icon {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .track-item.active .play-icon { color: var(--accent); font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="player-card">
+<div class="app-container">
     <div class="header">
-        <div class="logo">Nels1<span>Rocks</span></div>
-        <div class="tag">// Heavy Metal Broadcast</div>
+        <div class="brand">Nels1<span>Rocks</span></div>
+        <div class="live-badge">
+            <div class="live-dot"></div>
+            HEAVY & THRASH METAL
+        </div>
     </div>
 
     <div class="now-playing">
-        <div class="track-title" id="trackTitle">Selecione o canal</div>
-        <div class="track-band" id="trackBand">Metal Stream</div>
+        <div class="current-band" id="activeBand">Carregando peso...</div>
+        <div class="current-title" id="activeTitle">Selecione o canal abaixo</div>
+        <audio id="audioPlayer" controls preload="auto"></audio>
     </div>
 
-    <audio id="audioPlayer"></audio>
-
-    <div class="controls">
-        <button id="prevBtn" title="Anterior">⏮</button>
-        <button id="playBtn" class="play-btn" title="Play/Pause">▶</button>
-        <button id="nextBtn" title="Próxima">⏭</button>
+    <div class="playlist-section">
+        <div class="section-title">// CANAIS HEAVY & THRASH METAL</div>
+        <div class="playlist-list" id="playlistContainer"></div>
     </div>
-
-    <div class="metal-setlist-header">⚡ THRASH & METAL SETLIST</div>
-    <div class="metal-box" id="setlistContainer"></div>
-
-    <div class="status" id="statusText">● PRONTO PARA O SOM</div>
 </div>
 
 <script>
-    // Streams dedicados e testados focados em Heavy Metal Tradicional, Thrash e Rock Pesado
-    const setlistTracks = [
-        { title: "Heavy Metal Maniacs", band: "Metal Devastation Radio", url: "https://radio.metaldevastationradio.com:8000/stream" },
-        { title: "Pure Heavy Metal & NWOBHM", band: "Hard Sound Radio", url: "https://live.hardsoundradio.com:8000/stream" },
-        { title: "Thrash, Speed & Death", band: "Total Metal Radio", url: "https://s4.radio.co/s8b8240f9b/listen" },
-        { title: "Classic Rock & Metal Power", band: "Gonguet Heavy Metal", url: "https://listen.gonguet.com/heavy" }
+    // Setlist 100% Heavy, Thrash e Extremo (Canais dedicados de alta estabilidade)
+    const metalStreams = [
+        { band: "Thrash & Extreme Channel", title: "Slayer, Kreator, Sepultura & Sodom Stream", url: "https://rautemusik-de-hz-fal-stream12.radiohost.de/metal/stream/mp3" },
+        { band: "Heavy Metal Oldschool", title: "Iron Maiden, Black Sabbath & Judas Priest", url: "https://rautemusik-de-hz-fal-stream13.radiohost.de/heavyoldie/stream/mp3" },
+        { band: "Hard & Heavy Station", title: "Megadeth, Pantera & Metallica Riffs", url: "https://stream.antenne.com/rock-hard/mp3-128/streams.antenne.com/" },
+        { band: "Pure Metal Attack", title: "Blind Guardian & Power/Thrash Sound", url: "https://listen.radionomy.com/metal-express-radio.m3u" }
     ];
 
     let currentIndex = 0;
     const audio = document.getElementById('audioPlayer');
-    const playBtn = document.getElementById('playBtn');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const trackTitle = document.getElementById('trackTitle');
-    const trackBand = document.getElementById('trackBand');
-    const setlistContainer = document.getElementById('setlistContainer');
-    const statusText = document.getElementById('statusText');
+    const container = document.getElementById('playlistContainer');
+    const activeBand = document.getElementById('activeBand');
+    const activeTitle = document.getElementById('activeTitle');
 
-    function renderSetlist() {
-        setlistContainer.innerHTML = '';
-        setlistTracks.forEach((track, index) => {
+    function renderList() {
+        container.innerHTML = '';
+        metalStreams.forEach((track, index) => {
             const item = document.createElement('div');
-            item.className = `setlist-item ${index === currentIndex ? 'active' : ''}`;
-            item.innerHTML = `<span>[${index + 1}] ${track.band}</span>`;
+            item.className = `track-item ${index === currentIndex ? 'active' : ''}`;
+            item.innerHTML = `
+                <div class="track-info-mini">
+                    <span class="mini-band">${track.band}</span>
+                    <span class="mini-title">${track.title}</span>
+                </div>
+                <div class="play-icon">${index === currentIndex ? '▶ ON' : '•'}</div>
+            `;
             item.onclick = () => {
-                currentIndex = index;
-                loadTrack(currentIndex);
-                playAudio();
+                loadStream(index);
             };
-            setlistContainer.appendChild(item);
+            container.appendChild(item);
         });
     }
 
-    function loadTrack(index) {
+    function loadStream(index) {
         currentIndex = index;
-        const track = setlistTracks[currentIndex];
+        const track = metalStreams[currentIndex];
         audio.src = track.url;
-        trackTitle.textContent = track.title;
-        trackBand.textContent = track.band;
-        renderSetlist();
+        audio.load();
+        audio.play().catch(e => console.log("Aguardando play manual"));
+        activeBand.textContent = track.band;
+        activeTitle.textContent = track.title;
+        renderList();
     }
-
-    function playAudio() {
-        statusText.textContent = '● CONECTANDO AO METAL STREAM...';
-        audio.play().then(() => {
-            playBtn.textContent = '⏸';
-            statusText.textContent = '● AO VIVO NA PRESSÃO';
-        }).catch(err => {
-            statusText.textContent = '⚠️ CLIQUE NO PLAY PARA LIBERAR O SOM';
-        });
-    }
-
-    function pauseAudio() {
-        audio.pause();
-        playBtn.textContent = '▶';
-        statusText.textContent = '⏸ SOM PAUSADO';
-    }
-
-    playBtn.onclick = () => {
-        if (audio.paused) {
-            playAudio();
-        } else {
-            pauseAudio();
-        }
-    };
-
-    nextBtn.onclick = () => {
-        currentIndex = (currentIndex + 1) % setlistTracks.length;
-        loadTrack(currentIndex);
-        playAudio();
-    };
-
-    prevBtn.onclick = () => {
-        currentIndex = (currentIndex - 1 + setlistTracks.length) % setlistTracks.length;
-        loadTrack(currentIndex);
-        playAudio();
-    };
 
     audio.onerror = () => {
-        statusText.textContent = '⚠️ FALHA NA FREQUÊNCIA, PULANDO...';
+        activeTitle.textContent = "⚠️ RECONECTANDO STREAM PESADO...";
+        setTimeout(() => {
+            currentIndex = (currentIndex + 1) % metalStreams.length;
+            loadStream(currentIndex);
+        }, 2000);
     };
 
-    loadTrack(0);
+    renderList();
+    loadStream(0);
 </script>
 
 </body>
