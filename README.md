@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nels1Rocks // Heavy Metal Player</title>
+    <title>Nels1Rocks // Heavy Metal Radio</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; }
@@ -148,15 +148,15 @@
 <div class="player-card">
     <div class="header">
         <div class="logo">Nels1<span>Rocks</span></div>
-        <div class="tag">// Heavy Metal Stream</div>
+        <div class="tag">// Heavy Metal Radio Stream</div>
     </div>
 
     <div class="now-playing">
-        <div class="track-title" id="trackTitle">Selecione uma faixa</div>
-        <div class="track-band" id="trackBand">Heavy Metal</div>
+        <div class="track-title" id="trackTitle">Selecione uma estação</div>
+        <div class="track-band" id="trackBand">Live Stream</div>
     </div>
 
-    <audio id="audioPlayer" crossorigin="anonymous"></audio>
+    <audio id="audioPlayer"></audio>
 
     <div class="controls">
         <button id="prevBtn" title="Anterior">⏮</button>
@@ -166,16 +166,16 @@
 
     <div class="playlist" id="playlistContainer"></div>
 
-    <div class="status" id="statusText">● PRONTO PARA TOCAR</div>
+    <div class="status" id="statusText">● PRONTO PARA CONECTAR</div>
 </div>
 
 <script>
-    // Usando arquivos de áudio de domínio público validados (ex: Archive.org / freesound / arquivos limpos)
+    // Usando streams de rádio online dedicadas a Rock/Metal (Icecast/Shoutcast streams públicos)
     const tracks = [
-        { title: "Master of Puppets (Demo/Cover)", band: "Metallica Tribute", url: "https://ia800902.us.archive.org/15/items/MetallicaMasterOfPuppetsLiveInSeattle1989/1-02MasterOfPuppets.mp3" },
-        { title: "The Number of the Beast (Live)", band: "Iron Maiden Tribute", url: "https://ia801601.us.archive.org/29/items/IronMaidenLiveAtDonington1992/IronMaiden-LiveAtDonington1992Disc1-04TheNumberOfTheBeast.mp3" },
-        { title: "Classic Heavy Metal Riff", band: "Metal Jam", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-        { title: "Speed Metal Attack", band: "Underground Thrash", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" }
+        { title: "Classic Heavy Metal", band: "Hard Radio", url: "https://rautemusik-de-hz-fal-stream13.radiohost.de/heavy-metal" },
+        { title: "Rock & Metal Anthems", band: "Rock Radio Stream", url: "https://stream.rockantenne.de/heavy-metal/stream/mp3,128" },
+        { title: "Underground Metal Channel", band: "Metal Devastation", url: "https://radio.metaldevastationradio.com:8000/stream" },
+        { title: "Pure Metal Stream", band: "Hard Rock Station", url: "https://live.hardsoundradio.com:8000/stream" }
     ];
 
     let currentIndex = 0;
@@ -207,19 +207,18 @@
         currentIndex = index;
         const track = tracks[currentIndex];
         audio.src = track.url;
-        audio.load();
         trackTitle.textContent = track.title;
         trackBand.textContent = track.band;
         initPlaylist();
     }
 
     function playAudio() {
-        statusText.textContent = '● CARREGANDO...';
+        statusText.textContent = '● CONECTANDO AO STREAM...';
         audio.play().then(() => {
             playBtn.textContent = '⏸';
-            statusText.textContent = '● REPRODUZINDO';
+            statusText.textContent = '● AO VIVO';
         }).catch(err => {
-            statusText.textContent = '⚠️ ERRO NO STREAM - TENTE OUTRA';
+            statusText.textContent = '⚠️ CLIQUE NO PLAY PARA CONECTAR';
         });
     }
 
@@ -250,17 +249,10 @@
     };
 
     audio.onerror = () => {
-        statusText.textContent = '⚠️ LINK FALHOU, PULANDO...';
-        setTimeout(() => {
-            nextBtn.onclick();
-        }, 1500);
+        statusText.textContent = '⚠️ ERRO NA ESTAÇÃO, TENTE OUTRA';
     };
 
-    audio.onended = () => {
-        nextBtn.onclick();
-    };
-
-    // Inicializa o player na primeira música
+    // Inicializa na primeira estação
     loadTrack(0);
 </script>
 
