@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -218,7 +218,6 @@
 </div>
 
 <script>
-    // Setlist 100% Heavy, Thrash e Extremo (Canais dedicados de alta estabilidade)
     const metalStreams = [
         { band: "Thrash & Extreme Channel", title: "Slayer, Kreator, Sepultura & Sodom Stream", url: "https://rautemusik-de-hz-fal-stream12.radiohost.de/metal/stream/mp3" },
         { band: "Heavy Metal Oldschool", title: "Iron Maiden, Black Sabbath & Judas Priest", url: "https://rautemusik-de-hz-fal-stream13.radiohost.de/heavyoldie/stream/mp3" },
@@ -245,33 +244,31 @@
                 <div class="play-icon">${index === currentIndex ? '▶ ON' : '•'}</div>
             `;
             item.onclick = () => {
-                loadStream(index);
+                loadStream(index, true);
             };
             container.appendChild(item);
         });
     }
 
-    function loadStream(index) {
+    function loadStream(index, shouldPlay = false) {
         currentIndex = index;
         const track = metalStreams[currentIndex];
-        audio.src = track.url;
-        audio.load();
-        audio.play().catch(e => console.log("Aguardando play manual"));
+        
         activeBand.textContent = track.band;
         activeTitle.textContent = track.title;
+        audio.src = track.url;
+        
         renderList();
+
+        if (shouldPlay) {
+            audio.play().catch(error => {
+                console.log("Erro ao reproduzir áudio automaticamente:", error);
+            });
+        }
     }
 
-    audio.onerror = () => {
-        activeTitle.textContent = "⚠️ RECONECTANDO STREAM PESADO...";
-        setTimeout(() => {
-            currentIndex = (currentIndex + 1) % metalStreams.length;
-            loadStream(currentIndex);
-        }, 2000);
-    };
-
-    renderList();
-    loadStream(0);
+    // Inicializa a aplicação carregando a primeira estação da lista
+    loadStream(0, false);
 </script>
 
 </body>
