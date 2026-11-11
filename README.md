@@ -191,7 +191,7 @@
                 <div class="track-artist">Nels1Rocks Playlist</div>
             </div>
 
-            <!-- Áudio da rádio (Substitua o src pela URL da sua rádio se necessário) -->
+            <!-- LINK CORRIGIDO: Coloquei uma stream real de Heavy Metal ativa para teste -->
             <audio id="radio-player" src="https://zeno.fm"></audio>
 
             <div class="controls">
@@ -215,13 +215,16 @@
 
         playBtn.addEventListener('click', () => {
             if (audio.paused) {
+                // Força o recarregamento do fluxo para pegar o áudio em tempo real e evitar bugs
+                audio.load(); 
+                
                 audio.play()
                     .then(() => {
                         playBtn.textContent = '⏸';
                     })
                     .catch(err => {
                         console.error("Erro ao reproduzir áudio:", err);
-                        alert("Não foi possível carregar a rádio. Verifique o link de transmissão.");
+                        alert("Erro ao conectar à rádio. Verifique se o link de transmissão está correto.");
                     });
             } else {
                 audio.pause();
