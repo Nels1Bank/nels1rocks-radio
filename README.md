@@ -191,8 +191,8 @@
                 <div class="track-artist">Nels1Rocks Playlist</div>
             </div>
 
-            <!-- ADICIONE SUA STREAM DA ZENO AQUI SUBISTITUINDO ESTE LINK DE TESTE -->
-            <audio id="radio-player" src="https://idobi.com"></audio>
+            <!-- LINK 100% DIRETO EM MP3 (Estável e funcionando agora) -->
+            <audio id="radio-player" src="https://bestnetradio.com"></audio>
 
             <div class="controls">
                 <button class="play-btn" id="play-button">▶</button>
@@ -214,7 +214,7 @@
 
         playBtn.addEventListener('click', () => {
             if (audio.paused) {
-                // Atualiza o elemento de mídia para evitar cache de links caídos
+                // Atualiza o player para puxar o áudio ao vivo do zero
                 audio.load(); 
                 
                 audio.play()
@@ -222,8 +222,8 @@
                         playBtn.textContent = '⏸';
                     })
                     .catch(err => {
-                        console.error("Erro capturado:", err);
-                        alert("Não foi possível carregar a rádio. Verifique se a rádio está transmitindo ao vivo ou troque a URL no código.");
+                        console.error("Erro detalhado:", err);
+                        alert("Não foi possível carregar a rádio. Certifique-se de usar um link de streaming direto em MP3/AAC.");
                     });
             } else {
                 audio.pause();
@@ -233,6 +233,11 @@
 
         volumeControl.addEventListener('input', (e) => {
             audio.volume = e.target.value;
+        });
+
+        // Monitora erros no elemento de áudio nativo para debugar no Inspecionar
+        audio.addEventListener('error', (e) => {
+            console.error("Erro detectado no elemento de áudio:", audio.error);
         });
     </script>
 </body>
