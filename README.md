@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -78,4 +78,160 @@
             color: var(--accent);
             padding: 5px 10px;
             border-radius: 20px;
-            border: 1px solid var(--border-
+            border: 1px solid var(--accent);
+        }
+
+        .player-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .cover-art {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #1e1e24 0%, #0a0a0c 100%);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .track-info {
+            margin-bottom: 25px;
+        }
+
+        .track-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .track-artist {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .play-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .play-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px var(--accent);
+        }
+
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .volume-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border);
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="header">
+            <div class="brand">Nels1Rocks<span>.Radio</span></div>
+            <div class="live-badge">⚡ NO AR</div>
+        </div>
+
+        <div class="player-content">
+            <div class="cover-art">🤘</div>
+            
+            <div class="track-info">
+                <div class="track-title">Heavy Metal Stream</div>
+                <div class="track-artist">Nels1Rocks Playlist</div>
+            </div>
+
+            <!-- Áudio da rádio (Substitua o src pela URL da sua rádio se necessário) -->
+            <audio id="radio-player" src="https://zeno.fm"></audio>
+
+            <div class="controls">
+                <button class="play-btn" id="play-button">▶</button>
+            </div>
+
+            <div class="volume-container">
+                <span>🔊</span>
+                <input type="range" class="volume-slider" id="volume-control" min="0" max="1" step="0.05" value="0.8">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('radio-player');
+        const playBtn = document.getElementById('play-button');
+        const volumeControl = document.getElementById('volume-control');
+
+        // Configuração inicial de volume
+        audio.volume = volumeControl.value;
+
+        playBtn.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play()
+                    .then(() => {
+                        playBtn.textContent = '⏸';
+                    })
+                    .catch(err => {
+                        console.error("Erro ao reproduzir áudio:", err);
+                        alert("Não foi possível carregar a rádio. Verifique o link de transmissão.");
+                    });
+            } else {
+                audio.pause();
+                playBtn.textContent = '▶';
+            }
+        });
+
+        volumeControl.addEventListener('input', (e) => {
+            audio.volume = e.target.value;
+        });
+    </script>
+</body>
+</html>
