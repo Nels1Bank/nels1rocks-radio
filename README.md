@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nels1Rocks Radio - Heavy Metal</title>
     <!-- Importação das fontes Google -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -191,8 +191,8 @@
                 <div class="track-artist">Nels1Rocks Playlist</div>
             </div>
 
-            <!-- LINK CORRIGIDO: Coloquei uma stream real de Heavy Metal ativa para teste -->
-            <audio id="radio-player" src="https://zeno.fm"></audio>
+            <!-- ADICIONE SUA STREAM DA ZENO AQUI SUBISTITUINDO ESTE LINK DE TESTE -->
+            <audio id="radio-player" src="https://idobi.com"></audio>
 
             <div class="controls">
                 <button class="play-btn" id="play-button">▶</button>
@@ -210,12 +210,11 @@
         const playBtn = document.getElementById('play-button');
         const volumeControl = document.getElementById('volume-control');
 
-        // Configuração inicial de volume
         audio.volume = volumeControl.value;
 
         playBtn.addEventListener('click', () => {
             if (audio.paused) {
-                // Força o recarregamento do fluxo para pegar o áudio em tempo real e evitar bugs
+                // Atualiza o elemento de mídia para evitar cache de links caídos
                 audio.load(); 
                 
                 audio.play()
@@ -223,8 +222,8 @@
                         playBtn.textContent = '⏸';
                     })
                     .catch(err => {
-                        console.error("Erro ao reproduzir áudio:", err);
-                        alert("Erro ao conectar à rádio. Verifique se o link de transmissão está correto.");
+                        console.error("Erro capturado:", err);
+                        alert("Não foi possível carregar a rádio. Verifique se a rádio está transmitindo ao vivo ou troque a URL no código.");
                     });
             } else {
                 audio.pause();
