@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nels1Rocks</title></head>
 <body style="background:#fff;color:#000;font-family:Arial;padding:16px;text-align:center">
 <h1>Nels1Rocks.Radio</h1>
